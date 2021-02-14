@@ -10,6 +10,8 @@ export class UserRoutes {
   }
 
   private initRoutes(): void {
+    this.router.post('/', this.controller.createUser);
+
     this.router.get('/', this.controller.readUsers);
 
     //TODO: Implement this route to find User by id. Need to setup middleware

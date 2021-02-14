@@ -11,6 +11,16 @@ export class UserController {
   }
 
   @bind
+  public async createUser(): Promise<void> {
+    try {
+      const user: User = await this.userService.create();
+      console.log('Added user: ', user);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  @bind
   public async readUsers(): Promise<void> {
     try {
       const users: User[] = await this.userService.readAll();
