@@ -1,0 +1,19 @@
+{
+   "type": "postgres",
+   "host": "127.0.0.1",
+   "port": 5432,
+   "username": "jeff",
+   "password": "",
+   "database": "test_db",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "src/components/**/model.ts"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "cli": {
+      "migrationsDir": "src/migration"
+   }
+}
