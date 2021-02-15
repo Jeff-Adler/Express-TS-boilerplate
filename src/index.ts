@@ -4,6 +4,8 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
+const listEndpoints = require('express-list-endpoints');
+
 import express from 'express';
 import { App } from './app';
 
@@ -18,9 +20,10 @@ import { App } from './app';
 
     // Initialize Server
     const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () =>
-      console.log(`Server is running on port ${process.env.PORT}`)
-    );
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${process.env.PORT}`);
+      console.log(listEndpoints(app));
+    });
   } catch (err) {
     console.log(err);
   }

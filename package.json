@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "debug": "DEBUG=express:paths ts-node src/index.ts",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.6",
     "@types/passport-jwt": "^3.0.4",
+    "express-list-endpoints": "^5.0.0",
     "faker": "^5.4.0",
     "ts-node": "3.3.0",
     "ts-node-dev": "^1.1.1",
