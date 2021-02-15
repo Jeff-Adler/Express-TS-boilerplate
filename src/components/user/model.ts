@@ -51,4 +51,8 @@ export class User {
   async beforeInsert() {
     this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUND);
   }
+
+  checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+    return bcrypt.compareSync(unencryptedPassword, this.password);
+  }
 }

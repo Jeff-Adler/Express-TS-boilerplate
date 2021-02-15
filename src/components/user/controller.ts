@@ -100,7 +100,6 @@ export class UserController {
     //Get the ID from the url
     const id = req.params.id;
 
-    const userRepository = getRepository(User);
     let user: User;
     try {
       user = await this.repo.findOneOrFail(id);
