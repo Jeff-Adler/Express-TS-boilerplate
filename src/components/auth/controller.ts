@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { validate } from 'class-validator';
 
 import { User } from '../user/model';
@@ -14,7 +14,7 @@ export class AuthController {
     }
 
     //Get user from database
-    const userRepository = getRepository(User);
+    const userRepository: Repository<User> = getRepository(User);
     let user: User;
     try {
       user = await userRepository.findOneOrFail({ where: { email } });
@@ -40,7 +40,7 @@ export class AuthController {
   };
 
   static changePassword = async (req: Request, res: Response) => {
-    //Get ID from JWT
+    //Get ID from JWT, set in checkJwt (I believe)
     const id = res.locals.jwtPayload.userId;
 
     //Get parameters from the body
