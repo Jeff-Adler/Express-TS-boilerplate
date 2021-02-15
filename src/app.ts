@@ -1,4 +1,9 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ path: './src/config/.env' });
+
 import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
 
 import { initApiRoutes } from './components/index';
 
@@ -7,6 +12,8 @@ export class App {
 
   public constructor() {
     // Initialize middleware layers to apply to all layers (check app.stack)
+    this._app.use(cors());
+    this._app.use(helmet());
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
 

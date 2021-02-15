@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only src/index.ts"
+    "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "class-validator": "^0.13.1",
     "cors": "^2.8.5",
     "decko": "^1.2.0",
     "dotenv": "^8.2.0",

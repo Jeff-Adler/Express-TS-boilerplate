@@ -1,27 +1,51 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  Unique,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  Length,
+  IsNotEmpty,
+  IsEmail,
+  IsDate,
+  MinLength,
+} from 'class-validator';
 import bcrypt from 'bcrypt';
 
 const BCRYPT_HASH_ROUND = 8;
 
 @Entity()
+@Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column()
+  @IsEmail()
   email!: string;
 
   @Column()
+  //TODO: Check if validates pre- or post-hashing string
+  @MinLength(8)
   password!: string;
 
   @Column()
-  firstName!: string;
+  @IsNotEmpty()
+  role!: string;
 
   @Column()
-  lastName!: string;
+  @CreateDateColumn()
+  @IsDate()
+  createdAt!: Date;
 
   @Column()
-  age!: number;
+  @UpdateDateColumn()
+  @IsDate()
+  updatedAt!: Date;
 
   @BeforeInsert()
   async beforeInsert() {
