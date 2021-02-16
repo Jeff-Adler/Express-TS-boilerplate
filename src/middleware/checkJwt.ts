@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
-  //Get the jwt token from the head
-  const token = <string>req.headers['auth'];
+  //Get the jwt token from the header
+  const token: string = req.header('Authorization').replace('Bearer ', '');
   let jwtPayload;
 
   //Try to validate the token and get data

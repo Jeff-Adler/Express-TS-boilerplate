@@ -33,7 +33,7 @@ export class AuthController {
       );
 
       //Send the jwt in the response
-      res.send(token);
+      res.send({ token });
     } catch (error) {
       res.status(401).send();
     }

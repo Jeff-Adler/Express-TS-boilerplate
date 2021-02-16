@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository, Repository } from 'typeorm';
 import { validate } from 'class-validator';
+import { bind } from 'decko';
 
 import { User } from './model';
 
@@ -8,6 +9,7 @@ import { User } from './model';
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
+  @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     //Get users from database
     const users = await this.repo.find({
@@ -18,6 +20,7 @@ export class UserController {
     res.send(users);
   }
 
+  @bind
   public async getOneById(req: Request, res: Response) {
     //Get the ID from the url
     const id: number = parseInt(req.params.id);
@@ -27,11 +30,13 @@ export class UserController {
       const user = await this.repo.findOneOrFail(id, {
         select: ['id', 'email', 'role'], //We dont want to send the password on response
       });
+      res.send(user);
     } catch (error) {
       res.status(404).send('User not found');
     }
   }
 
+  @bind
   public async newUser(req: Request, res: Response) {
     //Get parameters from the body
     let { email, password, role } = req.body;
@@ -59,6 +64,7 @@ export class UserController {
     res.status(201).send('User created');
   }
 
+  @bind
   public async editUser(req: Request, res: Response) {
     //Get the ID from the url
     const id = req.params.id;
@@ -96,6 +102,7 @@ export class UserController {
     res.status(204).send();
   }
 
+  @bind
   public async deleteUser(req: Request, res: Response) {
     //Get the ID from the url
     const id = req.params.id;
