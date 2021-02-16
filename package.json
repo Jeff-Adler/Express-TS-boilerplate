@@ -20,6 +20,7 @@
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.6",
     "@types/passport-jwt": "^3.0.4",
+    "class-validator": "^0.13.1",
     "express-list-endpoints": "^5.0.0",
     "faker": "^5.4.0",
     "ts-node": "3.3.0",
@@ -28,7 +29,6 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
-    "class-validator": "^0.13.1",
     "cors": "^2.8.5",
     "decko": "^1.2.0",
     "dotenv": "^8.2.0",

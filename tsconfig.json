@@ -9,9 +9,15 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "strict": false,
+    "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["node_modules"]
+  "include": ["./src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/class-validator/types/decorator/common/IsNotIn.d.ts"
+  ]
 }
