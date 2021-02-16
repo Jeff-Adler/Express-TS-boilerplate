@@ -7,13 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import {
-  Length,
-  IsNotEmpty,
-  IsEmail,
-  IsDate,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsEmail, IsDate, MinLength } from 'class-validator';
 import bcrypt from 'bcrypt';
 
 const BCRYPT_HASH_ROUND = 8;

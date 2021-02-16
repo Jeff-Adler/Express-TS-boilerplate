@@ -4,10 +4,8 @@ import { UserRoutes } from './user/routes';
 
 export function initApiRoutes(router: Router): void {
   // Test route
-  router.get('/', () => console.log('Hello World'));
+  router.get('/', (req, res) => res.status(200).send('Hello World'));
 
   router.use(`/auth`, new AuthRoutes().router);
-
-  // Declare routes available to any request containing `users`
   router.use(`/users`, new UserRoutes().router);
 }

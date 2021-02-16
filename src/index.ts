@@ -1,6 +1,3 @@
-// import * as dotenv from 'dotenv';
-// dotenv.config({ path: './src/config/.env' });
-
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 

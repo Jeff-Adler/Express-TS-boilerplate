@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "debug": "DEBUG=express:paths ts-node src/index.ts",
+    "debug": "tsc --sourcemap",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "keywords": [],
