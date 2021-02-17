@@ -12,13 +12,13 @@ export class AuthRoutes {
 
   private initRoutes(): void {
     //Login route
-    this.router.post('/login', AuthController.login);
+    this.router.post('/login', this.controller.login);
 
     //Change my password
     this.router.post(
       '/change-password',
       [checkJwt],
-      AuthController.changePassword
+      this.controller.changePassword
     );
   }
 }

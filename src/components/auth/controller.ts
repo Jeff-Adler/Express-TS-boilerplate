@@ -6,7 +6,7 @@ import { validate } from 'class-validator';
 import { User } from '../user/model';
 
 export class AuthController {
-  static login = async (req: Request, res: Response) => {
+  public async login(req: Request, res: Response) {
     //Check if email and password are set
     let { email, password } = req.body;
     if (!(email && password)) {
@@ -37,9 +37,9 @@ export class AuthController {
     } catch (error) {
       res.status(401).send();
     }
-  };
+  }
 
-  static changePassword = async (req: Request, res: Response) => {
+  public async changePassword(req: Request, res: Response) {
     //Get ID from JWT, set in checkJwt (I believe)
     const id = res.locals.jwtPayload.userId;
 
@@ -73,5 +73,5 @@ export class AuthController {
     } catch (id) {
       res.status(401).send();
     }
-  };
+  }
 }
