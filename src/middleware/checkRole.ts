@@ -3,9 +3,10 @@ import { getRepository, Repository } from 'typeorm';
 
 import { User } from '../components/user/model';
 
+// checkRole depends on checkJwt to extract user from JWT
 export const checkRole = (roles: Array<string>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // Get the user ID from previous middleware
+    // Get the user ID from previous middleware.
     const id = res.locals.jwtPayload.userId;
 
     const userRepository: Repository<User> = getRepository(User);

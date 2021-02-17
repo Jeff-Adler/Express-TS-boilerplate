@@ -61,11 +61,21 @@ export class UserController {
     }
 
     //If all ok, send 201 response
-    res.status(201).send('User created');
+    res.status(201).send(user);
   }
 
   @bind
   public async editUser(req: Request, res: Response) {
+    //TODO: implement this style of PATCH
+    // const updates = Object.keys(req.body)
+    // const allowedUpdates = ['name', 'email', 'password', 'age']
+    // //ensures that, for every field in body of update request, allowedUpdates[] includes that field
+    // const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+    // if (!isValidOperation) {
+    //     return res.status(400).send({ error: 'Invalid updates!' })
+    // }
+
     //Get the ID from the url
     const id = req.params.id;
 
@@ -99,12 +109,11 @@ export class UserController {
       return;
     }
     //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
+    res.status(204).send(user);
   }
 
   @bind
-  public async deleteUser(req: Request, res: Response) {
-    //Get the ID from the url
+  public async deleteUserById(req: Request, res: Response) {
     const id = req.params.id;
 
     let user: User;
@@ -116,60 +125,6 @@ export class UserController {
     }
     this.repo.delete(id);
 
-    //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
+    res.status(204).send(user);
   }
 }
-
-// import { NextFunction, Request, Response } from 'express';
-
-// import { bind } from 'decko';
-// import { User } from './model';
-// import { UserService } from './service';
-
-// export class UserController {
-//   private readonly userService: UserService;
-//   constructor() {
-//     this.userService = new UserService();
-//   }
-
-//   @bind
-//   public async createUser(): Promise<void> {
-//     try {
-//       const user: User = await this.userService.create();
-//       console.log('Added user: ', user);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-
-//   @bind
-//   public async readUsers(): Promise<void> {
-//     try {
-//       const users: User[] = await this.userService.readAll();
-//       console.log('Loaded users: ', users);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-
-//   @bind
-//   public async readUserById(): Promise<void> {
-//     try {
-//       const users: User[] = await this.userService.readUserById(1);
-//       console.log('Loaded users: ', users);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-
-//   @bind
-//   public async deleteUserById(): Promise<void> {
-//     try {
-//       const users: User[] = await this.userService.deleteUserById(6);
-//       console.log('Deleted users: ', users);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-// }

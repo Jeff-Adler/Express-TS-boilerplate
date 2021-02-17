@@ -12,6 +12,12 @@ import bcrypt from 'bcrypt';
 
 const BCRYPT_HASH_ROUND = 8;
 
+//TODO: Implement some kind of thorough immutable roles, perhaps as property in their own class
+enum Roles {
+  Admin = 'ADMIN',
+  User = 'USER',
+}
+
 @Entity()
 @Unique(['email'])
 export class User {
@@ -33,12 +39,12 @@ export class User {
 
   @Column()
   @CreateDateColumn()
-  @IsDate()
+  // @IsDate()
   createdAt!: Date;
 
   @Column()
   @UpdateDateColumn()
-  @IsDate()
+  // @IsDate()
   updatedAt!: Date;
 
   @BeforeInsert()
