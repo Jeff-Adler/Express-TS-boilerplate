@@ -7,16 +7,17 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IsNotEmpty, IsEmail, IsDate, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  // IsDate,
+  MinLength,
+  Validate,
+} from 'class-validator';
 import bcrypt from 'bcrypt';
 
-const BCRYPT_HASH_ROUND = 8;
+import { RoleValidator } from './utils/RoleValidator';
 
-//TODO: Implement some kind of thorough immutable roles, perhaps as property in their own class
-enum Roles {
-  Admin = 'ADMIN',
-  User = 'USER',
-}
+const BCRYPT_HASH_ROUND = 8;
 
 @Entity()
 @Unique(['email'])
@@ -29,12 +30,12 @@ export class User {
   email!: string;
 
   @Column()
-  //TODO: Check if validates pre- or post-hashing string
   @MinLength(8)
   password!: string;
 
+  //TODO: Make role be of type UserRoles rather than using UserRoles validation. Might need to make an interface. Might be able to set type directly
   @Column()
-  @IsNotEmpty()
+  @Validate(RoleValidator)
   role!: string;
 
   @Column()
