@@ -11,3 +11,8 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 - Express
 - TypeORM
 - Passportjs
+
+## To Dos
+
+- Replace CheckAdmin with modular CheckRole
+- Build abstract Controller class (or maybe Services class)
