@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, Not } from 'typeorm';
 import { validate } from 'class-validator';
 import { bind } from 'decko';
 
@@ -11,12 +11,10 @@ export class UserController {
 
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
-    //Get users from database
     const users = await this.repo.find({
       select: ['id', 'email', 'role'], //We dont want to send the passwords on response
     });
 
-    //Send the users object
     res.send(users);
   }
 
@@ -101,7 +99,7 @@ export class UserController {
       return;
     }
 
-    //Try to safe, if fails, that means email already in use
+    //Try to safe, if fails, that means email already in use. Email is validated for uniqueness only before save to db
     try {
       await this.repo.save(user);
     } catch (e) {
@@ -126,5 +124,20 @@ export class UserController {
     this.repo.delete(id);
 
     res.status(204).send(user);
+  }
+
+  @bind
+  public async deleteUsers(req: Request, res: Response) {
+    try {
+      this.repo
+        .createQueryBuilder()
+        .delete()
+        .where({ role: Not('ADMIN') })
+        .execute();
+
+      res.status(204).send('All users deleted');
+    } catch (e) {
+      res.status(401).send(e);
+    }
   }
 }

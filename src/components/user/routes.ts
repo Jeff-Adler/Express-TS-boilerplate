@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { UserController } from './controller';
 import { checkJwt } from '../../middleware/checkJwt';
 import { checkRole } from '../../middleware/checkRole';
+import { UserController } from './controller';
 
 export class UserRoutes {
   readonly router: Router = Router();
@@ -34,7 +34,7 @@ export class UserRoutes {
       this.controller.newUser
     );
 
-    //Edit one user
+    //Edit one user (email or role)
     this.router.patch(
       '/:id([0-9]+)',
       [checkJwt, checkRole(['ADMIN'])],
@@ -46,6 +46,13 @@ export class UserRoutes {
       '/:id([0-9]+)',
       [checkJwt, checkRole(['ADMIN'])],
       this.controller.deleteUserById
+    );
+
+    //Delete all non-admin users
+    this.router.delete(
+      '/',
+      [checkJwt, checkRole(['ADMIN'])],
+      this.controller.deleteUsers
     );
   }
 }
