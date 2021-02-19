@@ -2,11 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { getRepository, Repository } from 'typeorm';
 
 import { User } from '../components/user/model';
-import { roleValidator } from '../components/user/utils/RoleValidator';
-import { UserRoles } from '../components/user/utils/UserRoles';
+import { Role } from '../components/user/utils/UserRoles';
 
 // checkRole depends on checkJwt to extract user from JWT
-export const checkRole = (roles: Array<keyof UserRoles>) => {
+export const checkRole = (roles: Array<Role>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const id = res.locals.jwtPayload.userId;
 

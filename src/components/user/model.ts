@@ -16,7 +16,7 @@ import {
 import bcrypt from 'bcrypt';
 
 import { RoleValidator } from './utils/RoleValidator';
-import { UserRoles } from './utils/UserRoles';
+import { Role } from './utils/UserRoles';
 
 const BCRYPT_HASH_ROUND = 8;
 
@@ -37,7 +37,7 @@ export class User {
   //TODO: Make role be of type UserRoles rather than using UserRoles validation. Might need to make an interface. Might be able to set type directly
   @Column()
   @Validate(RoleValidator)
-  role!: keyof UserRoles;
+  role!: Role;
 
   @Column()
   @CreateDateColumn()

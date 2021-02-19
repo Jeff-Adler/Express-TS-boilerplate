@@ -3,15 +3,15 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { UserRoles } from './UserRoles';
+import { Role } from './UserRoles';
 
-export const roleValidator = (role: keyof UserRoles): boolean => {
-  return (role as keyof UserRoles) !== undefined;
+export const roleValidator = (role: Role): boolean => {
+  return <Role>role !== undefined;
 };
 
 @ValidatorConstraint({ name: 'roleValidator', async: false })
 export class RoleValidator implements ValidatorConstraintInterface {
-  validate(role: keyof UserRoles, args: ValidationArguments) {
+  validate(role: Role, args: ValidationArguments) {
     return roleValidator(role);
   }
 
