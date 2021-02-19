@@ -1,3 +1,4 @@
-export class UserRoles {
-  static readonly roles = ['ADMIN', 'USER'];
+export interface UserRoles {
+  ADMIN: string;
+  USER: string;
 }

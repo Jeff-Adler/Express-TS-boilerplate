@@ -7,8 +7,8 @@ import { UserRoles } from './UserRoles';
 
 @ValidatorConstraint({ name: 'roleValidator', async: false })
 export class RoleValidator implements ValidatorConstraintInterface {
-  validate(role: string, args: ValidationArguments) {
-    return !!UserRoles.roles.includes(role);
+  validate(role: keyof UserRoles, args: ValidationArguments) {
+    return (role as keyof UserRoles) !== undefined;
   }
 
   defaultMessage(args: ValidationArguments) {
