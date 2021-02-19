@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getRepository, Repository } from 'typeorm';
 
 import { User } from '../components/user/model';
+import { roleValidator } from '../components/user/utils/RoleValidator';
 
 // checkRole depends on checkJwt to extract user from JWT
 export const checkRole = (roles: Array<string>) => {
@@ -13,8 +14,7 @@ export const checkRole = (roles: Array<string>) => {
     let user: User;
     try {
       user = await userRepository.findOneOrFail(id);
-      // Check if array of authorized roles includes user's role
-      if (roles.indexOf(user.role) > -1) next();
+      if (roleValidator(user.role)) next();
       else res.status(401).send();
     } catch (id) {
       res.status(401).send();
