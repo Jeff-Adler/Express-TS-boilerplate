@@ -18,7 +18,7 @@ import bcrypt from 'bcrypt';
 import { RoleValidator } from './utils/RoleValidator';
 import { Role } from './utils/Roles';
 
-export type UpdateableUserTypes = keyof IUser;
+export type UpdateableUserField = keyof IUser;
 
 export interface IUser {
   email: string;

@@ -8,7 +8,7 @@ export class ProfileController {
 
   @bind
   public async getProfile(req: Request, res: Response): Promise<void> {
-    const id = res.locals.jwtPayload.userId;
+    const id = res.locals.user.id;
 
     try {
       const user = await this.repo.findOneOrFail(id, {

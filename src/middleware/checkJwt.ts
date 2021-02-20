@@ -1,21 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
+import { User } from '../components/user/model';
 
-export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
-  let jwtPayload;
-
+export const checkJwt = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     if (!req.header) throw new Error();
 
     const token: string = req.header('Authorization')!.replace('Bearer ', '');
-    jwtPayload = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
-    //res.locals is the conventional way to add fields to response in intermediary middleware
-    res.locals.jwtPayload = jwtPayload;
+    const decoded = <any>(
+      jwt.verify(token, process.env.JWT_SECRET as jwt.Secret)
+    );
+    const user = await getRepository(User).findOneOrFail(decoded.id);
+    res.locals.user = user;
 
+    const { id, email } = user;
     // Send a new token on every request
-    const { userId, email } = jwtPayload;
     const newToken = jwt.sign(
-      { userId, email },
+      { id, email },
       process.env.JWT_SECRET as jwt.Secret,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
@@ -26,6 +32,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (error) {
     res.status(401).send('Authentication Failed');
-    return;
+    // TODO: Do we need this return statement?
+    // return;
   }
 };

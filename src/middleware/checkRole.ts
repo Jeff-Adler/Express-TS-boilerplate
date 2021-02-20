@@ -7,12 +7,11 @@ import { Role } from '../components/user/utils/Roles';
 // checkRole depends on checkJwt to extract user from JWT
 export const checkRole = (roles: Array<Role>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const id = res.locals.jwtPayload.userId;
-
-    const userRepository: Repository<User> = getRepository(User);
+    // const userRepository: Repository<User> = getRepository(User);
+    const user = res.locals.user;
 
     try {
-      const user: User = await userRepository.findOneOrFail(id);
+      // const user: User = await userRepository.findOneOrFail(id);
       if (roles.includes(user.role)) next();
       else res.status(401).send();
     } catch (id) {
