@@ -20,8 +20,8 @@ export class ProfileRoutes {
 
     this.router.patch(
       '/update',
-      [checkJwt, checkRole(['ADMIN', 'USER'])]
-      // this.controller.update
+      [checkJwt, checkRole(['ADMIN', 'USER'])],
+      this.controller.updateProfile
     );
 
     this.router.delete(

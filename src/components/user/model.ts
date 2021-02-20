@@ -18,11 +18,17 @@ import bcrypt from 'bcrypt';
 import { RoleValidator } from './utils/RoleValidator';
 import { Role } from './utils/Roles';
 
-const BCRYPT_HASH_ROUND = 8;
+export type UpdateableUserTypes = keyof IUser;
+
+export interface IUser {
+  email: string;
+  password: string;
+  role: Role;
+}
 
 @Entity()
 @Unique(['email'])
-export class User {
+export class User implements IUser {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -51,7 +57,10 @@ export class User {
 
   @BeforeInsert()
   async beforeInsert() {
-    this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUND);
+    this.password = await bcrypt.hash(
+      this.password,
+      process.env.BCRYPT_HASH_ROUND!
+    );
   }
 
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {

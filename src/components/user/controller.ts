@@ -3,7 +3,7 @@ import { getRepository, Repository, Not } from 'typeorm';
 import { validate } from 'class-validator';
 import { bind } from 'decko';
 
-import { User } from './model';
+import { User, IUser, UpdateableUserField } from './model';
 
 //TODO: Consider moving logic to user/services
 export class UserController {
@@ -62,26 +62,36 @@ export class UserController {
     res.status(201).send(user);
   }
 
+  //TODO: Make this modular in abstract class to allow you to say what the permitted updates are
   @bind
   public async editUser(req: Request, res: Response) {
-    //TODO: implement this style of PATCH
-    // const updates = Object.keys(req.body)
-    // const allowedUpdates = ['name', 'email', 'password', 'age']
-    // //ensures that, for every field in body of update request, allowedUpdates[] includes that field
-    // const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    /*
+    Validations checked:
+      1. are the fields being requested to update on req.body valid User fields
+      2. are the fields being reuqested to update on req.body updateable User fields
+      3. do the requested updates pass validations
+      4. is the email available
+    */
 
-    // if (!isValidOperation) {
-    //     return res.status(400).send({ error: 'Invalid updates!' })
-    // }
+    const updates: string[] = Object.keys(req.body);
 
-    //Get the ID from the url
+    //Type Guard
+    const isUpdateableUserField = (
+      update: string
+    ): update is UpdateableUserField => {
+      return <keyof IUser>update !== undefined;
+    };
+
+    const isValidOperation = updates.every((update) =>
+      isUpdateableUserField(update.toLowerCase())
+    );
+
+    if (!isValidOperation) {
+      return res.status(400).send({ error: 'Invalid updates!' });
+    }
+
     const id = req.params.id;
-
-    //Get values from the body
-    const { email, role } = req.body;
-
-    //Try to find user on database
-    let user;
+    let user: User;
     try {
       user = await this.repo.findOneOrFail(id);
     } catch (error) {
@@ -90,9 +100,10 @@ export class UserController {
       return;
     }
 
+    updates.forEach((update) => {
+      if (isUpdateableUserField(update)) user[update] = req.body[update];
+    });
     //Validate the new values on model
-    user.email = email;
-    user.role = role;
     const errors = await validate(user);
     if (errors.length > 0) {
       res.status(400).send(errors);
