@@ -16,3 +16,4 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 
 - Use UserRoles interface for CheckRole
 - Build abstract Controller class (or maybe Services class)
+- Dynamically create Role type when app is initialized based on values passed into Role class at initialization

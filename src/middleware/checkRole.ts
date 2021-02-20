@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { getRepository, Repository } from 'typeorm';
 
 import { User } from '../components/user/model';
-import { Role } from '../components/user/utils/UserRoles';
+import { Role } from '../components/user/utils/Roles';
 
 // checkRole depends on checkJwt to extract user from JWT
 export const checkRole = (roles: Array<Role>) => {

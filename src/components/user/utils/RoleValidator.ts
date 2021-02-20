@@ -3,7 +3,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { Role } from './UserRoles';
+import { Role } from './Roles';
 
 export const roleValidator = (role: Role): boolean => {
   return <Role>role !== undefined;

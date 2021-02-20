@@ -16,7 +16,7 @@ import {
 import bcrypt from 'bcrypt';
 
 import { RoleValidator } from './utils/RoleValidator';
-import { Role } from './utils/UserRoles';
+import { Role } from './utils/Roles';
 
 const BCRYPT_HASH_ROUND = 8;
 
@@ -34,8 +34,8 @@ export class User {
   @MinLength(8)
   password!: string;
 
-  //TODO: Make role be of type UserRoles rather than using UserRoles validation. Might need to make an interface. Might be able to set type directly
-  @Column()
+  // Coerce custom Role type as permitted postgresql type
+  @Column('character varying')
   @Validate(RoleValidator)
   role!: Role;
 
