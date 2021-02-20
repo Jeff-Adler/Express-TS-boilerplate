@@ -23,7 +23,7 @@ export type UpdateableUserField = keyof IUser;
 export interface IUser {
   email: string;
   password: string;
-  role: Role;
+  role: string;
 }
 
 @Entity()
@@ -59,7 +59,7 @@ export class User implements IUser {
   async beforeInsert() {
     this.password = await bcrypt.hash(
       this.password,
-      process.env.BCRYPT_HASH_ROUND!
+      parseInt(process.env.BCRYPT_HASH_ROUND!)
     );
   }
 

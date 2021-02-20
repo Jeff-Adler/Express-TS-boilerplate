@@ -52,6 +52,7 @@ export class UserController {
 
     //Try to save. If fails, the email is already in use
     try {
+      console.log(user);
       await this.repo.save(user);
     } catch (e) {
       res.status(409).send('email already in use');

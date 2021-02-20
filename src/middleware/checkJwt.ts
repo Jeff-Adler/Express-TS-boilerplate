@@ -18,8 +18,8 @@ export const checkJwt = async (
     const user = await getRepository(User).findOneOrFail(decoded.id);
     res.locals.user = user;
 
-    const { id, email } = user;
     // Send a new token on every request
+    const { id, email } = user;
     const newToken = jwt.sign(
       { id, email },
       process.env.JWT_SECRET as jwt.Secret,
