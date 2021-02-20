@@ -25,7 +25,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (error) {
-    res.status(401).send();
+    res.status(401).send('Authentication Failed');
     return;
   }
 };
