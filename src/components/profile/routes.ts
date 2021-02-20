@@ -14,8 +14,8 @@ export class ProfileRoutes {
   private initRoutes(): void {
     this.router.get(
       '/',
-      [checkJwt]
-      // this.controller.getProfile
+      [checkJwt, checkRole(['ADMIN', 'USER'])],
+      this.controller.getProfile
     );
 
     this.router.patch(

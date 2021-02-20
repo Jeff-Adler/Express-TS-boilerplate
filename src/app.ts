@@ -5,8 +5,6 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 
-// import { initRoles } from '.'
-
 import { initApiRoutes } from './components/index';
 
 export class App {
@@ -18,9 +16,6 @@ export class App {
     this._app.use(helmet());
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
-
-    // Initialize auth middleware to apply to all requests
-    // initAuthMiddleware(this._app)
 
     // Initialize API routes
     initApiRoutes(this._app);
