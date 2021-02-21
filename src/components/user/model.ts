@@ -7,20 +7,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import {
-  IsEmail,
-  // IsDate,
-  MinLength,
-  Validate,
-} from 'class-validator';
+import { IsEmail, MinLength, Validate } from 'class-validator';
 import bcrypt from 'bcrypt';
 
 import { RoleValidator } from './utils/RoleValidator';
 import { Role } from './utils/Roles';
 
 export type UpdateableUserField = 'email' | 'password' | 'role';
-
-export type UserField = keyof IUser;
 
 export interface IUser {
   id: number;
@@ -52,20 +45,15 @@ export class User implements IUser {
 
   @Column()
   @CreateDateColumn()
-  // @IsDate()
   createdAt!: Date;
 
   @Column()
   @UpdateDateColumn()
-  // @IsDate()
   updatedAt!: Date;
 
   @BeforeInsert()
   async beforeInsert() {
-    this.password = await bcrypt.hash(
-      this.password,
-      parseInt(process.env.BCRYPT_HASH_ROUND!)
-    );
+    this.password = await bcrypt.hash(this.password, parseInt(process.env.BCRYPT_HASH_ROUND!));
   }
 
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
