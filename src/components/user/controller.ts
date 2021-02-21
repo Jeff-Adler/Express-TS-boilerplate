@@ -34,7 +34,7 @@ export class UserController {
   }
 
   @bind
-  public async newUser(req: Request, res: Response) {
+  public async newUser(req: Request, res: Response): Promise<void> {
     //Get parameters from the body
     let { email, password, role } = req.body;
     let user = new User();
@@ -46,7 +46,6 @@ export class UserController {
     const errors = await validate(user);
     if (errors.length > 0) {
       res.status(400).send(errors);
-      return;
     }
 
     //Try to save. If fails, the email is already in use
@@ -55,7 +54,6 @@ export class UserController {
       await this.repo.save(user);
     } catch (e) {
       res.status(409).send('email already in use');
-      return;
     }
 
     //If all ok, send 201 response
@@ -63,7 +61,7 @@ export class UserController {
   }
 
   @bind
-  public async editUser(req: Request, res: Response) {
+  public async editUser(req: Request, res: Response): Promise<void> {
     const id = req.params.id;
     let user: User;
     try {
@@ -81,7 +79,7 @@ export class UserController {
     };
 
     if (!updates.every((update) => isUserField(update))) {
-      return res.status(400).send({ error: 'Invalid updates' });
+      res.status(400).send({ error: 'Invalid updates' });
     }
 
     // Validation 2: fields on req.body are updateable User fields
@@ -90,7 +88,7 @@ export class UserController {
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
-      return res.status(400).send({ error: 'Field cannot be updated' });
+      res.status(400).send({ error: 'Field cannot be updated' });
     }
 
     // Validation 3: requested updates pass model validations
@@ -101,7 +99,6 @@ export class UserController {
     const errors = await validate(user);
     if (errors.length > 0) {
       res.status(405).send(errors);
-      return;
     }
 
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
@@ -109,7 +106,6 @@ export class UserController {
       await this.repo.save(user);
     } catch (e) {
       res.status(409).send('email already in use');
-      return;
     }
 
     res.status(204).send(user);
