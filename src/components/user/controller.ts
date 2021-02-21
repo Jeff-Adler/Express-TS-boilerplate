@@ -63,55 +63,58 @@ export class UserController {
     res.status(201).send(user);
   }
 
-  //TODO: Make this modular in abstract class to allow you to say what the permitted updates are
+  /*
+  Validations checked:
+    1. are the fields being requested to update on req.body valid User fields
+    2. are the fields being reuqested to update on req.body updateable User fields
+    3. do the requested updates pass validations
+    4. is the email available
+  */
   @bind
   public async editUser(req: Request, res: Response) {
-    /*
-    Validations checked:
-      1. are the fields being requested to update on req.body valid User fields
-      2. are the fields being reuqested to update on req.body updateable User fields
-      3. do the requested updates pass validations
-      4. is the email available
-    */
-
-    const updates: string[] = Object.keys(req.body);
-
-    //Type Guard
-    const isUpdateableUserField = (
-      update: string
-    ): update is UpdateableUserField => {
-      return <keyof IUser>update !== undefined;
-    };
-
-    const isValidOperation = updates.every((update) =>
-      isUpdateableUserField(update.toLowerCase())
-    );
-
-    if (!isValidOperation) {
-      return res.status(400).send({ error: 'Invalid updates!' });
-    }
-
     const id = req.params.id;
     let user: User;
     try {
       user = await this.repo.findOneOrFail(id);
     } catch (error) {
-      //If not found, send a 404 response
       res.status(404).send('User not found');
       return;
     }
 
+    const updates: string[] = Object.keys(req.body);
+
+    // Validation 1: fields on req.body are valid User fields
+    const isUserField = (update: string): update is keyof IUser => {
+      return <keyof IUser>update !== undefined;
+    };
+
+    if (!updates.every((update) => isUserField(update))) {
+      return res.status(400).send({ error: 'Invalid updates' });
+    }
+
+    // Validation 2: fields on req.body are updateable User fields
+    const isUpdateableUserField = (update: string): update is UpdateableUserField => {
+      return <UpdateableUserField>update !== undefined;
+    };
+
+    if (!updates.every((update) => isUpdateableUserField(update))) {
+      return res.status(400).send({ error: 'Field cannot be updated' });
+    }
+
+    // Validation 3: requested updates pass model validations
+    console.log(user);
     updates.forEach((update) => {
+      // Type Guard to permit updating user field
       if (isUpdateableUserField(update)) user[update] = req.body[update];
     });
-    //Validate the new values on model
+    console.log(user);
     const errors = await validate(user);
     if (errors.length > 0) {
-      res.status(400).send(errors);
+      res.status(405).send(errors);
       return;
     }
 
-    //Try to safe, if fails, that means email already in use. Email is validated for uniqueness only before save to db
+    // Validation 4: requested updates pass database validations (e.g. email uniqueness constraint)
     try {
       await this.repo.save(user);
     } catch (e) {

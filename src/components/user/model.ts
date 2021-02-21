@@ -18,12 +18,17 @@ import bcrypt from 'bcrypt';
 import { RoleValidator } from './utils/RoleValidator';
 import { Role } from './utils/Roles';
 
-export type UpdateableUserField = keyof IUser;
+export type UpdateableUserField = 'email' | 'password' | 'role';
+
+export type UserField = keyof IUser;
 
 export interface IUser {
+  id: number;
   email: string;
   password: string;
   role: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Entity()
