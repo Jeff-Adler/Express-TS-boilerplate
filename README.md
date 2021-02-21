@@ -16,7 +16,9 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 
 - Complete profile routes
 - Build abstract Controller class (or maybe Services class)
-- Dynamically create Role type when app is initialized based on values passed into Role class at initialization
+- - Create UPDATE method that takes valid fields for model as input, and says only those roles can be updated. Could call it as an argument to super(), which will have an interface that defines what is updateable
+- Abstract methods used throughout controller into Services, e.g. findUser.
+- - Possible stretch: move that to abstract servicesClass
 
 ### Possible stretch:
 
