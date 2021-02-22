@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { checkJwt } from '../../middleware/checkJwt';
-import { checkRole } from '../../middleware/checkRole';
+import { checkJwt } from '../../middleware/auth/checkJwt';
+import { checkRole } from '../../middleware/auth/checkRole';
 import { ProfileController } from './controller';
 
 export class ProfileRoutes {

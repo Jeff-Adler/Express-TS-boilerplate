@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
-import { User } from '../components/user/model';
+import { User } from '../../components/user/model';
 
 export const checkJwt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
