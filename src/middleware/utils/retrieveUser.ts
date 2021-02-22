@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../components/user/model';
+import { User } from '../../components/user/model';
 import { getRepository } from 'typeorm';
 
 export const retrieveUser = async (
@@ -10,7 +10,8 @@ export const retrieveUser = async (
   const id = req.params.id;
 
   try {
-    res.locals.retrievedUser = await getRepository(User).findOneOrFail(id);
+    res.locals.retrievedUser = (await getRepository(User).findOneOrFail(id)) as User;
+    next();
   } catch (error) {
     res.status(404).send('User not found');
   }

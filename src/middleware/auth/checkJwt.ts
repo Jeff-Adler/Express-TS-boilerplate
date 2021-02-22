@@ -9,7 +9,7 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction):
 
     const token: string = req.header('Authorization')!.replace('Bearer ', '');
     const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
-    const user = await getRepository(User).findOneOrFail(decoded.id);
+    const user: User = await getRepository(User).findOneOrFail(decoded.id);
     res.locals.currentUser = user;
 
     // Send a new token on every request

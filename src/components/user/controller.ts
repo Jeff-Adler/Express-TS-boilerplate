@@ -18,19 +18,9 @@ export class UserController {
   }
 
   @bind
-  public async getOneById(req: Request, res: Response): Promise<void> {
-    //Get the ID from the url
-    const id: number = parseInt(req.params.id);
-
-    //Get the user from database
-    try {
-      const user = await this.repo.findOneOrFail(id, {
-        select: ['id', 'email', 'role'], //We dont want to send the password on response
-      });
-      res.send(user);
-    } catch (error) {
-      res.status(404).send('User not found');
-    }
+  public getOneById(req: Request, res: Response): void {
+    const { id, email, role } = res.locals.retrievedUser;
+    res.status(200).send({ id, email, role });
   }
 
   @bind
@@ -62,14 +52,7 @@ export class UserController {
 
   @bind
   public async editUser(req: Request, res: Response): Promise<void> {
-    const id = req.params.id;
-    let user: User;
-    try {
-      user = await this.repo.findOneOrFail(id);
-    } catch (error) {
-      res.status(404).send('User not found');
-      return;
-    }
+    const user: User = res.locals.retrievedUser;
 
     const updates: string[] = Object.keys(req.body);
 
@@ -113,13 +96,11 @@ export class UserController {
 
   @bind
   public async deleteUserById(req: Request, res: Response): Promise<void> {
-    const id = req.params.id;
+    const user: User = res.locals.retrievedUser;
 
-    let user: User;
     try {
-      user = await this.repo.findOneOrFail(id);
-      this.repo.delete(id);
-      res.status(204).send(user);
+      await this.repo.remove(user);
+      res.status(204).send('Removed user');
     } catch (error) {
       res.status(404).send('User not found');
     }
@@ -128,7 +109,7 @@ export class UserController {
   @bind
   public async deleteUsers(req: Request, res: Response): Promise<void> {
     try {
-      this.repo
+      await this.repo
         .createQueryBuilder()
         .delete()
         .where({ role: Not('ADMIN') })

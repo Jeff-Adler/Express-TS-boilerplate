@@ -12,11 +12,7 @@ export class ProfileRoutes {
   }
 
   private initRoutes(): void {
-    this.router.get(
-      '/',
-      [checkJwt, checkRole(['ADMIN', 'USER'])],
-      this.controller.getProfile
-    );
+    this.router.get('/', [checkJwt, checkRole(['ADMIN', 'USER'])], this.controller.getProfile);
 
     this.router.patch(
       '/update',
@@ -26,8 +22,8 @@ export class ProfileRoutes {
 
     this.router.delete(
       '/delete',
-      [checkJwt, checkRole(['ADMIN', 'USER'])]
-      // this.controller.update
+      [checkJwt, checkRole(['ADMIN', 'USER'])],
+      this.controller.deleteProfile
     );
   }
 }

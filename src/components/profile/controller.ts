@@ -8,7 +8,7 @@ export class ProfileController {
   readonly repo: Repository<User> = getRepository(User);
 
   @bind
-  public async getProfile(req: Request, res: Response): Promise<void> {
+  public getProfile(req: Request, res: Response): void {
     const { id, email, role } = res.locals.currentUser as User;
 
     try {
@@ -60,5 +60,16 @@ export class ProfileController {
     }
 
     res.status(204).send(user);
+  }
+
+  @bind
+  public async deleteProfile(req: Request, res: Response): Promise<void> {
+    const user: User = res.locals.currentUser;
+
+    try {
+      await getRepository(User).delete(user);
+    } catch (e) {
+      res.status(401).send(e);
+    }
   }
 }
