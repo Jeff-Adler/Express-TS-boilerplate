@@ -3,14 +3,14 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { User } from '../components/user/model';
 
-export const checkJwt = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const checkJwt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     if (!req.header) throw new Error();
 
     const token: string = req.header('Authorization')!.replace('Bearer ', '');
     const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
     const user = await getRepository(User).findOneOrFail(decoded.id);
-    res.locals.user = user;
+    res.locals.currentUser = user;
 
     // Send a new token on every request
     const { id, email } = user;
@@ -22,7 +22,5 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction):
     next();
   } catch (error) {
     res.status(401).send('Authentication Failed');
-    // TODO: Do we need this return statement?
-    return;
   }
 };

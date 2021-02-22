@@ -18,7 +18,7 @@ export class UserController {
   }
 
   @bind
-  public async getOneById(req: Request, res: Response) {
+  public async getOneById(req: Request, res: Response): Promise<void> {
     //Get the ID from the url
     const id: number = parseInt(req.params.id);
 
@@ -112,23 +112,21 @@ export class UserController {
   }
 
   @bind
-  public async deleteUserById(req: Request, res: Response) {
+  public async deleteUserById(req: Request, res: Response): Promise<void> {
     const id = req.params.id;
 
     let user: User;
     try {
       user = await this.repo.findOneOrFail(id);
+      this.repo.delete(id);
+      res.status(204).send(user);
     } catch (error) {
       res.status(404).send('User not found');
-      return;
     }
-    this.repo.delete(id);
-
-    res.status(204).send(user);
   }
 
   @bind
-  public async deleteUsers(req: Request, res: Response) {
+  public async deleteUsers(req: Request, res: Response): Promise<void> {
     try {
       this.repo
         .createQueryBuilder()

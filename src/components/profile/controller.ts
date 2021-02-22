@@ -4,20 +4,15 @@ import { User, IUser, UpdateableUserField } from '../user/model';
 import { bind } from 'decko';
 import { validate } from 'class-validator';
 
-// Since user is retrieved from res.locals, these methods are only accessible to the user who is logged in
 export class ProfileController {
   readonly repo: Repository<User> = getRepository(User);
 
   @bind
-  //TODO: just get user from res.locals instead
   public async getProfile(req: Request, res: Response): Promise<void> {
-    const id = res.locals.user.id;
+    const { id, email, role } = res.locals.currentUser as User;
 
     try {
-      const user = await this.repo.findOneOrFail(id, {
-        select: ['id', 'email', 'role'],
-      });
-      res.send(user);
+      res.send({ id, email, role });
     } catch (error) {
       res.status(404).send('Profile not found');
     }
@@ -25,7 +20,7 @@ export class ProfileController {
 
   @bind
   public async updateProfile(req: Request, res: Response): Promise<void> {
-    const user: User = res.locals.user;
+    const user: User = res.locals.currentUser;
 
     const updates: string[] = Object.keys(req.body);
 
