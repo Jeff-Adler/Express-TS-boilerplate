@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { checkJwt } from '../../middleware/auth/checkJwt';
-import { checkRole } from '../../middleware/auth/checkRole';
+import { isAuthorized } from '../../middleware/auth/isAuthorized';
+import { hasPermission } from '../../middleware/auth/hasPermission';
 import { UserController } from './controller';
 import { retrieveUser } from '../../middleware/utils/retrieveUser';
 
@@ -14,34 +14,33 @@ export class UserRoutes {
 
   private initRoutes(): void {
     //Get all users
-    this.router.get('/', [checkJwt, checkRole(['ADMIN'])], this.controller.listAll);
+    this.router.get('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.listAll);
 
     // Get one user
     this.router.get(
-      // regex expression ensures that /:id is of type number
       '/:id([0-9]+)',
-      [checkJwt, checkRole(['ADMIN']), retrieveUser],
+      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
       this.controller.getOneById
     );
 
     //Create a new user
-    this.router.post('/', [checkJwt, checkRole(['ADMIN'])], this.controller.newUser);
+    this.router.post('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.newUser);
 
     //Edit one user (email or role)
     this.router.patch(
       '/:id([0-9]+)',
-      [checkJwt, checkRole(['ADMIN']), retrieveUser],
+      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
       this.controller.editUser
     );
 
     //Delete one user
     this.router.delete(
       '/:id([0-9]+)',
-      [checkJwt, checkRole(['ADMIN']), retrieveUser],
+      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
       this.controller.deleteUserById
     );
 
     //Delete all non-admin users
-    this.router.delete('/', [checkJwt, checkRole(['ADMIN'])], this.controller.deleteUsers);
+    this.router.delete('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.deleteUsers);
   }
 }

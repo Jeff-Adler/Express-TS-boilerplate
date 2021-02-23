@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from './controller';
-import { checkJwt } from '../../middleware/auth/checkJwt';
+import { isAuthorized } from '../../middleware/auth/isAuthorized';
 
 export class AuthRoutes {
   readonly router: Router = Router();
@@ -12,7 +12,5 @@ export class AuthRoutes {
 
   private initRoutes(): void {
     this.router.post('/login', this.controller.login);
-
-    this.router.post('/change-password', [checkJwt], this.controller.changePassword);
   }
 }

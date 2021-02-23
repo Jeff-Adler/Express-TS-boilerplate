@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { checkJwt } from '../../middleware/auth/checkJwt';
-import { checkRole } from '../../middleware/auth/checkRole';
+import { isAuthorized } from '../../middleware/auth/isAuthorized';
+import { hasPermission } from '../../middleware/auth/hasPermission';
 import { ProfileController } from './controller';
 
 export class ProfileRoutes {
@@ -12,17 +12,27 @@ export class ProfileRoutes {
   }
 
   private initRoutes(): void {
-    this.router.get('/', [checkJwt, checkRole(['ADMIN', 'USER'])], this.controller.getProfile);
+    this.router.get(
+      '/',
+      [isAuthorized, hasPermission(['ADMIN', 'USER'])],
+      this.controller.getProfile
+    );
 
     this.router.patch(
       '/update',
-      [checkJwt, checkRole(['ADMIN', 'USER'])],
+      [isAuthorized, hasPermission(['ADMIN', 'USER'])],
       this.controller.updateProfile
+    );
+
+    this.router.patch(
+      '/change-password',
+      [isAuthorized, hasPermission(['ADMIN', 'USER'])],
+      this.controller.changePassword
     );
 
     this.router.delete(
       '/delete',
-      [checkJwt, checkRole(['ADMIN', 'USER'])],
+      [isAuthorized, hasPermission(['ADMIN', 'USER'])],
       this.controller.deleteProfile
     );
   }

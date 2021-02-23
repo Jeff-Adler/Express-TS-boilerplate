@@ -4,6 +4,7 @@ import { User, IUser, UpdateableUserField } from '../user/model';
 import { bind } from 'decko';
 import { validate } from 'class-validator';
 
+// res.locals.currentUser is declared in isAuthorized
 export class ProfileController {
   readonly repo: Repository<User> = getRepository(User);
 
@@ -58,6 +59,34 @@ export class ProfileController {
       res.status(204).send(user);
     } catch (e) {
       res.status(409).send('email already in use');
+    }
+  }
+
+  @bind
+  public async changePassword(req: Request, res: Response) {
+    const user: User = res.locals.currentUser;
+
+    const { oldPassword, newPassword } = req.body;
+    if (!(oldPassword && newPassword)) {
+      res.status(400).send();
+    }
+
+    try {
+      if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) res.status(401).send();
+
+      user.password = newPassword;
+      console.log(user.password);
+
+      const errors = await validate(user);
+      if (errors.length > 0) {
+        res.status(400).send(errors);
+      }
+      getRepository(User).save(user);
+      console.log(user);
+
+      res.status(204).send('Password changed');
+    } catch (e) {
+      res.status(401).send(e);
     }
   }
 
