@@ -6,34 +6,28 @@ import { validate } from 'class-validator';
 import { User } from '../user/model';
 
 export class AuthController {
-  public async login(req: Request, res: Response) {
-    //Check if email and password are set
+  public async login(req: Request, res: Response): Promise<void> {
     let { email, password } = req.body;
     if (!(email && password)) {
       res.status(400).send();
     }
 
-    //Get user from database
     const userRepository: Repository<User> = getRepository(User);
     let user: User;
     try {
       user = await userRepository.findOneOrFail({ where: { email } });
 
-      //Check if encrypted password match
       if (!user.checkIfUnencryptedPasswordIsValid(password)) {
         res.status(401).send();
-        return;
       }
 
-      //Sing JWT, valid for 1 hour
       const token = jwt.sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET as jwt.Secret,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
-      //Send the jwt in the response
-      res.send({ token });
+      res.status(200).send({ token });
     } catch (error) {
       res.status(401).send();
     }

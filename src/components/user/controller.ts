@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository, Repository, Not } from 'typeorm';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
 import { User, IUser, UpdateableUserField } from './model';
@@ -11,7 +11,7 @@ export class UserController {
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     const users = await this.repo.find({
-      select: ['id', 'email', 'role'], //We dont want to send the passwords on response
+      select: ['id', 'email', 'role'],
     });
 
     res.send(users);
@@ -19,35 +19,31 @@ export class UserController {
 
   @bind
   public getOneById(req: Request, res: Response): void {
-    const { id, email, role } = res.locals.retrievedUser;
+    const { id, email, role } = res.locals.retrievedUser as User;
     res.status(200).send({ id, email, role });
   }
 
   @bind
   public async newUser(req: Request, res: Response): Promise<void> {
-    //Get parameters from the body
     let { email, password, role } = req.body;
-    let user = new User();
+    let user: User = new User();
     user.email = email;
     user.password = password;
     user.role = role;
 
-    //Validade if the parameters are ok
-    const errors = await validate(user);
+    // Model validations
+    const errors: ValidationError[] = await validate(user);
     if (errors.length > 0) {
       res.status(400).send(errors);
     }
 
-    //Try to save. If fails, the email is already in use
+    // Database validations
     try {
-      console.log(user);
       await this.repo.save(user);
+      res.status(201).send(user);
     } catch (e) {
-      res.status(409).send('email already in use');
+      res.status(409).send('Email already in use');
     }
-
-    //If all ok, send 201 response
-    res.status(201).send(user);
   }
 
   @bind
@@ -87,11 +83,10 @@ export class UserController {
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
       await this.repo.save(user);
+      res.status(204).send(user);
     } catch (e) {
       res.status(409).send('email already in use');
     }
-
-    res.status(204).send(user);
   }
 
   @bind

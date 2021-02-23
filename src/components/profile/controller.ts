@@ -12,7 +12,7 @@ export class ProfileController {
     const { id, email, role } = res.locals.currentUser as User;
 
     try {
-      res.send({ id, email, role });
+      res.status(200).send({ id, email, role });
     } catch (error) {
       res.status(404).send('Profile not found');
     }
@@ -55,11 +55,10 @@ export class ProfileController {
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
       await this.repo.save(user);
+      res.status(204).send(user);
     } catch (e) {
       res.status(409).send('email already in use');
     }
-
-    res.status(204).send(user);
   }
 
   @bind
