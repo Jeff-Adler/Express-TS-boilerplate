@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getRepository, Repository } from 'typeorm';
 import { User, IUser, UpdateableUserField } from '../user/model';
 import { bind } from 'decko';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 
 // res.locals.currentUser is declared in isAuthorized
 export class ProfileController {
@@ -71,17 +71,18 @@ export class ProfileController {
       res.status(400).send();
     }
 
+    if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) res.status(401).send();
+
+    user.password = newPassword;
+    console.log(user.password);
+
+    const errors: ValidationError[] = await validate(user);
+    if (errors.length > 0) {
+      res.status(400).send(errors);
+    }
+
     try {
-      if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) res.status(401).send();
-
-      user.password = newPassword;
-      console.log(user.password);
-
-      const errors = await validate(user);
-      if (errors.length > 0) {
-        res.status(400).send(errors);
-      }
-      getRepository(User).save(user);
+      await getRepository(User).save(user);
       console.log(user);
 
       res.status(204).send('Password changed');

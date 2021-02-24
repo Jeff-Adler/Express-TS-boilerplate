@@ -6,6 +6,9 @@ import {
   Unique,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeUpdate,
+  UpdateEvent,
+  AfterLoad,
 } from 'typeorm';
 import { IsEmail, MinLength, Validate } from 'class-validator';
 import bcrypt from 'bcrypt';
@@ -52,8 +55,25 @@ export class User implements IUser {
   updatedAt!: Date;
 
   @BeforeInsert()
-  async beforeInsert() {
+  private async hashPassword(): Promise<void> {
     this.password = await bcrypt.hash(this.password, parseInt(process.env.BCRYPT_HASH_ROUND!));
+  }
+
+  // Minor hack to ensure that encryptPassword() only triggers when password is updated, as opposed to other fields
+  private tempPassword!: string;
+
+  @AfterLoad()
+  private loadTempPassword(): void {
+    this.tempPassword = this.password;
+    console.log('after load');
+  }
+
+  @BeforeUpdate()
+  private async encryptPassword(): Promise<void> {
+    if (this.tempPassword !== this.password) {
+      await this.hashPassword();
+      console.log('before update');
+    }
   }
 
   checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
