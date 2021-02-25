@@ -8,6 +8,7 @@ import { User, IUser, UpdateableUserField } from './model';
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
+  //TODO: Input query parameters
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     const users = await this.repo.find({
