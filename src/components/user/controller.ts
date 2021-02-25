@@ -40,6 +40,7 @@ export class UserController {
     // Database validations
     try {
       await this.repo.save(user);
+      delete user.password;
       res.status(201).send(user);
     } catch (e) {
       res.status(409).send('Email already in use');
@@ -83,6 +84,7 @@ export class UserController {
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
       await this.repo.save(user);
+      delete user.password;
       res.status(204).send(user);
     } catch (e) {
       res.status(409).send('email already in use');

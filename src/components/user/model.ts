@@ -65,14 +65,12 @@ export class User implements IUser {
   @AfterLoad()
   private loadTempPassword(): void {
     this.tempPassword = this.password;
-    console.log('after load');
   }
 
   @BeforeUpdate()
   private async encryptPassword(): Promise<void> {
     if (this.tempPassword !== this.password) {
       await this.hashPassword();
-      console.log('before update');
     }
   }
 

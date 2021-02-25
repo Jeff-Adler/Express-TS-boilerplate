@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository, Repository } from 'typeorm';
-import { User, IUser, UpdateableUserField } from '../user/model';
+import { User, IUser } from '../user/model';
 import { bind } from 'decko';
 import { validate, ValidationError } from 'class-validator';
 
@@ -56,6 +56,7 @@ export class ProfileController {
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
       await this.repo.save(user);
+      delete user.password;
       res.status(204).send(user);
     } catch (e) {
       res.status(409).send('email already in use');
@@ -74,7 +75,6 @@ export class ProfileController {
     if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) res.status(401).send();
 
     user.password = newPassword;
-    console.log(user.password);
 
     const errors: ValidationError[] = await validate(user);
     if (errors.length > 0) {
@@ -83,8 +83,6 @@ export class ProfileController {
 
     try {
       await getRepository(User).save(user);
-      console.log(user);
-
       res.status(204).send('Password changed');
     } catch (e) {
       res.status(401).send(e);
@@ -97,6 +95,7 @@ export class ProfileController {
 
     try {
       await getRepository(User).delete(user);
+      res.status(200).send('Account deleted');
     } catch (e) {
       res.status(401).send(e);
     }
