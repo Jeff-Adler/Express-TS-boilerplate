@@ -9,8 +9,49 @@ export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
   //TODO: Input query parameters
+  // GET /tasks?completed=(true/false) //TODO:Consider other types of param. Maybe role=?
+  // GET /tasks?limit=(10)&skip=(0)
+  // GET /tasks?sortBy=createdAt:(asc/desc)
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
+    // TODO: Figure out how to use query params with TypeORM
+    // Role: use userRepository.find({take: 10});
+    // Limit: use userRepository.find({skip: 5});
+    // sortBy: user find({ order: {field: "ASC"/"DESC"}})
+
+    // // filter parameter
+    // const match = {}
+    // // sort parameter
+    // const sort = {}
+
+    // if (req.query.completed) {
+    //     // casts true/false string value of req.query.completed to boolean and assigns to match.completed
+    //     match.completed = (req.query.completed === 'true')
+    // }
+
+    // if (req.query.sortBy) {
+    //     const parts = req.query.sortBy.split(':')
+    //     // parts[0] = field to sort by
+    //     // parts[1] = asc/desc
+    //     // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
+    //     sort[parts[0]] = (parts[1] === 'desc' ? -1 : 1)
+    // }
+
+    // try {
+    //   await req.user.populate({
+    //       // path specifies field on User for which we want to get data
+    //       path: 'tasks',
+    //       // specifies matching parameter for path. Shorthand notation for match: {}
+    //       match,
+    //       options: {
+    //           //Mongoose knows to ignore this field if it's not passed a number, so default limit will essentially be 0
+    //           limit: parseInt(req.query.limit),
+    //           skip: parseInt(req.query.skip),
+    //           //Shorthand notation for sort : {} using sort variabe from above
+    //           sort
+    //       }
+    //   }).execPopulate()
+
     const users = await this.repo.find({
       select: ['id', 'email', 'role'],
     });
