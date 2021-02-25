@@ -19,22 +19,21 @@ export class UserController {
     // Limit: use userRepository.find({skip: 5});
     // sortBy: user find({ order: {field: "ASC"/"DESC"}})
 
-    // // filter parameter
-    // const match = {}
-    // // sort parameter
-    // const sort = {}
+    // // // filter parameter
+    // let match: { role: string };
+    // // // sort parameter
+    // const sort = {};
 
-    // if (req.query.completed) {
-    //     // casts true/false string value of req.query.completed to boolean and assigns to match.completed
-    //     match.completed = (req.query.completed === 'true')
+    // if (req.query.role) {
+    //   match.role = req.query.role as string;
     // }
 
     // if (req.query.sortBy) {
-    //     const parts = req.query.sortBy.split(':')
-    //     // parts[0] = field to sort by
-    //     // parts[1] = asc/desc
-    //     // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
-    //     sort[parts[0]] = (parts[1] === 'desc' ? -1 : 1)
+    //   const parts = req.query.sortBy.split(':');
+    //   // parts[0] = field to sort by
+    //   // parts[1] = asc/desc
+    //   // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
+    //   sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
     // }
 
     // try {
@@ -63,6 +62,22 @@ export class UserController {
   public getOneById(req: Request, res: Response): void {
     const { id, email, role } = res.locals.retrievedUser as User;
     res.status(200).send({ id, email, role });
+  }
+
+  // GET /users/search?email=<email>
+  @bind
+  public async readUserByEmail(req: Request, res: Response): Promise<Response | void> {
+    try {
+      const { email } = req.query;
+      const user: User = await this.repo.findOneOrFail({
+        where: { email },
+        select: ['id', 'email', 'role'],
+      });
+
+      res.status(200).send(user);
+    } catch (err) {
+      res.status(400).send('No user with that email found');
+    }
   }
 
   @bind

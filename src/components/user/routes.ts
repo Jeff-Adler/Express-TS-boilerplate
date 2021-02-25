@@ -16,11 +16,18 @@ export class UserRoutes {
     //Get all users
     this.router.get('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.listAll);
 
-    // Get one user
+    // Get one user by id
     this.router.get(
       '/:id([0-9]+)',
       [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
       this.controller.getOneById
+    );
+
+    // Get one user by email
+    this.router.get(
+      '/search',
+      [isAuthorized, hasPermission(['ADMIN'])],
+      this.controller.readUserByEmail
     );
 
     //Create a new user
