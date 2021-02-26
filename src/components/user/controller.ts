@@ -10,7 +10,7 @@ export class UserController {
 
   //TODO: Input query parameters
   // GET /tasks?completed=(true/false) //TODO:Consider other types of param. Maybe role=?
-  // GET /tasks?limit=(10)&skip=(0)
+  // GET /users?limit=(10)&skip=(0)
   // GET /tasks?sortBy=createdAt:(asc/desc)
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
@@ -18,6 +18,8 @@ export class UserController {
     // Role: use userRepository.find({take: 10});
     // Limit: use userRepository.find({skip: 5});
     // sortBy: user find({ order: {field: "ASC"/"DESC"}})
+
+    const { limit } = req.query;
 
     // // // filter parameter
     // let match: { role: string };
@@ -51,8 +53,26 @@ export class UserController {
     //       }
     //   }).execPopulate()
 
+    //example:
+    // await this.repo.find({
+    //   select: ['id', 'email', 'role'],
+    //   relations: ['profile', 'photos', 'videos'],
+    //   where: {
+    //     firstName: 'Timber',
+    //     lastName: 'Saw',
+    //   },
+    //   order: {
+    //     name: 'ASC',
+    //     id: 'DESC',
+    //   },
+    //   skip: 5,
+    //   take: 10,
+    //   cache: true,
+    // });
+
     const users = await this.repo.find({
       select: ['id', 'email', 'role'],
+      take: limit,
     });
 
     res.send(users);
