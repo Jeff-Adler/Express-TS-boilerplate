@@ -9,7 +9,7 @@ interface Roles {
 export type Role = keyof Roles;
 
 // Method 2: use array
-const rolesArr = ['ADMIN', 'USER'] as const;
+export const rolesArr = ['ADMIN', 'USER'] as const;
 
 type RoleAlt = typeof rolesArr[number];
 

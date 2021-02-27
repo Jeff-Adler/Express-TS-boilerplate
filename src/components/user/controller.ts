@@ -4,18 +4,18 @@ import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
 import { User, IUser, UpdateableUserField } from './model';
+import { Role, rolesArr } from './utils/Roles';
 
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
   //TODO: Input query parameters
-  // GET /tasks?completed=(true/false) //TODO:Consider other types of param. Maybe role=?
+  // GET /users?role=(admin/user)
   // GET /users?take=(10)&skip=(0)
   // GET /users?sortBy=id/role/createdAt:(asc/desc)
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     // TODO: Figure out how to use query params with TypeORM
-    // Limit: use userRepository.find({skip: 5});
     // sortBy: user find({ order: {field: "ASC"/"DESC"}})
 
     // // // filter parameter
@@ -65,11 +65,21 @@ export class UserController {
 
     // const limit: string = req.query.limit as string;
 
+    // const isRole = (roleParam: string): roleParam is Role => {
+    //   let role = roleParam as Role;
+    //   console.log('Typeof: ' + typeof role);
+    //   return <Role>roleParam !== undefined;
+    // };
+
+    let role: Role;
+    if (rolesArr.includes(<Role>(<string>req.query.role))) role = <Role>req.query.role;
+
     const skip: number = parseInt(<string>req.query.skip) || 0;
     const take: number = parseInt(<string>req.query.take) || 0;
 
     const users = await this.repo.find({
       select: ['id', 'email', 'role'],
+      // where: { role },
       take,
       skip,
     });
