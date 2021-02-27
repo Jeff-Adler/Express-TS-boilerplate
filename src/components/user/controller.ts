@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository, Not } from 'typeorm';
+import { getRepository, Repository, Not, FindConditions } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
@@ -71,20 +71,67 @@ export class UserController {
     //   return <Role>roleParam !== undefined;
     // };
 
-    let role: Role;
-    if (rolesArr.includes(<Role>(<string>req.query.role))) role = <Role>req.query.role;
+    // const { role } = req.query;
+
+    // if (isRole(<Role>role)) where = { ...where, role: role };
+
+    let where: FindConditions<User> = {};
+
+    const role: Role = <Role>req.query.role;
+    // Runtime validation of role object
+    if (rolesArr.includes(role)) where = { ...where, role: role };
 
     const skip: number = parseInt(<string>req.query.skip) || 0;
     const take: number = parseInt(<string>req.query.take) || 0;
 
-    const users = await this.repo.find({
-      select: ['id', 'email', 'role'],
-      // where: { role },
-      take,
-      skip,
-    });
+    let users: User[];
+    if (where != {}) {
+      users = await this.repo.find({
+        select: ['id', 'email', 'role'],
+        where,
+        take,
+        skip,
+      });
+    } else {
+      users = await this.repo.find({
+        select: ['id', 'email', 'role'],
+        take,
+        skip,
+      });
+    }
 
-    res.send(users);
+    res.status(200).send(users);
+    // Conditional Query:
+    // const qb = getRepository(Winecellar).createQueryBuilder('wine').orderBy('wine.Vintage', 'ASC');
+
+    // if (colour !== 'any') {
+    //   qb.andWhere('wine.Colour = :Colour', { Colour: colour });
+    // }
+    // if (grape !== 'any') {
+    //   qb.andWhere('wine.Grape = :Grape', { Grape: grape });
+    // }
+
+    // try {
+    // 	let where: FindConditions<User> = {};
+
+    // 	if (username) {
+    // 		const [firstname, lastname] = username.split(' ');
+
+    // 		if (firstname) {
+    // 			where = { ...where, firstname: Like(`%${firstname}%`) };
+    // 		}
+
+    // 		if (lastname) {
+    // 			where = { ...where, lastname: Like(`%${lastname}%`) };
+    // 		}
+    // 	}
+
+    // 	return this.readAll({ where });
+    // } catch (err) {
+    // 	throw new Error(err);
+    // }
+
+    // const wineSelection = await qb.getRawMany();
   }
 
   @bind
