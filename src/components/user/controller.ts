@@ -6,6 +6,8 @@ import { bind } from 'decko';
 import { User, IUser, UpdateableUserField } from './model';
 import { Role, rolesArr } from './utils/Roles';
 
+// type orderType = [keyof IUser, 'ASC' | 'DESC'];
+
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
@@ -16,24 +18,24 @@ export class UserController {
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     let where: FindConditions<User> = {};
+    let order: OrderByCondition = {};
+    let skip: number;
+    let take: number;
 
-    const skip: number = parseInt(<string>req.query.skip) || 0;
-    const take: number = parseInt(<string>req.query.take) || 0;
-
-    const role: Role = <Role>(<string>req.query.role)?.toUpperCase();
+    const role = <Role>(<string>req.query.role)?.toUpperCase();
     // Runtime validation of role object
     if (rolesArr.includes(role)) where = { ...where, role: role };
 
-    let order: OrderByCondition = {};
-    const orderBy: string = <string>req.query.orderBy;
-    if (orderBy) {
-      const parts: string[] = orderBy.split(':');
-      parts[1] = parts[1].toUpperCase();
-      if (<keyof IUser>parts[0] !== undefined && (parts[1] === 'ASC' || parts[1] === 'DESC')) {
-        const field: keyof IUser = parts[0] as keyof IUser;
-        order[field] = parts[1];
-      }
+    let field;
+    let ordering;
+    if ((<string>req.query.orderBy)?.split(':').length >= 2)
+      [field, ordering] = (<string>req.query.orderBy)?.split(':');
+    if (field && ordering && <OrderByCondition>{ [field]: ordering.toUpperCase() } !== undefined) {
+      order = <OrderByCondition>{ [field]: ordering.toUpperCase() };
     }
+
+    skip = parseInt(<string>req.query.skip) || 0;
+    take = parseInt(<string>req.query.take) || 0;
 
     let users: User[];
     if (where !== {}) {

@@ -3,6 +3,7 @@ import { isAuthorized } from '../../middleware/auth/isAuthorized';
 import { hasPermission } from '../../middleware/auth/hasPermission';
 import { UserController } from './controller';
 import { retrieveUser } from '../../middleware/utils/retrieveUser';
+import { validateRequest } from '../../middleware/validations/validateRequest';
 
 export class UserRoutes {
   readonly router: Router = Router();
@@ -14,7 +15,11 @@ export class UserRoutes {
 
   private initRoutes(): void {
     //Get all users
-    this.router.get('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.listAll);
+    this.router.get(
+      '/',
+      [validateRequest, isAuthorized, hasPermission(['ADMIN'])],
+      this.controller.listAll
+    );
 
     // Get one user by id
     this.router.get(
