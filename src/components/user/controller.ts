@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository, Not, FindConditions } from 'typeorm';
+import { getRepository, Repository, Not, FindConditions, OrderByCondition } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
@@ -25,14 +25,6 @@ export class UserController {
 
     // if (req.query.role) {
     //   match.role = req.query.role as string;
-    // }
-
-    // if (req.query.sortBy) {
-    //   const parts = req.query.sortBy.split(':');
-    //   // parts[0] = field to sort by
-    //   // parts[1] = asc/desc
-    //   // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
-    //   sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
     // }
 
     // try {
@@ -75,19 +67,41 @@ export class UserController {
 
     // if (isRole(<Role>role)) where = { ...where, role: role };
 
+    // if (req.query.sortBy) {
+    //   const parts = req.query.sortBy.split(':');
+    //   // parts[0] = field to sort by
+    //   // parts[1] = asc/desc
+    //   // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
+    //   sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+    // }
+
+    // TODO: Figure out how to use query params with TypeORM
+    // sortBy: user find({ order: {field: "ASC"/"DESC"}})
+
     let where: FindConditions<User> = {};
+
+    const skip: number = parseInt(<string>req.query.skip) || 0;
+    const take: number = parseInt(<string>req.query.take) || 0;
 
     const role: Role = <Role>req.query.role;
     // Runtime validation of role object
     if (rolesArr.includes(role)) where = { ...where, role: role };
 
-    const skip: number = parseInt(<string>req.query.skip) || 0;
-    const take: number = parseInt(<string>req.query.take) || 0;
+    let order: OrderByCondition = {};
+    const orderBy: string = <string>req.query.orderBy;
+    if (orderBy) {
+      const parts: string[] = orderBy.split(':');
+      if (<keyof IUser>parts[0] !== undefined && (parts[1] === 'ASC' || parts[1] === 'DESC')) {
+        const field: keyof IUser = parts[0] as keyof IUser;
+        order[field] = parts[1];
+      }
+    }
 
     let users: User[];
-    if (where != {}) {
+    if (where !== {}) {
       users = await this.repo.find({
         select: ['id', 'email', 'role'],
+        order,
         where,
         take,
         skip,
@@ -95,6 +109,7 @@ export class UserController {
     } else {
       users = await this.repo.find({
         select: ['id', 'email', 'role'],
+        order,
         take,
         skip,
       });
