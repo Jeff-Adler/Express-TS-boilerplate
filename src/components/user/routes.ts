@@ -3,7 +3,7 @@ import { isAuthorized } from '../../middleware/auth/isAuthorized';
 import { hasPermission } from '../../middleware/auth/hasPermission';
 import { UserController } from './controller';
 import { retrieveUser } from '../../middleware/utils/retrieveUser';
-import { validateRequest } from '../../middleware/validations/validateRequest';
+import { validateQueryParams } from '../../middleware/validations/validateQueryParams';
 
 export class UserRoutes {
   readonly router: Router = Router();
@@ -17,7 +17,7 @@ export class UserRoutes {
     //Get all users
     this.router.get(
       '/',
-      [validateRequest, isAuthorized, hasPermission(['ADMIN'])],
+      [isAuthorized, hasPermission(['ADMIN']), validateQueryParams],
       this.controller.listAll
     );
 

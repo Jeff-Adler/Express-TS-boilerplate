@@ -26,8 +26,8 @@ export class UserController {
     // Runtime validation of role object
     if (rolesArr.includes(role)) where = { ...where, role: role };
 
-    let field;
-    let ordering;
+    let field: string = '';
+    let ordering: string = '';
     if ((<string>req.query.orderBy)?.split(':').length >= 2)
       [field, ordering] = (<string>req.query.orderBy)?.split(':');
     if (field && ordering && <OrderByCondition>{ [field]: ordering.toUpperCase() } !== undefined) {
