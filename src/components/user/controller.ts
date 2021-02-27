@@ -10,12 +10,11 @@ export class UserController {
 
   //TODO: Input query parameters
   // GET /tasks?completed=(true/false) //TODO:Consider other types of param. Maybe role=?
-  // GET /users?limit=(10)&skip=(0)
-  // GET /tasks?sortBy=createdAt:(asc/desc)
+  // GET /users?take=(10)&skip=(0)
+  // GET /users?sortBy=id/role/createdAt:(asc/desc)
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     // TODO: Figure out how to use query params with TypeORM
-    // Role: use userRepository.find({take: 10});
     // Limit: use userRepository.find({skip: 5});
     // sortBy: user find({ order: {field: "ASC"/"DESC"}})
 
@@ -66,13 +65,13 @@ export class UserController {
 
     // const limit: string = req.query.limit as string;
 
-    const limit: number = parseInt(<string>req.query.limit) || 0;
-
-    console.log(limit);
+    const skip: number = parseInt(<string>req.query.skip) || 0;
+    const take: number = parseInt(<string>req.query.take) || 0;
 
     const users = await this.repo.find({
       select: ['id', 'email', 'role'],
-      take: limit,
+      take,
+      skip,
     });
 
     res.send(users);
