@@ -19,8 +19,6 @@ export class UserController {
     // Limit: use userRepository.find({skip: 5});
     // sortBy: user find({ order: {field: "ASC"/"DESC"}})
 
-    const { limit } = req.query;
-
     // // // filter parameter
     // let match: { role: string };
     // // // sort parameter
@@ -53,22 +51,24 @@ export class UserController {
     //       }
     //   }).execPopulate()
 
-    //example:
+    // // example:
     // await this.repo.find({
     //   select: ['id', 'email', 'role'],
     //   relations: ['profile', 'photos', 'videos'],
-    //   where: {
-    //     firstName: 'Timber',
-    //     lastName: 'Saw',
-    //   },
     //   order: {
-    //     name: 'ASC',
+    //     email: 'ASC',
     //     id: 'DESC',
     //   },
     //   skip: 5,
     //   take: 10,
     //   cache: true,
     // });
+
+    // const limit: string = req.query.limit as string;
+
+    const limit: number = parseInt(<string>req.query.limit) || 0;
+
+    console.log(limit);
 
     const users = await this.repo.find({
       select: ['id', 'email', 'role'],
