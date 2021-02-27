@@ -9,81 +9,18 @@ import { Role, rolesArr } from './utils/Roles';
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
 
-  //TODO: Input query parameters
-  // GET /users?role=(admin/user)
+  // Valid query parameters:
+  // GET /users?role=(ADMIN/USER)
   // GET /users?take=(10)&skip=(0)
-  // GET /users?sortBy=id/role/createdAt:(asc/desc)
+  // GET /users?orderBy=<userField>:<ASC||DESC>
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
-    // TODO: Figure out how to use query params with TypeORM
-    // sortBy: user find({ order: {field: "ASC"/"DESC"}})
-
-    // // // filter parameter
-    // let match: { role: string };
-    // // // sort parameter
-    // const sort = {};
-
-    // if (req.query.role) {
-    //   match.role = req.query.role as string;
-    // }
-
-    // try {
-    //   await req.user.populate({
-    //       // path specifies field on User for which we want to get data
-    //       path: 'tasks',
-    //       // specifies matching parameter for path. Shorthand notation for match: {}
-    //       match,
-    //       options: {
-    //           //Mongoose knows to ignore this field if it's not passed a number, so default limit will essentially be 0
-    //           limit: parseInt(req.query.limit),
-    //           skip: parseInt(req.query.skip),
-    //           //Shorthand notation for sort : {} using sort variabe from above
-    //           sort
-    //       }
-    //   }).execPopulate()
-
-    // // example:
-    // await this.repo.find({
-    //   select: ['id', 'email', 'role'],
-    //   relations: ['profile', 'photos', 'videos'],
-    //   order: {
-    //     email: 'ASC',
-    //     id: 'DESC',
-    //   },
-    //   skip: 5,
-    //   take: 10,
-    //   cache: true,
-    // });
-
-    // const limit: string = req.query.limit as string;
-
-    // const isRole = (roleParam: string): roleParam is Role => {
-    //   let role = roleParam as Role;
-    //   console.log('Typeof: ' + typeof role);
-    //   return <Role>roleParam !== undefined;
-    // };
-
-    // const { role } = req.query;
-
-    // if (isRole(<Role>role)) where = { ...where, role: role };
-
-    // if (req.query.sortBy) {
-    //   const parts = req.query.sortBy.split(':');
-    //   // parts[0] = field to sort by
-    //   // parts[1] = asc/desc
-    //   // sets sort value to -1 if query parameter is set to desc, 1 if asc/anything else
-    //   sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
-    // }
-
-    // TODO: Figure out how to use query params with TypeORM
-    // sortBy: user find({ order: {field: "ASC"/"DESC"}})
-
     let where: FindConditions<User> = {};
 
     const skip: number = parseInt(<string>req.query.skip) || 0;
     const take: number = parseInt(<string>req.query.take) || 0;
 
-    const role: Role = <Role>req.query.role;
+    const role: Role = <Role>(<string>req.query.role)?.toUpperCase();
     // Runtime validation of role object
     if (rolesArr.includes(role)) where = { ...where, role: role };
 
@@ -91,6 +28,7 @@ export class UserController {
     const orderBy: string = <string>req.query.orderBy;
     if (orderBy) {
       const parts: string[] = orderBy.split(':');
+      parts[1] = parts[1].toUpperCase();
       if (<keyof IUser>parts[0] !== undefined && (parts[1] === 'ASC' || parts[1] === 'DESC')) {
         const field: keyof IUser = parts[0] as keyof IUser;
         order[field] = parts[1];
@@ -116,37 +54,6 @@ export class UserController {
     }
 
     res.status(200).send(users);
-    // Conditional Query:
-    // const qb = getRepository(Winecellar).createQueryBuilder('wine').orderBy('wine.Vintage', 'ASC');
-
-    // if (colour !== 'any') {
-    //   qb.andWhere('wine.Colour = :Colour', { Colour: colour });
-    // }
-    // if (grape !== 'any') {
-    //   qb.andWhere('wine.Grape = :Grape', { Grape: grape });
-    // }
-
-    // try {
-    // 	let where: FindConditions<User> = {};
-
-    // 	if (username) {
-    // 		const [firstname, lastname] = username.split(' ');
-
-    // 		if (firstname) {
-    // 			where = { ...where, firstname: Like(`%${firstname}%`) };
-    // 		}
-
-    // 		if (lastname) {
-    // 			where = { ...where, lastname: Like(`%${lastname}%`) };
-    // 		}
-    // 	}
-
-    // 	return this.readAll({ where });
-    // } catch (err) {
-    // 	throw new Error(err);
-    // }
-
-    // const wineSelection = await qb.getRawMany();
   }
 
   @bind
