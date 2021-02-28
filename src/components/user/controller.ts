@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository, Not, FindConditions, OrderByCondition, FindManyOptions } from 'typeorm';
+import { getRepository, Repository, Not, FindManyOptions } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
 import { User, IUser, UpdateableUserField } from './model';
-import { Role, rolesArr } from './utils/Roles';
 import { UserService } from './service';
 
 export class UserController {
@@ -17,37 +16,9 @@ export class UserController {
   // GET /users?orderBy=<userField>:<ASC||DESC>
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
-    let where: FindConditions<User> = {};
-    let order: OrderByCondition = {};
-    let skip: number;
-    let take: number;
-
-    const isValidOrderByCondition = (parts: { [columnName: string]: string }): boolean => {
-      return <OrderByCondition>parts !== undefined;
-    };
-
     try {
-      const role = <Role>(<string>req.query.role)?.toUpperCase();
-      // Runtime validation of role parameter
-      if (rolesArr.includes(role)) where = { ...where, role: role };
+      const options: FindManyOptions<User> = this.userService.handleQueryParams(req);
 
-      let columnName: string = '';
-      let ordering: string = '';
-      const parts: string[] = (<string>req.query.orderBy)?.split(':');
-      if (parts && parts.length >= 2) [columnName, ordering] = parts;
-      if (columnName && ordering && isValidOrderByCondition({ [columnName]: ordering.toUpperCase() })) {
-        order = <OrderByCondition>{ [columnName]: ordering.toUpperCase() };
-      }
-
-      skip = parseInt(<string>req.query.skip) || 0;
-      take = parseInt(<string>req.query.take) || 0;
-
-      let options: FindManyOptions<User> = { select: ['id', 'email', 'role'] };
-
-      if (Object.keys(where).length) options = { ...options, where };
-      if (Object.keys(order).length) options = { ...options, order };
-      if (skip) options = { ...options, skip };
-      if (take) options = { ...options, take };
       const users: User[] = await this.userService.readAll(options);
 
       res.status(200).send(users);

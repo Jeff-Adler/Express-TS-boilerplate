@@ -1,6 +1,8 @@
 import { User } from './model';
-import { getManager, Repository, FindManyOptions } from 'typeorm';
+import { getManager, Repository, FindManyOptions, OrderByCondition, FindConditions } from 'typeorm';
 import { bind } from 'decko';
+import { Request } from 'express';
+import { Role, rolesArr } from './utils/Roles';
 
 export class UserService {
   readonly repo: Repository<User> = getManager().getRepository(User);
@@ -18,5 +20,40 @@ export class UserService {
     } catch (e) {
       throw new Error(e);
     }
+  }
+
+  public handleQueryParams(req: Request): FindManyOptions<User> {
+    let where: FindConditions<User> = {};
+    let order: OrderByCondition = {};
+    let skip: number;
+    let take: number;
+
+    const isValidOrderByCondition = (parts: { [columnName: string]: string }): boolean => {
+      return <OrderByCondition>parts !== undefined;
+    };
+
+    const role = <Role>(<string>req.query.role)?.toUpperCase();
+    // Runtime validation of role parameter
+    if (rolesArr.includes(role)) where = { ...where, role: role };
+
+    let columnName: string = '';
+    let ordering: string = '';
+    const parts: string[] = (<string>req.query.orderBy)?.split(':');
+    if (parts && parts.length >= 2) [columnName, ordering] = parts;
+    if (columnName && ordering && isValidOrderByCondition({ [columnName]: ordering.toUpperCase() })) {
+      order = <OrderByCondition>{ [columnName]: ordering.toUpperCase() };
+    }
+
+    skip = parseInt(<string>req.query.skip) || 0;
+    take = parseInt(<string>req.query.take) || 0;
+
+    let options: FindManyOptions<User> = { select: ['id', 'email', 'role'] };
+
+    if (Object.keys(where).length) options = { ...options, where };
+    if (Object.keys(order).length) options = { ...options, order };
+    if (skip) options = { ...options, skip };
+    if (take) options = { ...options, take };
+
+    return options;
   }
 }
