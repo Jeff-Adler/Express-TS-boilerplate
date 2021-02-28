@@ -1,15 +1,24 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository, Not, FindConditions, OrderByCondition } from 'typeorm';
+import {
+  getRepository,
+  Repository,
+  Not,
+  FindConditions,
+  OrderByCondition,
+  FindManyOptions,
+} from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
 import { User, IUser, UpdateableUserField } from './model';
 import { Role, rolesArr } from './utils/Roles';
+import { UserService } from './service';
 
 // type orderType = [keyof IUser, 'ASC' | 'DESC'];
 
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
+  private readonly userService: UserService = new UserService();
 
   // Valid query parameters:
   // GET /users?role=(ADMIN/USER)
@@ -22,40 +31,57 @@ export class UserController {
     let skip: number;
     let take: number;
 
-    const role = <Role>(<string>req.query.role)?.toUpperCase();
-    // Runtime validation of role object
-    if (rolesArr.includes(role)) where = { ...where, role: role };
+    try {
+      const role = <Role>(<string>req.query.role)?.toUpperCase();
+      // Runtime validation of role parameter
+      if (rolesArr.includes(role)) where = { ...where, role: role };
 
-    let field: string = '';
-    let ordering: string = '';
-    if ((<string>req.query.orderBy)?.split(':').length >= 2)
-      [field, ordering] = (<string>req.query.orderBy)?.split(':');
-    if (field && ordering && <OrderByCondition>{ [field]: ordering.toUpperCase() } !== undefined) {
-      order = <OrderByCondition>{ [field]: ordering.toUpperCase() };
+      let field: string = '';
+      let ordering: string = '';
+      if ((<string>req.query.orderBy)?.split(':').length >= 2)
+        [field, ordering] = (<string>req.query.orderBy)?.split(':');
+      if (
+        field &&
+        ordering &&
+        <OrderByCondition>{ [field]: ordering.toUpperCase() } !== undefined
+      ) {
+        order = <OrderByCondition>{ [field]: ordering.toUpperCase() };
+      }
+
+      skip = parseInt(<string>req.query.skip) || 0;
+      take = parseInt(<string>req.query.take) || 0;
+
+      let options: FindManyOptions<User> = { select: ['id', 'email', 'role'] };
+
+      if (Object.keys(where).length) options = { ...options, where };
+      if (Object.keys(order).length) options = { ...options, order };
+      if (skip) options = { ...options, skip };
+      if (take) options = { ...options, take };
+
+      const users: User[] = await this.userService.readAll(options);
+
+      // let users: User[];
+      // if (where !== {}) {
+      //   users = await this.repo.find({
+      //     select: ['id', 'email', 'role'],
+      //     order,
+      //     where,
+      //     take,
+      //     skip,
+      //   });
+      // } else {
+      //   users = await this.repo.find({
+      //     select: ['id', 'email', 'role'],
+      //     order,
+      //     take,
+      //     skip,
+      //   });
+      // }
+
+      res.status(200).send(users);
+    } catch (e) {
+      res.status(400).send(e);
     }
-
-    skip = parseInt(<string>req.query.skip) || 0;
-    take = parseInt(<string>req.query.take) || 0;
-
-    let users: User[];
-    if (where !== {}) {
-      users = await this.repo.find({
-        select: ['id', 'email', 'role'],
-        order,
-        where,
-        take,
-        skip,
-      });
-    } else {
-      users = await this.repo.find({
-        select: ['id', 'email', 'role'],
-        order,
-        take,
-        skip,
-      });
-    }
-
-    res.status(200).send(users);
   }
 
   @bind
