@@ -6,7 +6,7 @@ import { handleHttpException, HttpException } from '../middleware/exceptions/Htt
 
 export function initApiRoutes(router: Router): void {
   // Test route
-  router.get('/', (req: Request, res: Response) => res.status(200).send('Hello World'));
+  router.get('/', (req: Request, res: Response) => res.status(200).send('Server is running!'));
 
   router.use(`/auth`, new AuthRoutes().router);
   router.use(`/profile`, new ProfileRoutes().router);
