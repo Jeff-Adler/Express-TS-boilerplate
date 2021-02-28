@@ -11,13 +11,20 @@ export function initApiRoutes(router: Router): void {
   router.use(`/auth`, new AuthRoutes().router);
   router.use(`/profile`, new ProfileRoutes().router);
   router.use(`/users`, new UserRoutes().router);
-  router.use([handleHttpException], (err: HttpException, req: Request, res: Response, next: NextFunction) => {
-    if (err.status === 404) {
-      return res.status(400).send('404');
-    }
 
-    if (err.status === 500) {
-      return res.status(500).send('500');
+  //Consider moving catch-all route to independent location
+  router.use(
+    [handleHttpException],
+    (err: HttpException, req: Request, res: Response, next: NextFunction): Response | void => {
+      if (err.status === 404) {
+        return res.status(400).send('404');
+      }
+
+      if (err.status === 500) {
+        return res.status(500).send('500');
+      }
+
+      return;
     }
-  });
+  );
 }
