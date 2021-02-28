@@ -1,12 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  getRepository,
-  Repository,
-  Not,
-  FindConditions,
-  OrderByCondition,
-  FindManyOptions,
-} from 'typeorm';
+import { getRepository, Repository, Not, FindConditions, OrderByCondition, FindManyOptions } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
@@ -29,21 +22,21 @@ export class UserController {
     let skip: number;
     let take: number;
 
+    const isValidOrderByCondition = (parts: { [columnName: string]: string }): boolean => {
+      return <OrderByCondition>parts !== undefined;
+    };
+
     try {
       const role = <Role>(<string>req.query.role)?.toUpperCase();
       // Runtime validation of role parameter
       if (rolesArr.includes(role)) where = { ...where, role: role };
 
-      let field: string = '';
+      let columnName: string = '';
       let ordering: string = '';
-      const parts = (<string>req.query.orderBy)?.split(':');
-      if (parts.length >= 2) [field, ordering] = parts;
-      if (
-        field &&
-        ordering &&
-        <OrderByCondition>{ [field]: ordering.toUpperCase() } !== undefined
-      ) {
-        order = <OrderByCondition>{ [field]: ordering.toUpperCase() };
+      const parts: string[] = (<string>req.query.orderBy)?.split(':');
+      if (parts && parts.length >= 2) [columnName, ordering] = parts;
+      if (columnName && ordering && isValidOrderByCondition({ [columnName]: ordering.toUpperCase() })) {
+        order = <OrderByCondition>{ [columnName]: ordering.toUpperCase() };
       }
 
       skip = parseInt(<string>req.query.skip) || 0;
@@ -55,7 +48,6 @@ export class UserController {
       if (Object.keys(order).length) options = { ...options, order };
       if (skip) options = { ...options, skip };
       if (take) options = { ...options, take };
-
       const users: User[] = await this.userService.readAll(options);
 
       res.status(200).send(users);

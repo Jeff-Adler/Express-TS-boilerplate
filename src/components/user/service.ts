@@ -12,9 +12,9 @@ export class UserService {
    * @returns Returns an array of users
    */
   @bind
-  public readAll(options: FindManyOptions<User> = {}): Promise<User[]> {
+  public readAll(options: FindManyOptions<User> = { select: ['id', 'email', 'role'] }): Promise<User[]> {
     try {
-      return this.repo.find({ ...options, select: ['id', 'email', 'role'] });
+      return this.repo.find(options);
     } catch (e) {
       throw new Error(e);
     }
