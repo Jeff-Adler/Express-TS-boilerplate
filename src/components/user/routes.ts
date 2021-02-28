@@ -15,23 +15,15 @@ export class UserRoutes {
 
   private initRoutes(): void {
     //Get all users
-    this.router.get(
-      '/',
-      [isAuthorized, hasPermission(['ADMIN']), validateQueryParams],
-      this.controller.listAll
-    );
+    this.router.get('/', [isAuthorized, hasPermission(['ADMIN']), validateQueryParams], this.controller.listAll);
 
     // Get one user by id
-    this.router.get(
-      '/:id([0-9]+)',
-      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
-      this.controller.getOneById
-    );
+    this.router.get('/:id([0-9]+)', [isAuthorized, hasPermission(['ADMIN']), retrieveUser], this.controller.getOneById);
 
     // Get one user by email
     this.router.get(
       '/search',
-      [isAuthorized, hasPermission(['ADMIN'])],
+      [isAuthorized, hasPermission(['ADMIN']), validateQueryParams],
       this.controller.readUserByEmail
     );
 
@@ -39,11 +31,7 @@ export class UserRoutes {
     this.router.post('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.newUser);
 
     //Edit one user (email or role)
-    this.router.patch(
-      '/:id([0-9]+)',
-      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
-      this.controller.editUser
-    );
+    this.router.patch('/:id([0-9]+)', [isAuthorized, hasPermission(['ADMIN']), retrieveUser], this.controller.editUser);
 
     //Delete one user
     this.router.delete(

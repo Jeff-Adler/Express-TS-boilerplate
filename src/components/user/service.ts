@@ -22,6 +22,11 @@ export class UserService {
     }
   }
 
+  /**
+   * Handle all query parameters for GET users
+   *
+   * @returns Returns an object of TypeORM Find Options
+   */
   public handleQueryParams(req: Request): FindManyOptions<User> {
     let where: FindConditions<User> = {};
     let order: OrderByCondition = {};

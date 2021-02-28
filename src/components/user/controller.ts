@@ -10,10 +10,15 @@ export class UserController {
   readonly repo: Repository<User> = getRepository(User);
   private readonly userService: UserService = new UserService();
 
-  // Valid query parameters:
-  // GET /users?role=(ADMIN/USER)
-  // GET /users?take=(10)&skip=(0)
-  // GET /users?orderBy=<userField>:<ASC||DESC>
+  /**
+   * Retrieve users from db
+   *
+   * Valid query parameters:
+   * ?role=(ADMIN/USER)
+   * ?orderBy=<userField>:<ASC|DESC>
+   * ?skip=(0)
+   * ?take=(10)
+   */
   @bind
   public async listAll(req: Request, res: Response): Promise<void> {
     try {
@@ -33,7 +38,12 @@ export class UserController {
     res.status(200).send({ id, email, role });
   }
 
-  // GET /users/search?email=<email>
+  /**
+   * Retrieve user from db by email
+   *
+   * Valid query parameters:
+   * ?email=<email>
+   */
   @bind
   public async readUserByEmail(req: Request, res: Response): Promise<Response | void> {
     try {
@@ -45,7 +55,7 @@ export class UserController {
 
       res.status(200).send(user);
     } catch (err) {
-      res.status(400).send('No user with that email found');
+      res.status(400).send('Invalid search');
     }
   }
 
