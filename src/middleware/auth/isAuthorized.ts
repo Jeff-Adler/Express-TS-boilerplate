@@ -3,11 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { User } from '../../components/user/model';
 
-export const isAuthorized = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     if (!req.header) throw new Error();
 
