@@ -14,8 +14,6 @@ import { User, IUser, UpdateableUserField } from './model';
 import { Role, rolesArr } from './utils/Roles';
 import { UserService } from './service';
 
-// type orderType = [keyof IUser, 'ASC' | 'DESC'];
-
 export class UserController {
   readonly repo: Repository<User> = getRepository(User);
   private readonly userService: UserService = new UserService();
@@ -59,24 +57,6 @@ export class UserController {
       if (take) options = { ...options, take };
 
       const users: User[] = await this.userService.readAll(options);
-
-      // let users: User[];
-      // if (where !== {}) {
-      //   users = await this.repo.find({
-      //     select: ['id', 'email', 'role'],
-      //     order,
-      //     where,
-      //     take,
-      //     skip,
-      //   });
-      // } else {
-      //   users = await this.repo.find({
-      //     select: ['id', 'email', 'role'],
-      //     order,
-      //     take,
-      //     skip,
-      //   });
-      // }
 
       res.status(200).send(users);
     } catch (e) {
