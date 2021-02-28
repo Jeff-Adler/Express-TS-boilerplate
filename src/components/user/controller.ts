@@ -36,8 +36,8 @@ export class UserController {
 
       let field: string = '';
       let ordering: string = '';
-      if ((<string>req.query.orderBy)?.split(':').length >= 2)
-        [field, ordering] = (<string>req.query.orderBy)?.split(':');
+      const parts = (<string>req.query.orderBy)?.split(':');
+      if (parts.length >= 2) [field, ordering] = parts;
       if (
         field &&
         ordering &&
