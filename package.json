@@ -7,7 +7,7 @@
     "start": "ENVIRONMENT=dev ts-node-dev --respawn --transpile-only src/index.ts",
     "debug": "tsc --sourcemap",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "test": "ENVIRONMENT=test jest --detectOpenHandles --colors --verbose --watch"
+    "test": "ENVIRONMENT=test jest --detectOpenHandles --runInBand --colors --verbose --watch"
   },
   "keywords": [],
   "author": "",

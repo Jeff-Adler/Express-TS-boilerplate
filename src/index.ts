@@ -1,8 +1,6 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
-const listEndpoints = require('express-list-endpoints');
-
 import express from 'express';
 import { App } from './app';
 
