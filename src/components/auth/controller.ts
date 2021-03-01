@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { getRepository, Repository } from 'typeorm';
-import { validate } from 'class-validator';
 
 import { User } from '../user/model';
 
@@ -21,11 +20,9 @@ export class AuthController {
         res.status(401).send();
       }
 
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET as jwt.Secret,
-        { expiresIn: process.env.JWT_EXPIRES_IN }
-      );
+      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET as jwt.Secret, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
 
       res.status(200).send({ token });
     } catch (error) {

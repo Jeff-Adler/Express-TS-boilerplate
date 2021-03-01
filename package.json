@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ENV_FILE=./config/.env.dev ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "ENVIRONMENT=dev ts-node-dev --respawn --transpile-only src/index.ts",
     "debug": "tsc --sourcemap",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "test": "ENV_FILE=./config/.env.test jest --colors --verbose --watch"
+    "test": "ENVIRONMENT=test jest --detectOpenHandles --colors --verbose --watch"
   },
   "keywords": [],
   "author": "",

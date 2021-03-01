@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-dotenv.config({ path: './src/config/.env' });
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, `../config/${process.env.ENVIRONMENT}.env`) });
 
 import express from 'express';
 import helmet from 'helmet';
