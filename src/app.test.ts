@@ -4,6 +4,7 @@ import { createConnection, Connection } from 'typeorm';
 import request from 'supertest';
 import express from 'express';
 import { App } from './app';
+import supertest from 'supertest';
 
 //Need to create default connection to database and server
 describe('Test that server is running', () => {
@@ -25,6 +26,7 @@ describe('Test that server is running', () => {
     //   password: 'test',
     //   database: 'test',
     // });
+    const request = supertest(app);
 
     const PORT = process.env.PORT || 8080;
     app.listen(PORT, () => {
