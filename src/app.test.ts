@@ -5,6 +5,7 @@ import request from 'supertest';
 import express from 'express';
 import { App } from './app';
 
+//Need to create default connection to database and server
 describe('Test that server is running', () => {
   const app: express.Application = new App().app;
   let connection: Connection;
