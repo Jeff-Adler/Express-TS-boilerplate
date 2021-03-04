@@ -52,6 +52,7 @@ export class TestFactory {
    * Connect to DB and start server
    */
   public async init(): Promise<void> {
+    console.log('aerger');
     this._app = new App().app;
 
     const PORT = process.env.PORT || 8080;

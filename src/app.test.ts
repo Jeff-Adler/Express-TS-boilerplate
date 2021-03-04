@@ -10,11 +10,11 @@ import { User } from './components/user/model';
 
 //Need to create default connection to database and server
 describe('Test that server is running', () => {
-  const app: express.Application = new App().app;
-  let connection: Connection;
+  // let connection: Connection;
 
   //https://dev.to/larswaechter/unit-testing-for-apis-built-with-ts-express-js-and-typeorm-2d
   const factory: TestFactory = new TestFactory();
+  let app: express.Application;
 
   // const testUser: User = new User();
   // const testUserModified: User = {
@@ -23,7 +23,10 @@ describe('Test that server is running', () => {
   //   lastname: 'testLastnameModified',
   // };
   beforeAll(async () => {
+    console.log('gaearegergergaer');
+
     await factory.init();
+    app = new App().app;
   });
 
   afterAll(async () => {
@@ -58,6 +61,7 @@ describe('Test that server is running', () => {
   // });
 
   it('Request / should return "Server is running!"', async () => {
+    console.log('gaergaer');
     const result = await request(app).get('/').send();
 
     expect(result.status).toBe(200);
