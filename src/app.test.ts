@@ -11,6 +11,22 @@ describe('Test that server is running', () => {
   const app: express.Application = new App().app;
   let connection: Connection;
 
+  //https://dev.to/larswaechter/unit-testing-for-apis-built-with-ts-express-js-and-typeorm-2d
+  // const factory: TestFactory = new TestFactory();
+  // const testUser: User = User.mockTestUser();
+  // const testUserModified: User = {
+  //   ...testUser,
+  //   firstname: 'testFirstnameModified',
+  //   lastname: 'testLastnameModified',
+  // };
+  // before(async () => {
+  //   await factory.init();
+  // });
+
+  // after(async () => {
+  //   await factory.close();
+  // });
+
   console.log('gea');
   beforeAll(async () => {
     console.log('Initializing ORM connection...');
