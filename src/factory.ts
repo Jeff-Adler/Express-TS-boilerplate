@@ -1,6 +1,4 @@
 import 'reflect-metadata';
-import 'source-map-support/register';
-import 'module-alias/register';
 
 // // Set env to test
 // process.env.NODE_ENV = 'test';
@@ -32,32 +30,15 @@ export class TestFactory {
   // DB connection options
   private options: PostgresConnectionOptions = {
     type: 'postgres',
-    // "host": "127.0.0.1",
-    // "port": 5432,
-    database: 'new Uint8Array()',
-    // location: 'database',
-    logging: false,
+    host: '127.0.0.1',
+    port: 5432,
+    username: 'jeff',
+    password: '',
+    database: 'mock_db',
     synchronize: true,
-    entities: ['dist/api/components/**/model.js'],
+    logging: false,
+    entities: ['src/components/**/model.ts'],
   };
-
-  // "type": "postgres",
-  // "host": "127.0.0.1",
-  // "port": 5432,
-  // "username": "jeff",
-  // "password": "",
-  // "database": "test_db",
-  // "synchronize": true,
-  // "logging": false,
-  // "entities": [
-  //    "src/components/**/model.ts"
-  // ],
-  // "migrations": [
-  //    "src/migration/**/*.ts"
-  // ],
-  // "cli": {
-  //    "migrationsDir": "src/migration"
-  // }
 
   public get app(): supertest.SuperTest<supertest.Test> {
     return supertest(this._app);
