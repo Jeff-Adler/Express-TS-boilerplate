@@ -14,8 +14,6 @@ describe('Test that server is running', () => {
 
   //https://dev.to/larswaechter/unit-testing-for-apis-built-with-ts-express-js-and-typeorm-2d
   const factory: TestFactory = new TestFactory();
-  let app: express.Application;
-
   // const testUser: User = new User();
   // const testUserModified: User = {
   //   ...testUser,
@@ -23,10 +21,9 @@ describe('Test that server is running', () => {
   //   lastname: 'testLastnameModified',
   // };
   beforeAll(async () => {
-    console.log('gaearegergergaer');
-
+    console.log('adaw');
     await factory.init();
-    app = new App().app;
+    // app = new App().app;
   });
 
   afterAll(async () => {
@@ -61,8 +58,7 @@ describe('Test that server is running', () => {
   // });
 
   it('Request / should return "Server is running!"', async () => {
-    console.log('gaergaer');
-    const result = await request(app).get('/').send();
+    const result = await request(factory.app).get('/').send();
 
     expect(result.status).toBe(200);
     expect(result.text).toBe('Server is running!');
