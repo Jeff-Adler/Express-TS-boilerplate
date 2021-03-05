@@ -56,8 +56,10 @@ export class ProfileController {
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
       await this.repo.save(user);
-      delete user.password;
-      res.status(204).send(user);
+      const userObj: User = await this.repo.findOneOrFail(user.id, {
+        select: ['id', 'email', 'role'],
+      });
+      res.status(204).send(userObj);
     } catch (e) {
       res.status(409).send('email already in use');
     }
@@ -82,7 +84,7 @@ export class ProfileController {
     }
 
     try {
-      await getRepository(User).save(user);
+      await this.repo.save(user);
       res.status(204).send('Password changed');
     } catch (e) {
       res.status(401).send(e);
@@ -94,7 +96,7 @@ export class ProfileController {
     const user: User = res.locals.currentUser;
 
     try {
-      await getRepository(User).delete(user);
+      await this.repo.delete(user);
       res.status(200).send('Account deleted');
     } catch (e) {
       res.status(401).send(e);

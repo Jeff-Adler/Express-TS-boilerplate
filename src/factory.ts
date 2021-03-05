@@ -52,13 +52,14 @@ export class TestFactory {
    * Connect to DB and start server
    */
   public async init(): Promise<void> {
+    this._connection = await createConnection(this.options);
+
     this._app = new App().app;
 
     const PORT = process.env.PORT || 8080;
     this._app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
-    this._connection = await createConnection(this.options);
   }
 
   /**
