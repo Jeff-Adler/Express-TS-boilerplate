@@ -12,8 +12,6 @@ import { createConnection, Connection } from 'typeorm';
 import express from 'express';
 import supertest from 'supertest';
 
-// import { env } from '@config/globals';
-
 import { App } from './app';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
@@ -29,14 +27,17 @@ export class TestFactory {
 
   // DB connection options
   private options: PostgresConnectionOptions = {
+    name: 'mock',
     type: 'postgres',
     host: '127.0.0.1',
     port: 5432,
     username: 'jeff',
     password: '',
     database: 'mock_db',
+    dropSchema: true,
     synchronize: true,
     logging: false,
+    migrationsRun: true,
     entities: ['src/components/**/model.ts'],
   };
 
@@ -52,10 +53,12 @@ export class TestFactory {
    * Connect to DB and start server
    */
   public async init(): Promise<void> {
+    console.log('factory.init() pre-createConnection');
     this._connection = await createConnection(this.options);
-
+    console.log('factory.init() post-createConnection');
     this._app = new App().app;
-
+    // Never runs:
+    console.log('factory.init() post-App().app');
     const PORT = process.env.PORT || 8080;
     this._app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
