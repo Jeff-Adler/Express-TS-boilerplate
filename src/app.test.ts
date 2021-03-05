@@ -12,6 +12,7 @@ import { User } from './components/user/model';
 describe('Test that server is running', () => {
   // let connection: Connection;
 
+  //GRRR THIS BUG IS DESTORYING ME!!
   //https://dev.to/larswaechter/unit-testing-for-apis-built-with-ts-express-js-and-typeorm-2d
   const factory: TestFactory = new TestFactory();
   // const testUser: User = new User();
