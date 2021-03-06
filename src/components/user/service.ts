@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { Role, rolesArr } from './utils/Roles';
 
 export class UserService {
-  readonly repo: Repository<User> = getConnection('development').getRepository(User);
+  readonly repo: Repository<User> = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
 
   /**
    * Read all users from db

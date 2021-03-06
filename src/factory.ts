@@ -28,7 +28,7 @@ export class TestFactory {
 
   // DB connection options
   private options: PostgresConnectionOptions = {
-    name: 'mock',
+    name: 'testing',
     type: 'postgres',
     host: '127.0.0.1',
     port: 5432,
@@ -54,14 +54,10 @@ export class TestFactory {
    * Connect to DB and start server
    */
   public async init(): Promise<void> {
-    console.log('factory.init() pre-createConnection');
     this._connection = await createConnection(this.options);
 
-    console.log('factory.init() post-createConnection');
     this._app = new App().app;
 
-    // Never runs: (but logs within App constructor do)
-    console.log('factory.init() post-App().app');
     const PORT = process.env.PORT || 8080;
     this._app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

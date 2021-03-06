@@ -6,7 +6,7 @@ import { validate, ValidationError } from 'class-validator';
 
 // res.locals.currentUser is declared in isAuthorized
 export class ProfileController {
-  readonly repo: Repository<User> = getConnection('development').getRepository(User);
+  readonly repo: Repository<User> = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
 
   @bind
   public getProfile(req: Request, res: Response): void {

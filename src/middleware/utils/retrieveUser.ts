@@ -6,7 +6,9 @@ export const retrieveUser = async (req: Request, res: Response, next: NextFuncti
   const id = req.params.id;
 
   try {
-    res.locals.retrievedUser = (await getConnection('development').getRepository(User).findOneOrFail(id)) as User;
+    res.locals.retrievedUser = (await getConnection(process.env.CONNECTION_TYPE)
+      .getRepository(User)
+      .findOneOrFail(id)) as User;
     next();
   } catch (error) {
     res.status(404).send('User not found');

@@ -9,17 +9,10 @@ export function initApiRoutes(router: Router): void {
 
   // Test route
   router.get('/', (req: Request, res: Response) => res.status(200).send('Server is running!'));
-  console.log('after first route of init routes');
 
   router.use(`/auth`, new AuthRoutes().router);
-  console.log(`init api routes post auth pre profile`);
   router.use(`/profile`, new ProfileRoutes().router);
-  //NEVER RUNS:
-  console.log(`init api routes post profile pre user`);
-
   router.use(`/users`, new UserRoutes().router);
-  //Never called:
-  console.log('after api routes of init routes');
 
   //Consider moving catch-all route to independent location
   router.use(
@@ -36,5 +29,4 @@ export function initApiRoutes(router: Router): void {
       return;
     }
   );
-  console.log('end of init routes');
 }

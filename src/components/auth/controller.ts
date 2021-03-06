@@ -6,13 +6,12 @@ import { User } from '../user/model';
 
 export class AuthController {
   public async login(req: Request, res: Response): Promise<void> {
-    console.log('auth controller');
     let { email, password } = req.body;
     if (!(email && password)) {
       res.status(400).send();
     }
 
-    const userRepository: Repository<User> = getConnection('development').getRepository(User);
+    const userRepository: Repository<User> = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
     let user: User;
     try {
       user = await userRepository.findOneOrFail({ where: { email } });

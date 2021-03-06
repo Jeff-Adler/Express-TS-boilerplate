@@ -7,7 +7,7 @@ import { User, IUser, UpdateableUserField } from './model';
 import { UserService } from './service';
 
 export class UserController {
-  readonly repo: Repository<User> = getConnection('development').getRepository(User);
+  readonly repo: Repository<User> = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
   private readonly userService: UserService = new UserService();
 
   /**

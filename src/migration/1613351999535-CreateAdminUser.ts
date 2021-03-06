@@ -7,7 +7,7 @@ export class CreateAdminUser1613351999535 implements MigrationInterface {
     user.email = 'admin@admin.com';
     user.password = 'admin_password';
     user.role = 'ADMIN';
-    const userRepository = getConnection('development').getRepository(User);
+    const userRepository = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
     await userRepository.save(user);
   }
 

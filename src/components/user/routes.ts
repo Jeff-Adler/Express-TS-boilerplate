@@ -10,8 +10,6 @@ export class UserRoutes {
   readonly controller: UserController = new UserController();
 
   public constructor() {
-    //never runs
-    console.log('profile routes constructor pre');
     this.initRoutes();
   }
 
