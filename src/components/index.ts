@@ -12,7 +12,11 @@ export function initApiRoutes(router: Router): void {
   console.log('after first route of init routes');
 
   router.use(`/auth`, new AuthRoutes().router);
+  console.log(`init api routes post auth pre profile`);
   router.use(`/profile`, new ProfileRoutes().router);
+  //NEVER RUNS:
+  console.log(`init api routes post profile pre user`);
+
   router.use(`/users`, new UserRoutes().router);
   //Never called:
   console.log('after api routes of init routes');

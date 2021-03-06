@@ -24,6 +24,8 @@ export class TestFactory {
   private _connection!: Connection;
   private _app!: express.Application;
 
+  //breakthrough: if I name the connection in ormconfig, even npm start breaks. Its looking for default connection
+
   // DB connection options
   private options: PostgresConnectionOptions = {
     name: 'mock',
