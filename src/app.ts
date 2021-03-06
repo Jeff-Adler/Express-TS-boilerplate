@@ -17,9 +17,12 @@ export class App {
     this._app.use(helmet());
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
-
+    console.log('App.app() constructor');
     // Initialize API routes
     initApiRoutes(this._app);
+
+    // Never runs:
+    console.log('initApiRoutes');
   }
 
   public get app(): express.Application {

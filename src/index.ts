@@ -8,7 +8,7 @@ import { App } from './app';
   try {
     // Initialize database connection
     console.log('Initializing ORM connection...');
-    await createConnection();
+    const connection = await createConnection();
 
     // Initialize Express app
     const app: express.Application = new App().app;

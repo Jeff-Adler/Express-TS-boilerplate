@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import { createConnection, Connection } from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 // // Set env to test
 // process.env.NODE_ENV = 'test';
@@ -7,13 +9,10 @@ import 'reflect-metadata';
 // import { config } from 'dotenv';
 // config();
 
-import { createConnection, Connection } from 'typeorm';
-
 import express from 'express';
-import supertest from 'supertest';
-
 import { App } from './app';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+
+import supertest from 'supertest';
 
 /**
  * TestFactory
@@ -22,8 +21,8 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
  */
 
 export class TestFactory {
-  private _app!: express.Application;
   private _connection!: Connection;
+  private _app!: express.Application;
 
   // DB connection options
   private options: PostgresConnectionOptions = {
@@ -55,9 +54,11 @@ export class TestFactory {
   public async init(): Promise<void> {
     console.log('factory.init() pre-createConnection');
     this._connection = await createConnection(this.options);
+
     console.log('factory.init() post-createConnection');
     this._app = new App().app;
-    // Never runs:
+
+    // Never runs: (but logs within App constructor do)
     console.log('factory.init() post-App().app');
     const PORT = process.env.PORT || 8080;
     this._app.listen(PORT, () => {
