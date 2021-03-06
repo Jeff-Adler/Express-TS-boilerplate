@@ -1,6 +1,3 @@
-import 'reflect-metadata';
-
-import request from 'supertest';
 import { TestFactory } from './utils/tests/factory';
 
 describe('Test that server is running', () => {
@@ -14,7 +11,7 @@ describe('Test that server is running', () => {
     await factory.close();
   });
 
-  it('Request / should return "Server is running!"', async () => {
+  test('Request / should return "Server is running!"', async () => {
     const result = await factory.app.get('/').send();
 
     expect(result.status).toBe(200);
