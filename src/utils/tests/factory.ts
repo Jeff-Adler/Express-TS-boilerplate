@@ -10,7 +10,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 // config();
 
 import express from 'express';
-import { App } from './app';
+import { App } from '../../app';
 
 import supertest from 'supertest';
 
