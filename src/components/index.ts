@@ -5,8 +5,6 @@ import { UserRoutes } from './user/routes';
 import { handleHttpException, HttpException } from '../middleware/exceptions/HttpException';
 
 export function initApiRoutes(router: Router): void {
-  console.log('beginning of init routes');
-
   // Test route
   router.get('/', (req: Request, res: Response) => res.status(200).send('Server is running!'));
 
