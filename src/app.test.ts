@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import request from 'supertest';
-import { TestFactory } from './factory';
+import { TestFactory } from './utils/tests/factory';
 
 describe('Test that server is running', () => {
   let factory: TestFactory = new TestFactory();

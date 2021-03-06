@@ -42,6 +42,9 @@ export class TestFactory {
     entities: ['src/components/**/model.ts'],
   };
 
+  /**
+   * Wrap Express.application object inside supertest
+   */
   public get app(): supertest.SuperTest<supertest.Test> {
     return supertest(this._app);
   }
@@ -51,21 +54,16 @@ export class TestFactory {
   }
 
   /**
-   * Connect to DB and start server
+   * Connect to DB and initialize app
    */
   public async init(): Promise<void> {
     this._connection = await createConnection(this.options);
 
     this._app = new App().app;
-
-    // const PORT = process.env.PORT || 8080;
-    // this._app.listen(PORT, () => {
-    //   console.log(`Server is running on port ${PORT}`);
-    // });
   }
 
   /**
-   * Close server and DB connection
+   * Close DB connection
    */
   public async close(): Promise<void> {
     this._connection.close();
