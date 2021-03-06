@@ -5,12 +5,17 @@ import { UserRoutes } from './user/routes';
 import { handleHttpException, HttpException } from '../middleware/exceptions/HttpException';
 
 export function initApiRoutes(router: Router): void {
+  console.log('beginning of init routes');
+
   // Test route
   router.get('/', (req: Request, res: Response) => res.status(200).send('Server is running!'));
+  console.log('after first route of init routes');
 
   router.use(`/auth`, new AuthRoutes().router);
   router.use(`/profile`, new ProfileRoutes().router);
   router.use(`/users`, new UserRoutes().router);
+  //Never called:
+  console.log('after api routes of init routes');
 
   //Consider moving catch-all route to independent location
   router.use(
@@ -27,4 +32,5 @@ export function initApiRoutes(router: Router): void {
       return;
     }
   );
+  console.log('end of init routes');
 }
