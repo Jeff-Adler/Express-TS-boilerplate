@@ -1,11 +1,11 @@
 import { User } from './model';
-import { getManager, Repository, FindManyOptions, OrderByCondition, FindConditions } from 'typeorm';
+import { getManager, Repository, FindManyOptions, OrderByCondition, FindConditions, getConnection } from 'typeorm';
 import { bind } from 'decko';
 import { Request } from 'express';
 import { Role, rolesArr } from './utils/Roles';
 
 export class UserService {
-  readonly repo: Repository<User> = getManager().getRepository(User);
+  readonly repo: Repository<User> = getConnection('development').getRepository(User);
 
   /**
    * Read all users from db

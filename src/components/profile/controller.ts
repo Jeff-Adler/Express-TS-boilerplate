@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, getConnection } from 'typeorm';
 import { User, IUser } from '../user/model';
 import { bind } from 'decko';
 import { validate, ValidationError } from 'class-validator';
 
 // res.locals.currentUser is declared in isAuthorized
 export class ProfileController {
-  readonly repo: Repository<User> = getRepository(User);
+  readonly repo: Repository<User> = getConnection('development').getRepository(User);
 
   @bind
   public getProfile(req: Request, res: Response): void {

@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, getRepository } from 'typeorm';
+import { MigrationInterface, QueryRunner, getRepository, getConnection } from 'typeorm';
 import { User } from '../components/user/model';
 
 export class CreateAdminUser1613351999535 implements MigrationInterface {
@@ -7,7 +7,7 @@ export class CreateAdminUser1613351999535 implements MigrationInterface {
     user.email = 'admin@admin.com';
     user.password = 'admin_password';
     user.role = 'ADMIN';
-    const userRepository = getRepository(User);
+    const userRepository = getConnection('development').getRepository(User);
     await userRepository.save(user);
   }
 

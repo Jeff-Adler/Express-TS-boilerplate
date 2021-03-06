@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository, Not, FindManyOptions } from 'typeorm';
+import { getRepository, Repository, Not, FindManyOptions, getConnection } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
@@ -7,7 +7,7 @@ import { User, IUser, UpdateableUserField } from './model';
 import { UserService } from './service';
 
 export class UserController {
-  readonly repo: Repository<User> = getRepository(User);
+  readonly repo: Repository<User> = getConnection('development').getRepository(User);
   private readonly userService: UserService = new UserService();
 
   /**

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, getConnection } from 'typeorm';
 
 import { User } from '../user/model';
 
@@ -12,7 +12,7 @@ export class AuthController {
       res.status(400).send();
     }
 
-    const userRepository: Repository<User> = getRepository(User);
+    const userRepository: Repository<User> = getConnection('development').getRepository(User);
     let user: User;
     try {
       user = await userRepository.findOneOrFail({ where: { email } });

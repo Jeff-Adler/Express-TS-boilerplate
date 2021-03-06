@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
+import { getRepository, getConnection } from 'typeorm';
 import { User } from '../../components/user/model';
 
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -12,7 +12,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
 
     // Save currentUser to response object
-    const user: User = await getRepository(User).findOneOrFail(decoded.id);
+    const user: User = await getConnection('development').getRepository(User).findOneOrFail(decoded.id);
     res.locals.currentUser = user;
 
     // Send new token on response
