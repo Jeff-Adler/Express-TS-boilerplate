@@ -8,7 +8,7 @@ export class AuthController {
   public async login(req: Request, res: Response): Promise<void> {
     let { email, password } = req.body;
     if (!(email && password)) {
-      res.status(400).send();
+      res.status(400).send('Request body lacked fields: email and/or password');
     }
 
     const userRepository: Repository<User> = getConnection(process.env.CONNECTION_TYPE).getRepository(User);
