@@ -5,7 +5,7 @@ import { Repository, getConnection } from 'typeorm';
 import { User } from '../user/model';
 
 export class AuthController {
-  public async login(req: Request, res: Response) {
+  public async login(req: Request, res: Response): Promise<Response> {
     let { email, password } = req.body;
     if (!(email && password)) {
       return res.status(400).send('Request body lacked fields: email and/or password');
