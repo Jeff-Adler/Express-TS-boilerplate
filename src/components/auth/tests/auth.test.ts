@@ -1,6 +1,6 @@
 import { TestFactory } from '../../../utils/tests/factory';
 
-describe('Testing Auth component', () => {
+describe('Test Auth component', () => {
   let factory: TestFactory = new TestFactory();
 
   beforeAll(async () => {
