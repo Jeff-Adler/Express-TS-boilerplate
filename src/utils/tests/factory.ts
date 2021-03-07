@@ -13,6 +13,8 @@ import express from 'express';
 import { App } from '../../app';
 
 import supertest from 'supertest';
+import { User } from '../../components/user/model';
+import { Role } from '../../components/user/utils/Roles';
 
 /**
  * TestFactory
@@ -23,8 +25,6 @@ import supertest from 'supertest';
 export class TestFactory {
   private _connection!: Connection;
   private _app!: express.Application;
-
-  //breakthrough: if I name the connection in ormconfig, even npm start breaks. Its looking for default connection
 
   // DB connection options
   private options: PostgresConnectionOptions = {
@@ -58,6 +58,7 @@ export class TestFactory {
    */
   public async init(): Promise<void> {
     this._connection = await createConnection(this.options);
+    await this.seedAdminUser();
 
     this._app = new App().app;
   }
@@ -67,5 +68,23 @@ export class TestFactory {
    */
   public async close(): Promise<void> {
     this._connection.close();
+  }
+
+  /**
+   * Create admin user for authentication across endpoints
+   */
+  private async seedAdminUser(): Promise<void> {
+    const adminUserCreds = {
+      email: 'admin@admin.com',
+      password: 'admin_password',
+      role: 'ADMIN',
+    };
+
+    let adminUser: User = new User();
+    const { email, password, role } = adminUserCreds;
+    adminUser.email = email;
+    adminUser.password = password;
+    adminUser.role = <Role>role;
+    const user = await this._connection.getRepository(User).save(adminUser);
   }
 }

@@ -13,7 +13,16 @@ describe('Testing Auth component', () => {
   });
 
   describe('POST /login', () => {
-    test.todo('responds with 200 status if valid credentials are passed');
+    test('responds with 200 status if valid credentials are passed', async (done) => {
+      const result = await factory.app.post('/auth/login').send({
+        email: 'admin@admin.com',
+        password: 'admin_password',
+      });
+
+      expect(result.status).toBe(200);
+      expect(Object.keys(result.body)).toContain('token');
+      done();
+    });
 
     test('responds with 400 status if login request body does not include fields: email and/or password', async (done) => {
       const result = await factory.app.post('/auth/login').send({});
@@ -30,9 +39,8 @@ describe('Testing Auth component', () => {
       });
 
       expect(result.status).toBe(401);
+      expect(result.text).toBe('Invalid password');
       done();
-      // Uncomment once database seeding is setup:
-      // expect(result.text).toBe('Invalid password');
     });
 
     test('responds with 401 status if invalid email is passed', async (done) => {
