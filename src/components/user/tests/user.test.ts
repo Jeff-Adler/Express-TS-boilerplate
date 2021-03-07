@@ -1,4 +1,4 @@
-import { TestFactory } from '../../../utils/tests/factory';
+import { TestFactory } from '../../../utils/testing/factory';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();

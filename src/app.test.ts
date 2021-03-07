@@ -1,4 +1,4 @@
-import { TestFactory } from './utils/tests/factory';
+import { TestFactory } from './utils/testing/factory';
 
 describe('Test that server is running', () => {
   let factory: TestFactory = new TestFactory();
