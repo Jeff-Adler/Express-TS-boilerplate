@@ -1,5 +1,4 @@
 import { TestFactory } from '../../../utils/tests/factory';
-import { doesNotThrow } from 'assert';
 
 describe('Testing Auth component', () => {
   let factory: TestFactory = new TestFactory();
