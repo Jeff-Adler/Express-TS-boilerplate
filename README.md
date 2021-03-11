@@ -10,3 +10,4 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 - Node.js
 - Express
 - TypeORM
+- Jest+Supertest
