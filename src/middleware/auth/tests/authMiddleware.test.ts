@@ -11,6 +11,7 @@ describe('Testing Authentication middleware', () => {
     await factory.close();
   });
 
+  //Ensure isAuthorized is broken up into separate functions for each utility it serves
   describe('Testing hasPermission', () => {
     test.todo('Proceeds to next middleware if user is permitted');
 
