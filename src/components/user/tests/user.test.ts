@@ -1,4 +1,5 @@
 import { TestFactory } from '../../../utils/testing/factory';
+import { doesNotThrow } from 'assert';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -12,7 +13,13 @@ describe('Test User component', () => {
   });
 
   describe('GET /users/', () => {
-    test.todo('returns 200 status for valid request');
+    test('returns 200 status for valid request', async (done) => {
+      const result = await factory.app.get('/users/').send({});
+
+      expect(result.status).toBe(200);
+      // expect(result.body).toContain('token');
+      done();
+    });
 
     test.todo('returns all users');
 
