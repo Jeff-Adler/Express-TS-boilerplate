@@ -4,8 +4,18 @@ import { doesNotThrow } from 'assert';
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
 
-  beforeAll(async () => {
+  let token: string;
+
+  beforeAll(async (done) => {
     await factory.init();
+    //authentication to get auth token
+    const result = await factory.app.post('/auth/login').send({
+      email: 'admin@admin.com',
+      password: 'admin_password',
+    });
+
+    token = result.body.token;
+    done();
   });
 
   afterAll(async () => {
@@ -14,7 +24,7 @@ describe('Test User component', () => {
 
   describe('GET /users/', () => {
     test('returns 200 status for valid request', async (done) => {
-      const result = await factory.app.get('/users/').send({});
+      const result = await factory.app.get('/users/').send({ authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(200);
       // expect(result.body).toContain('token');
