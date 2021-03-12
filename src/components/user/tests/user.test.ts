@@ -24,8 +24,9 @@ describe('Test User component', () => {
 
   describe('GET /users/', () => {
     test('returns 200 status for valid request', async (done) => {
-      const result = await factory.app.get('/users/').send({ authorization: `Bearer ${token}` });
-
+      console.log(token);
+      const result = await factory.app.get('/users/').send({ Authorization: `Bearer ${token}` });
+      console.log(result.text);
       expect(result.status).toBe(200);
       // expect(result.body).toContain('token');
       done();
