@@ -1,5 +1,5 @@
 import { TestFactory } from '../../../utils/testing/factory';
-import { doesNotThrow } from 'assert';
+import { User } from '../model';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -33,7 +33,8 @@ describe('Test User component', () => {
     test('returns all users', async (done) => {
       const result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
 
-      const users = result.body;
+      const users: User[] = result.body;
+
       expect(users.length).toBe(1);
       done();
     });
