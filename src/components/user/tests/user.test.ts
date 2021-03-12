@@ -35,7 +35,12 @@ describe('Test User component', () => {
 
       const users: User[] = result.body;
 
-      expect(users.length).toBe(1);
+      const usersFiltered = users.filter((user) => {
+        const { id, email, role } = user;
+        return id && email && role;
+      });
+
+      expect(users.length).toBe(usersFiltered.length);
       done();
     });
 
