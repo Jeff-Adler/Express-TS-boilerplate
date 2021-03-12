@@ -44,7 +44,12 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('returns 400 error if invliad request is sent');
+    test('returns 400 error if invliad request is sent', async (done) => {
+      const result = await factory.app.get('/users/').set({});
+
+      expect(result.status).toBe(401);
+      done();
+    });
 
     describe('GET /users/ query params', () => {
       test.todo('?role=USER returns only users with USER role');
