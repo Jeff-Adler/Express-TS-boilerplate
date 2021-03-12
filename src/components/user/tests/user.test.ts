@@ -24,15 +24,19 @@ describe('Test User component', () => {
 
   describe('GET /users/', () => {
     test('returns 200 status for valid request', async (done) => {
-      console.log(token);
-      const result = await factory.app.get('/users/').send({ Authorization: `Bearer ${token}` });
-      console.log(result.text);
+      const result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+
       expect(result.status).toBe(200);
-      // expect(result.body).toContain('token');
       done();
     });
 
-    test.todo('returns all users');
+    test('returns all users', async (done) => {
+      const result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+
+      const users = result.body;
+      expect(users.length).toBe(1);
+      done();
+    });
 
     test.todo('returns 400 error if invliad request is sent');
 
