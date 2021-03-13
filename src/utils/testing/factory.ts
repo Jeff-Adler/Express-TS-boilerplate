@@ -2,12 +2,6 @@ import 'reflect-metadata';
 import { createConnection, Connection, Not, Repository } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import faker from 'faker';
-// // Set env to test
-// process.env.NODE_ENV = 'test';
-
-// // Set env variables from .env file
-// import { config } from 'dotenv';
-// config();
 
 import express from 'express';
 import { App } from '../../app';
@@ -92,6 +86,9 @@ export class TestFactory {
     const user = await this._userRepo.save(adminUser);
   }
 
+  /**
+   * Seed users into database for testing
+   */
   private async seedUsers(): Promise<void> {
     for (let i = 0; i < 10; i++) {
       const userCreds = {
@@ -109,6 +106,9 @@ export class TestFactory {
     }
   }
 
+  /**
+   * Wipe database
+   */
   private async wipeDb(): Promise<void> {
     await this._userRepo.createQueryBuilder().delete().execute();
   }
