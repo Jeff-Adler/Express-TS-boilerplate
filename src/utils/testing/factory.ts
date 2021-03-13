@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { createConnection, Connection } from 'typeorm';
+import { createConnection, Connection, Not, Repository } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-
+import faker from 'faker';
 // // Set env to test
 // process.env.NODE_ENV = 'test';
 
@@ -25,6 +25,7 @@ import { Role } from '../../components/user/utils/Roles';
 export class TestFactory {
   private _connection!: Connection;
   private _app!: express.Application;
+  private _userRepo!: Repository<User>;
 
   // DB connection options
   private options: PostgresConnectionOptions = {
@@ -58,6 +59,7 @@ export class TestFactory {
    */
   public async init(): Promise<void> {
     this._connection = await createConnection(this.options);
+    this._userRepo = this._connection.getRepository(User);
     await this.seedAdminUser();
 
     this._app = new App().app;
@@ -67,6 +69,7 @@ export class TestFactory {
    * Close DB connection
    */
   public async close(): Promise<void> {
+    await this.wipeDb();
     this._connection.close();
   }
 
@@ -85,6 +88,25 @@ export class TestFactory {
     adminUser.email = email;
     adminUser.password = password;
     adminUser.role = <Role>role;
-    const user = await this._connection.getRepository(User).save(adminUser);
+    const user = await this._userRepo.save(adminUser);
+  }
+
+  private async seedUsers(): Promise<void> {
+    const userCreds = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      role: 'USER',
+    };
+
+    let user: User = new User();
+    const { email, password, role } = userCreds;
+    user.email = email;
+    user.password = password;
+    user.role = <Role>role;
+    await this._userRepo.save(user);
+  }
+
+  private async wipeDb(): Promise<void> {
+    await this._userRepo.createQueryBuilder().delete().execute();
   }
 }

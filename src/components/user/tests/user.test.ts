@@ -15,6 +15,8 @@ describe('Test User component', () => {
     });
 
     token = result.body.token;
+
+    //seeds
     done();
   });
 
@@ -64,7 +66,14 @@ describe('Test User component', () => {
     });
 
     describe('GET /users/ query params', () => {
-      test.todo('?role=USER returns only users with USER role');
+      test('?role=USER returns only users with USER role', async (done) => {
+        const result = await factory.app.get('/users?role=USER').set({ Authorization: `Bearer ${token}` });
+
+        const users: User[] = result.body;
+
+        expect(users.every((user) => user.role === 'USER') && !!users.length).toEqual(true);
+        done();
+      });
 
       test.todo('?orderBy=createdAt:DESC returns users in reverse creation order');
 
