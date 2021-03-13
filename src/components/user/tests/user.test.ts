@@ -96,7 +96,20 @@ describe('Test User component', () => {
         done();
       });
 
-      test.todo('?skip=3 skips 3 users');
+      test('?skip=3 skips 3 users', async (done) => {
+        const result = await factory.app.get('/users?skip=3&take=3').set({ Authorization: `Bearer ${token}` });
+        const result2 = await factory.app.get('/users?take=6').set({ Authorization: `Bearer ${token}` });
+
+        const take3skip3Users: User[] = result.body;
+        const take6Users: User[] = result2.body;
+
+        const remainingUsers = take6Users.filter((user) => {
+          take3skip3Users.includes(user);
+        });
+
+        expect(remainingUsers.length).toEqual(3);
+        done();
+      });
 
       test.todo('invalid query params just returns all users');
     });
