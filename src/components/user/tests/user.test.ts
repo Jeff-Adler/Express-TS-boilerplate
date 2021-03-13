@@ -75,6 +75,7 @@ describe('Test User component', () => {
         done();
       });
 
+      //sort list of users backwards and test for equality with response.body
       test.todo('?orderBy=createdAt:DESC returns users in reverse creation order');
 
       test('?take=3 returns 3 users', async (done) => {
