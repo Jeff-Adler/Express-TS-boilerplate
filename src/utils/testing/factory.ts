@@ -61,6 +61,7 @@ export class TestFactory {
     this._connection = await createConnection(this.options);
     this._userRepo = this._connection.getRepository(User);
     await this.seedAdminUser();
+    await this.seedUsers();
 
     this._app = new App().app;
   }
@@ -92,18 +93,20 @@ export class TestFactory {
   }
 
   private async seedUsers(): Promise<void> {
-    const userCreds = {
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      role: 'USER',
-    };
+    for (let i = 0; i < 10; i++) {
+      const userCreds = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        role: 'USER',
+      };
 
-    let user: User = new User();
-    const { email, password, role } = userCreds;
-    user.email = email;
-    user.password = password;
-    user.role = <Role>role;
-    await this._userRepo.save(user);
+      let user: User = new User();
+      const { email, password, role } = userCreds;
+      user.email = email;
+      user.password = password;
+      user.role = <Role>role;
+      await this._userRepo.save(user);
+    }
   }
 
   private async wipeDb(): Promise<void> {
