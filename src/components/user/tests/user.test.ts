@@ -77,7 +77,14 @@ describe('Test User component', () => {
 
       test.todo('?orderBy=createdAt:DESC returns users in reverse creation order');
 
-      test.todo('?take=3 returns 3 users');
+      test('?take=3 returns 3 users', async (done) => {
+        const result = await factory.app.get('/users?take=3').set({ Authorization: `Bearer ${token}` });
+
+        const users: User[] = result.body;
+
+        expect(users.length).toEqual(3);
+        done();
+      });
 
       test.todo('?skip=3 skips 3 users');
 
