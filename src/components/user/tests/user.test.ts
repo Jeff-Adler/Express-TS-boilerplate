@@ -30,14 +30,26 @@ describe('Test User component', () => {
       done();
     });
 
-    test('returns all users', async (done) => {
+    test('returns an array of user objects user objects', async (done) => {
       const result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
 
       const users: User[] = result.body;
 
       const usersFiltered = users.filter((user) => {
-        const { id, email, role } = user;
-        return id && email && role;
+        return <User>user !== undefined;
+      });
+
+      expect(users.length).toBe(usersFiltered.length);
+      done();
+    });
+
+    test('Every user in response contains only id, email, and role fields', async (done) => {
+      const result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+      const userResFields = ['id', 'email', 'role'];
+      const users: User[] = result.body;
+
+      const usersFiltered = users.filter((user) => {
+        return Object.keys(user).sort().join(',') === userResFields.sort().join(',');
       });
 
       expect(users.length).toBe(usersFiltered.length);
