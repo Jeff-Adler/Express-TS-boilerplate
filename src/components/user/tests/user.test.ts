@@ -75,8 +75,17 @@ describe('Test User component', () => {
         done();
       });
 
-      //sort list of users backwards and test for equality with response.body
-      test.todo('?orderBy=createdAt:DESC returns users in reverse creation order');
+      test('?orderBy=id:DESC returns users in reverse id order', async (done) => {
+        const result = await factory.app.get('/users?orderBy=createdAt:DESC').set({ Authorization: `Bearer ${token}` });
+
+        const users: User[] = result.body;
+        const sortedUsers: User[] = [...users].sort((user1, user2) => {
+          return user2.id - user1.id;
+        });
+
+        expect(users.join(',') === sortedUsers.join(',')).toBe(true);
+        done();
+      });
 
       test('?take=3 returns 3 users', async (done) => {
         const result = await factory.app.get('/users?take=3').set({ Authorization: `Bearer ${token}` });
