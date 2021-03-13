@@ -59,6 +59,8 @@ describe('Test User component', () => {
       test.todo('?take=3 returns 3 users');
 
       test.todo('?skip=3 skips 3 users');
+
+      test.todo('invalid query params just returns all users');
     });
   });
 });
