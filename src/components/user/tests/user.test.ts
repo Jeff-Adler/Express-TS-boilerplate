@@ -16,7 +16,6 @@ describe('Test User component', () => {
 
     token = result.body.token;
 
-    //seeds
     done();
   });
 
@@ -58,7 +57,7 @@ describe('Test User component', () => {
       done();
     });
 
-    test('returns 400 error if invliad request is sent', async (done) => {
+    test('returns 400 error if invalid request is sent', async (done) => {
       const result = await factory.app.get('/users/').set({});
 
       expect(result.status).toBe(401);
@@ -104,6 +103,7 @@ describe('Test User component', () => {
         const take6Users: User[] = result2.body;
 
         const remainingUsers = take6Users.filter((user) => {
+          console.log(user);
           take3skip3Users.includes(user);
         });
 

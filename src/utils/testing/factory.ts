@@ -64,7 +64,7 @@ export class TestFactory {
    * Close DB connection
    */
   public async close(): Promise<void> {
-    await this.wipeDb();
+    await this.wipeUsers();
     this._connection.close();
   }
 
@@ -109,7 +109,7 @@ export class TestFactory {
   /**
    * Wipe database
    */
-  private async wipeDb(): Promise<void> {
+  private async wipeUsers(): Promise<void> {
     await this._userRepo.createQueryBuilder().delete().execute();
   }
 }
