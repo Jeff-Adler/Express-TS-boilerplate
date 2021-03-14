@@ -8,7 +8,7 @@ describe('Test User component', () => {
 
   beforeAll(async (done) => {
     await factory.init();
-    //authentication to get auth token
+
     const result = await factory.app.post('/auth/login').send({
       email: 'admin@admin.com',
       password: 'admin_password',
@@ -102,9 +102,8 @@ describe('Test User component', () => {
         const take3skip3Users: User[] = result.body;
         const take6Users: User[] = result2.body;
 
-        const remainingUsers = take6Users.filter((user) => {
-          console.log(user);
-          take3skip3Users.includes(user);
+        const remainingUsers = take6Users.filter((userA) => {
+          return take3skip3Users.find((userB) => userA.id === userB.id);
         });
 
         expect(remainingUsers.length).toEqual(3);
