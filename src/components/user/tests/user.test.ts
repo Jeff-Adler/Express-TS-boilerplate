@@ -110,7 +110,16 @@ describe('Test User component', () => {
         done();
       });
 
-      test.todo('invalid query params just returns all users');
+      test('invalid query params just returns all users', async (done) => {
+        const result = await factory.app.get('/users?illicitRequest=illicit').set({ Authorization: `Bearer ${token}` });
+        const result2 = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+
+        const users: User[] = result.body;
+        const users2: User[] = result2.body;
+
+        expect(users.join(',') === users2.join(',')).toBe(true);
+        done();
+      });
     });
   });
 });
