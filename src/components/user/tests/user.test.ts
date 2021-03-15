@@ -123,8 +123,18 @@ describe('Test User component', () => {
     });
   });
 
-  describe('GET /users/:id', () => {});
-  describe('GET /users/search', () => {});
+  describe('GET /users/:id', () => {
+    test.todo('GET /users/<id> return a single user with id <id>');
+
+    test.todo('GET /users/<non-numeric string> does not reach GET /users/:id endpoint');
+
+    test.todo('GET /users/<OutofBoundsId> returns a 400 status');
+  });
+  describe('GET /users/search', () => {
+    test.todo('GET /users/search returns 200 response and user if valid email is sent');
+
+    test.todo('GET /users/search returns 400 response and no user if invalid email is sent');
+  });
   describe('POST /users/', () => {});
   describe('PATCH /users/:id', () => {});
   describe('GET /users/:id', () => {});
