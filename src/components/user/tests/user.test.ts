@@ -1,6 +1,7 @@
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
 import { getConnection, getRepository } from 'typeorm';
+import { doesNotThrow } from 'assert';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -138,9 +139,21 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('GET /users/<non-numeric string> does not reach GET /users/:id endpoint');
+    test('GET /users/<non-numeric string> does not reach GET /users/:id endpoint', async (done) => {
+      const reqId = 'nonNumericString';
+      const result = await factory.app.get(`/users/${reqId}`).set({ Authorization: `Bearer ${token}` });
 
-    test.todo('GET /users/<OutofBoundsId> returns a 400 status');
+      expect(result.status).toBe(400);
+      done();
+    });
+
+    test('GET /users/<OutofBoundsId> returns a 400 status', async (done) => {
+      const reqId = 3000;
+      const result = await factory.app.get(`/users/${reqId}`).set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(404);
+      done();
+    });
   });
   describe('GET /users/search', () => {
     test.todo('GET /users/search returns 200 response and user if valid email is sent');
