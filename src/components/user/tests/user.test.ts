@@ -135,8 +135,19 @@ describe('Test User component', () => {
 
     test.todo('GET /users/search returns 400 response and no user if invalid email is sent');
   });
-  describe('POST /users/', () => {});
-  describe('PATCH /users/:id', () => {});
-  describe('GET /users/:id', () => {});
-  describe('DELETE /users/:id', () => {});
+  describe('POST /users/', () => {
+    test.todo('Sends 200 response and creates new user for valid user credentials');
+
+    test.todo('Sends 400 response and does not create new user for invalid user credentials');
+  });
+  describe('PATCH /users/:id', () => {
+    test.todo('Patches permitted fields');
+
+    test.todo('Does not patch prohibited fields');
+  });
+  describe('DELETE /users/:id', () => {
+    test.todo('Deletes user if valid id is sent');
+
+    test.todo('Does not delete user if invalid id is sent');
+  });
 });
