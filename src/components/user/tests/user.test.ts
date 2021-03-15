@@ -122,4 +122,11 @@ describe('Test User component', () => {
       });
     });
   });
+
+  describe('GET /users/:id', () => {});
+  describe('GET /users/search', () => {});
+  describe('POST /users/', () => {});
+  describe('PATCH /users/:id', () => {});
+  describe('GET /users/:id', () => {});
+  describe('DELETE /users/:id', () => {});
 });
