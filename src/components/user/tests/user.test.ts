@@ -1,5 +1,6 @@
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
+import { getConnection, getRepository } from 'typeorm';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -124,7 +125,18 @@ describe('Test User component', () => {
   });
 
   describe('GET /users/:id', () => {
-    test.todo('GET /users/<id> return a single user with id <id>');
+    test('GET /users/<id> return a single user with id, email, and role fields from user of id <id>', async (done) => {
+      const reqId = 1;
+      const result = await factory.app.get(`/users/${reqId}`).set({ Authorization: `Bearer ${token}` });
+
+      const { id, email, role } = result.body;
+      const user = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(reqId);
+
+      expect(id).toEqual(user.id);
+      expect(email).toEqual(user.email);
+      expect(role).toEqual(user.role);
+      done();
+    });
 
     test.todo('GET /users/<non-numeric string> does not reach GET /users/:id endpoint');
 
