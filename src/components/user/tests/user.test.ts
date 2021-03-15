@@ -1,7 +1,6 @@
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
-import { getConnection, getRepository } from 'typeorm';
-import { doesNotThrow } from 'assert';
+import { getConnection } from 'typeorm';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -155,8 +154,24 @@ describe('Test User component', () => {
       done();
     });
   });
+
   describe('GET /users/search', () => {
-    test.todo('GET /users/search returns 200 response and user if valid email is sent');
+    test('GET /users/search returns 200 response and user if valid email is sent', async (done) => {
+      const searchEmail = 'admin@admin.com';
+      const result = await factory.app
+        .get(`/users/search?email=${searchEmail}`)
+        .set({ Authorization: `Bearer ${token}` });
+
+      const { id, email, role } = result.body;
+      const user = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: searchEmail });
+
+      expect(id).toEqual(user.id);
+      expect(email).toEqual(user.email);
+      expect(role).toEqual(user.role);
+      done();
+    });
 
     test.todo('GET /users/search returns 400 response and no user if invalid email is sent');
   });
