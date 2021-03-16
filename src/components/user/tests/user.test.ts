@@ -173,12 +173,38 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('GET /users/search returns 400 response and no user if invalid email is sent');
+    test('GET /users/search returns 400 response and no user if invalid email is sent', async (done) => {
+      const searchEmail = 'invalid@invalid.com';
+      const result = await factory.app
+        .get(`/users/search?email=${searchEmail}`)
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(400);
+      done();
+    });
   });
   describe('POST /users/', () => {
-    test.todo('Sends 200 response and creates new user for valid user credentials');
+    test('Sends 200 response and creates new user for valid user credentials', async (done) => {
+      const email = 'test@test.com';
+      const password = 'test_password';
+      const role = 'USER';
+      const result = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authentication: `Bearer ${token}` });
 
-    test.todo('Sends 400 response and does not create new user for invalid user credentials');
+      expect(result.body.email).toEqual(email);
+      done();
+    });
+
+    test.todo(
+      'Sends 400 response and does not create new user for invalid user credentials: email',
+      async (done) => {}
+    );
+
+    test.todo('Sends 400 response and does not create new user for invalid user credentials: password');
+
+    test.todo('Sends 400 response and does not create new user for invalid user credentials: role');
   });
   describe('PATCH /users/:id', () => {
     test.todo('Patches permitted fields');
