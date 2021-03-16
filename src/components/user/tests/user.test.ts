@@ -197,13 +197,33 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo(
-      'Sends 400 response and does not create new user for invalid user credentials: email',
-      async (done) => {}
-    );
+    test.todo('Sending valid response adds a user to the database');
 
-    test.todo('Sends 400 response and does not create new user for invalid user credentials: password');
+    test('Sends 400 response and does not create new user for invalid user credentials: email', async (done) => {
+      const email = 'invalidEmail';
+      const password = 'test_password';
+      const role = 'USER';
+      const result = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authentication: `Bearer ${token}` });
 
+      expect(result.status).toBe(401);
+      done();
+    });
+
+    test('Sends 400 response and does not create new user for invalid user credentials: password', async (done) => {
+      const email = 'test@test.com';
+      const password = 'test';
+      const role = 'USER';
+      const result = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authentication: `Bearer ${token}` });
+
+      expect(result.status).toBe(401);
+      done();
+    });
     test.todo('Sends 400 response and does not create new user for invalid user credentials: role');
   });
   describe('PATCH /users/:id', () => {
