@@ -43,7 +43,7 @@ export class User implements IUser {
 
   // Coerce custom Role type as permitted postgresql type
   @Column('character varying')
-  @Validate(RoleValidator)
+  @RoleValidator()
   role!: Role;
 
   @Column()
