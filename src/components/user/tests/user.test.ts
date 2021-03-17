@@ -241,11 +241,11 @@ describe('Test User component', () => {
       done();
     });
     test('Sends 400 response and does not create new user for invalid user credentials: role', async (done) => {
-      const email = 'test@test.com';
+      const email = 'test3@test.com';
       const password = 'test_password';
       const role = 'InvalidRole';
       const result = await factory.app
-        .post(`users`)
+        .post(`/users/`)
         .send({ email, password, role })
         .set({ Authorization: `Bearer ${token}` });
 
