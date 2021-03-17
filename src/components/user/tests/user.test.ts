@@ -198,7 +198,22 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Sending valid response adds a user to the database');
+    test('Sending valid response adds a user to the database', async (done) => {
+      const usersBeforeReq: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({});
+
+      const email = 'test2@test.com';
+      const password = 'test_password';
+      const role = 'USER';
+      const result = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      const usersAfterReq: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({});
+
+      expect(usersAfterReq.length).toEqual(usersBeforeReq.length + 1);
+      done();
+    });
 
     test('Sends 400 response and does not create new user for invalid user credentials: email', async (done) => {
       const email = 'invalidEmail';
