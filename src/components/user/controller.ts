@@ -20,15 +20,15 @@ export class UserController {
    * ?take=(10)
    */
   @bind
-  public async listAll(req: Request, res: Response): Promise<void> {
+  public async listAll(req: Request, res: Response): Promise<Response> {
     try {
       const options: FindManyOptions<User> = this.userService.handleQueryParams(req);
 
       const users: User[] = await this.userService.readAll(options);
 
-      res.status(200).send(users);
+      return res.status(200).send(users);
     } catch (e) {
-      res.status(400).send(e);
+      return res.status(400).send(e);
     }
   }
 
@@ -45,7 +45,7 @@ export class UserController {
    * ?email=<email>
    */
   @bind
-  public async readUserByEmail(req: Request, res: Response): Promise<Response | void> {
+  public async readUserByEmail(req: Request, res: Response): Promise<Response> {
     try {
       const { email } = req.query;
       const user: User = await this.repo.findOneOrFail({
@@ -53,9 +53,9 @@ export class UserController {
         select: ['id', 'email', 'role'],
       });
 
-      res.status(200).send(user);
+      return res.status(200).send(user);
     } catch (err) {
-      res.status(400).send('Invalid search');
+      return res.status(400).send('Invalid search');
     }
   }
 
@@ -86,7 +86,7 @@ export class UserController {
   }
 
   @bind
-  public async editUser(req: Request, res: Response): Promise<void> {
+  public async editUser(req: Request, res: Response): Promise<Response> {
     const user: User = res.locals.retrievedUser;
 
     const updates: string[] = Object.keys(req.body);
@@ -97,7 +97,7 @@ export class UserController {
     };
 
     if (!updates.every((update) => isUserField(update))) {
-      res.status(400).send({ error: 'Invalid updates' });
+      return res.status(400).send({ error: 'Invalid updates' });
     }
 
     // Validation 2: fields on req.body are updateable User fields
@@ -106,7 +106,7 @@ export class UserController {
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
-      res.status(400).send({ error: 'Field cannot be updated' });
+      return res.status(400).send({ error: 'Field cannot be updated' });
     }
 
     // Validation 3: requested updates pass model validations
@@ -116,7 +116,7 @@ export class UserController {
     });
     const errors = await validate(user);
     if (errors.length > 0) {
-      res.status(405).send(errors);
+      return res.status(405).send(errors);
     }
 
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
@@ -125,26 +125,26 @@ export class UserController {
       const userObj: User = await this.repo.findOneOrFail(user.id, {
         select: ['id', 'email', 'role'],
       });
-      res.status(204).send(userObj);
+      return res.status(204).send(userObj);
     } catch (e) {
-      res.status(409).send('email already in use');
+      return res.status(409).send('email already in use');
     }
   }
 
   @bind
-  public async deleteUserById(req: Request, res: Response): Promise<void> {
+  public async deleteUserById(req: Request, res: Response): Promise<Response> {
     const user: User = res.locals.retrievedUser;
 
     try {
       await this.repo.remove(user);
-      res.status(204).send('Removed user');
+      return res.status(204).send('Removed user');
     } catch (error) {
-      res.status(404).send('User not found');
+      return res.status(404).send('User not found');
     }
   }
 
   @bind
-  public async deleteUsers(req: Request, res: Response): Promise<void> {
+  public async deleteUsers(req: Request, res: Response): Promise<Response> {
     try {
       await this.repo
         .createQueryBuilder()
@@ -152,9 +152,9 @@ export class UserController {
         .where({ role: Not('ADMIN') })
         .execute();
 
-      res.status(204).send('All users deleted');
+      return res.status(204).send('All users deleted');
     } catch (e) {
-      res.status(401).send(e);
+      return res.status(401).send(e);
     }
   }
 }
