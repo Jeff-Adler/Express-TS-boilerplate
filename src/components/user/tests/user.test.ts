@@ -194,8 +194,7 @@ describe('Test User component', () => {
         .send({ email, password, role })
         .set({ Authorization: `Bearer ${token}` });
 
-      console.log(result);
-
+      expect(result.body.email).toEqual(email);
       done();
     });
 
