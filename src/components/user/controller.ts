@@ -60,7 +60,7 @@ export class UserController {
   }
 
   @bind
-  public async newUser(req: Request, res: Response): Promise<void> {
+  public async newUser(req: Request, res: Response): Promise<Response> {
     let { email, password, role } = req.body;
     let user: User = new User();
     user.email = email;
@@ -70,7 +70,7 @@ export class UserController {
     // Model validations
     const errors: ValidationError[] = await validate(user);
     if (errors.length > 0) {
-      res.status(400).send(errors);
+      return res.status(400).send(errors);
     }
 
     // Database validations
@@ -79,9 +79,9 @@ export class UserController {
       const userObj: User = await this.repo.findOneOrFail(user.id, {
         select: ['id', 'email', 'role'],
       });
-      res.status(201).send(userObj);
+      return res.status(201).send(userObj);
     } catch (e) {
-      res.status(409).send('Email already in use');
+      return res.status(409).send('Email already in use');
     }
   }
 

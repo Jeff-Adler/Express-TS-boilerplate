@@ -240,7 +240,19 @@ describe('Test User component', () => {
       expect(result.status).toBe(400);
       done();
     });
-    test.todo('Sends 400 response and does not create new user for invalid user credentials: role');
+    test('Sends 400 response and does not create new user for invalid user credentials: role', async (done) => {
+      const email = 'test@test.com';
+      const password = 'test_password';
+      const role = 'InvalidRole';
+      const result = await factory.app
+        .post(`users`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      console.log(result.body);
+      expect(result.status).toBe(400);
+      done();
+    });
   });
   describe('PATCH /users/:id', () => {
     test.todo('Patches permitted fields');
