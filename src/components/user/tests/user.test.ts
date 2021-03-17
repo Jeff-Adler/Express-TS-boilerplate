@@ -183,6 +183,7 @@ describe('Test User component', () => {
       done();
     });
   });
+
   describe('POST /users/', () => {
     test('Sends 200 response and creates new user for valid user credentials', async (done) => {
       const email = 'test@test.com';
@@ -191,9 +192,10 @@ describe('Test User component', () => {
       const result = await factory.app
         .post(`/users/`)
         .send({ email, password, role })
-        .set({ Authentication: `Bearer ${token}` });
+        .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.body.email).toEqual(email);
+      console.log(result);
+
       done();
     });
 
@@ -206,9 +208,9 @@ describe('Test User component', () => {
       const result = await factory.app
         .post(`/users/`)
         .send({ email, password, role })
-        .set({ Authentication: `Bearer ${token}` });
+        .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(401);
+      expect(result.status).toBe(400);
       done();
     });
 
@@ -219,9 +221,9 @@ describe('Test User component', () => {
       const result = await factory.app
         .post(`/users/`)
         .send({ email, password, role })
-        .set({ Authentication: `Bearer ${token}` });
+        .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(401);
+      expect(result.status).toBe(400);
       done();
     });
     test.todo('Sends 400 response and does not create new user for invalid user credentials: role');
