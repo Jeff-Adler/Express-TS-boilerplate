@@ -12,6 +12,7 @@ export const roleValidator = (role: Role): boolean => {
   return <Role>role !== undefined;
 };
 
+//ensure decorator works, and then ensure validation itself works
 @ValidatorConstraint({ name: 'roleValidator', async: false })
 export class RoleValidatorConstraint implements ValidatorConstraintInterface {
   validate(role: Role, args: ValidationArguments) {
