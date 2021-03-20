@@ -5,24 +5,21 @@ import {
   ValidationOptions,
   registerDecorator,
 } from 'class-validator';
-import { Role } from './Roles';
+import { Role, rolesArr } from './Roles';
 
-export const roleValidator = (role: Role): boolean => {
-  console.log('Role Validator: ' + <Role>role);
-  return <Role>role !== undefined;
+export const roleValidator = (role: Role): role is Role => {
+  return rolesArr.includes(role);
 };
 
-//ensure decorator works, and then ensure validation itself works
 @ValidatorConstraint({ name: 'roleValidator', async: false })
 export class RoleValidatorConstraint implements ValidatorConstraintInterface {
   validate(role: Role, args: ValidationArguments) {
-    console.log(role);
+    const result = roleValidator(role);
     return roleValidator(role);
   }
 
   defaultMessage(args: ValidationArguments) {
-    // here you can provide default error message if validation failed
-    return 'Invalid role';
+    return 'Invalid Role';
   }
 }
 
