@@ -72,7 +72,7 @@ export class UserController {
     if (errors.length > 0) {
       return res.status(400).send(errors);
     }
-    console.log('passed model validations');
+
     // Database validations
     try {
       await this.repo.save(user);

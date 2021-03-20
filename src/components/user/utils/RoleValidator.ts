@@ -14,7 +14,6 @@ export const roleValidator = (role: Role): role is Role => {
 @ValidatorConstraint({ name: 'roleValidator', async: false })
 export class RoleValidatorConstraint implements ValidatorConstraintInterface {
   validate(role: Role, args: ValidationArguments) {
-    const result = roleValidator(role);
     return roleValidator(role);
   }
 
