@@ -327,33 +327,39 @@ describe('Test User component', () => {
     });
 
     test('Patches permitted fields: role', async (done) => {
-      // const email = 'testprePatchUser@test.com';
-      // const password = 'testPatchUser';
-      // const role = 'USER';
-      // const prePatchResult = await factory.app
-      //   .post(`/users/`)
-      //   .send({ email, password, role })
-      //   .set({ Authorization: `Bearer ${token}` });
+      const email = 'testprePatchUser3@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
 
-      // expect(prePatchResult.status).toBe(201);
-      // expect(prePatchResult.body.email).toBe('testprePatchUser@test.com');
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser3@test.com');
 
-      // const patchedEmail = 'testpostPatchUser@test.com';
+      const patchedRole = 'ADMIN';
 
-      // const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-      // const postPatchResult = await factory.app
-      //   .patch(`/users/${user.id}`)
-      //   .send({ email: patchedEmail })
-      //   .set({ Authorization: `Bearer ${token}` });
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ role: patchedRole })
+        .set({ Authorization: `Bearer ${token}` });
 
-      // expect(postPatchResult.status).toBe(201);
-      // expect(postPatchResult.body.email).toBe('testpostPatchUser@test.com');
+      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email });
+
+      expect(postPatchResult.status).toBe(201);
+      expect(postPatchResult.body.role).toBe('ADMIN');
+      expect(postPatchUser.role).toBe('ADMIN');
+      expect(postPatchUser.role).not.toBe('USER');
       done();
     });
 
     test.todo('Does not patch prohibited fields');
 
-    test.todo('Return 409 if requested new email already exists in the db');
+    test.todo('Return 409 if requested email already exists in the db');
 
     test.todo('Possibly send error if same value is given for requested patch');
   });
