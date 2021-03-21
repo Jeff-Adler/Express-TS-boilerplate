@@ -282,6 +282,7 @@ describe('Test User component', () => {
 
       expect(postPatchResult.status).toBe(201);
       expect(postPatchResult.body.email).toBe('testpostPatchUser@test.com');
+      // TODO: These conditions and their equivalent in other tests should really be indepedent unit tests:
       expect(postPatchUser.id).toEqual(user.id);
       expect(postPatchUser.email).not.toBe(email);
       expect(postPatchUser.email).toBe(patchedEmail);
@@ -357,7 +358,37 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Does not patch prohibited fields');
+    test('Does not patch prohibited fields: id', async (done) => {
+      const email = 'testprePatchUser4@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser4@test.com');
+
+      const patchedId = 45232;
+
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ id: patchedId })
+        .set({ Authorization: `Bearer ${token}` });
+
+      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email });
+
+      expect(postPatchResult.status).toBe(400);
+      expect(postPatchResult.body).toEqual('Field cannot be updated');
+      expect(postPatchUser.id).not.toEqual(patchedId);
+      expect(user.id).toEqual(postPatchUser.id);
+      done();
+    });
 
     test.todo('Return 409 if requested email already exists in the db');
 
