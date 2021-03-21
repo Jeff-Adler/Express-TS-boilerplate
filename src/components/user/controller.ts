@@ -128,9 +128,6 @@ export class UserController {
       });
       return res.status(201).send(userObj);
     } catch (e) {
-      // I could catch uniqueness error here
-      if (e && e.code === 'PG_UNIQUE_CONSTRAINT_VIOLATION') {
-      }
       return res.status(409).send('email already in use');
     }
   }
