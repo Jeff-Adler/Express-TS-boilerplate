@@ -256,7 +256,7 @@ describe('Test User component', () => {
   });
 
   describe('PATCH /users/:id', () => {
-    test('Patches permitted fields', async (done) => {
+    test('Patches permitted fields: email', async (done) => {
       const email = 'testprePatchUser@test.com';
       const password = 'testPatchUser';
       const role = 'USER';
@@ -281,11 +281,74 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Possibly send error if same value is given for requested patch');
+    test('Patches permitted fields: password', async (done) => {
+      const email = 'testprePatchUser2@test.com';
+      const password = 'testprePatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+
+      const patchedPassword = 'testpostPatchUser';
+
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const prePatchHashedPassword = user.password;
+      // Expect that original password is hashed
+      expect(prePatchHashedPassword).not.toBe(password);
+
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ password: patchedPassword })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(postPatchResult.status).toBe(201);
+
+      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email });
+
+      const postPatchHashedPassword = postPatchUser.password;
+      // Expect that updated password is hashed
+      expect(postPatchHashedPassword).not.toBe(patchedPassword);
+      // Expect that updated password is not equal to original password
+      expect(prePatchHashedPassword).not.toEqual(postPatchHashedPassword);
+
+      done();
+    });
+
+    test('Patches permitted fields: role', async (done) => {
+      const email = 'testprePatchUser@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser@test.com');
+
+      const patchedEmail = 'testpostPatchUser@test.com';
+
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ email: patchedEmail })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(postPatchResult.status).toBe(201);
+      expect(postPatchResult.body.email).toBe('testpostPatchUser@test.com');
+      done();
+    });
 
     test.todo('Does not patch prohibited fields');
 
     test.todo('Return 409 if requested new email already exists in the db');
+
+    test.todo('Possibly send error if same value is given for requested patch');
   });
   describe('DELETE /users/:id', () => {
     test.todo('Deletes user if valid id is sent');
