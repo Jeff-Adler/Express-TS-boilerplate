@@ -121,6 +121,7 @@ export class UserController {
 
     // Validation 4: requested updates pass database validations (e.g. email uniqueness)
     try {
+      // Need to bypass restruction on email uniqueness for patching of other fields.
       await this.repo.save(user);
       const userObj: User = await this.repo.findOneOrFail(user.id, {
         select: ['id', 'email', 'role'],
