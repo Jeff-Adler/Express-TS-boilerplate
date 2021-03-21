@@ -125,7 +125,7 @@ export class UserController {
       const userObj: User = await this.repo.findOneOrFail(user.id, {
         select: ['id', 'email', 'role'],
       });
-      return res.status(204).send(userObj);
+      return res.status(201).send(userObj);
     } catch (e) {
       return res.status(409).send('email already in use');
     }

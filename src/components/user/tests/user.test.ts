@@ -240,6 +240,7 @@ describe('Test User component', () => {
       expect(result.status).toBe(400);
       done();
     });
+
     test('Sends 400 response and does not create new user for invalid user credentials: role', async (done) => {
       const email = 'test3@test.com';
       const password = 'test_password';
@@ -249,15 +250,42 @@ describe('Test User component', () => {
         .send({ email, password, role })
         .set({ Authorization: `Bearer ${token}` });
 
-      console.log(result.body);
       expect(result.status).toBe(400);
       done();
     });
   });
+
   describe('PATCH /users/:id', () => {
-    test.todo('Patches permitted fields');
+    test('Patches permitted fields', async (done) => {
+      const email = 'testprePatchUser@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser@test.com');
+
+      const patchedEmail = 'testpostPatchUser@test.com';
+
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ email: patchedEmail })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(postPatchResult.status).toBe(201);
+      expect(postPatchResult.body.email).toBe('testpostPatchUser@test.com');
+      done();
+    });
+
+    test.todo('Possibly send error if same value is given for requested patch');
 
     test.todo('Does not patch prohibited fields');
+
+    test.todo('Return 409 if requested new email already exists in the db');
   });
   describe('DELETE /users/:id', () => {
     test.todo('Deletes user if valid id is sent');
