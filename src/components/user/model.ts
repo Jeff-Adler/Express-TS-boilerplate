@@ -7,10 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeUpdate,
-  UpdateEvent,
   AfterLoad,
 } from 'typeorm';
-import { IsEmail, MinLength, Validate } from 'class-validator';
+import { IsEmail, MinLength } from 'class-validator';
 import bcrypt from 'bcrypt';
 
 import { RoleValidator } from './utils/RoleValidator';
