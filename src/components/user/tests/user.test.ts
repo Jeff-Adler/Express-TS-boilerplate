@@ -390,6 +390,8 @@ describe('Test User component', () => {
       done();
     });
 
+    test.todo('Does not patch prohibited fields: nonExistentField');
+
     test.todo('Return 409 if requested email already exists in the db');
 
     test.todo('Possibly send error if same value is given for requested patch');
