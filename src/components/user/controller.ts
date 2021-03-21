@@ -102,6 +102,8 @@ export class UserController {
 
     // Validation 2: fields on req.body are updateable User fields
     const isUpdateableUserField = (update: string): update is UpdateableUserField => {
+      console.log(update);
+      console.log(<UpdateableUserField>update !== undefined);
       return <UpdateableUserField>update !== undefined;
     };
 
