@@ -106,7 +106,7 @@ export class UserController {
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
-      return res.status(400).send({ error: `Field cannot be updated` });
+      return res.status(400).send(`Field cannot be updated`);
     }
 
     // Validation 3: requested updates pass model validations

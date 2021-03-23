@@ -384,7 +384,7 @@ describe('Test User component', () => {
         .findOneOrFail({ email });
 
       expect(postPatchResult.status).toBe(400);
-      expect(postPatchResult.body).toEqual('Field cannot be updated');
+      expect(postPatchResult.text).toEqual('Field cannot be updated');
       expect(postPatchUser.id).not.toEqual(patchedId);
       expect(user.id).toEqual(postPatchUser.id);
       done();
