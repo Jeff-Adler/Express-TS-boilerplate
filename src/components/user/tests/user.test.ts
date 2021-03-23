@@ -420,7 +420,32 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Return 409 if requested email already exists in the db');
+    test('Return 409 if requested email already exists in the db', async (done) => {
+      const email = 'testprePatchUser6@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser6@test.com');
+
+      const user1: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+
+      const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
+      const user2: User = users[Math.floor(Math.random() * users.length) + 1];
+
+      const result = await factory.app
+        .patch(`/users/${user1.id}`)
+        .send({ email: user2.email })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(409);
+      expect(result.text).toBe('email already in use');
+      done();
+    });
 
     test.todo('Possibly send error if same value is given for requested patch');
   });
