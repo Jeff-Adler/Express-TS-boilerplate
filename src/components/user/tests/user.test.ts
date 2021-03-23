@@ -390,7 +390,35 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Does not patch prohibited fields: nonExistentField');
+    test('Does not patch prohibited fields: nonExistentField', async (done) => {
+      const email = 'testprePatchUser5@test.com';
+      const password = 'testPatchUser';
+      const role = 'USER';
+      const prePatchResult = await factory.app
+        .post(`/users/`)
+        .send({ email, password, role })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(prePatchResult.status).toBe(201);
+      expect(prePatchResult.body.email).toBe('testprePatchUser5@test.com');
+
+      const nonExistentField = 'invalid update';
+
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+
+      const postPatchResult = await factory.app
+        .patch(`/users/${user.id}`)
+        .send({ nonExistentField })
+        .set({ Authorization: `Bearer ${token}` });
+
+      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email });
+
+      expect(postPatchResult.status).toBe(400);
+      expect(postPatchResult.text).toEqual('Field cannot be updated');
+      done();
+    });
 
     test.todo('Return 409 if requested email already exists in the db');
 
