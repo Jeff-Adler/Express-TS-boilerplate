@@ -15,7 +15,9 @@ import bcrypt from 'bcrypt';
 import { RoleValidator } from './utils/RoleValidator';
 import { Role } from './utils/Roles';
 
-export type UpdateableUserField = 'email' | 'password' | 'role';
+export const UpdateableUserFields = ['email', 'password', 'role'] as const;
+
+export type UpdateableUserField = typeof UpdateableUserFields[number];
 
 export interface IUser {
   id: number;

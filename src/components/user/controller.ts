@@ -3,7 +3,7 @@ import { getRepository, Repository, Not, FindManyOptions, getConnection } from '
 import { validate, ValidationError } from 'class-validator';
 import { bind } from 'decko';
 
-import { User, IUser, UpdateableUserField } from './model';
+import { User, IUser, UpdateableUserField, UpdateableUserFields } from './model';
 import { UserService } from './service';
 
 export class UserController {
@@ -102,9 +102,7 @@ export class UserController {
 
     // Validation 2: fields on req.body are updateable User fields
     const isUpdateableUserField = (update: string): update is UpdateableUserField => {
-      console.log(update);
-      console.log(<UpdateableUserField>update !== undefined);
-      return <UpdateableUserField>update !== undefined;
+      return UpdateableUserFields.includes(<UpdateableUserField>update);
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
