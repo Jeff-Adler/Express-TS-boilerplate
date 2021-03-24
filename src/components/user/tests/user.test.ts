@@ -446,8 +446,6 @@ describe('Test User component', () => {
       expect(result.text).toBe('email already in use');
       done();
     });
-
-    test.todo('Possibly send error if same value is given for requested patch');
   });
   describe('DELETE /users/:id', () => {
     test('Deletes user if valid id is sent', async (done) => {
@@ -474,6 +472,12 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('Does not delete user if invalid id is sent');
+    test('Does not delete user if invalid id is sent', async (done) => {
+      const postDeleteResult = await factory.app.delete(`/users/5000`).set({ Authorization: `Bearer ${token}` });
+
+      expect(postDeleteResult.status).toBe(404);
+      expect(postDeleteResult.text).toEqual(`User not found`);
+      done();
+    });
   });
 });
