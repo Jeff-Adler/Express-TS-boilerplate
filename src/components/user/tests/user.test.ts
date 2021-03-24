@@ -465,12 +465,12 @@ describe('Test User component', () => {
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
 
       const postDeleteResult = await factory.app.delete(`/users/${user.id}`).set({ Authorization: `Bearer ${token}` });
-      expect(postDeleteResult.status).toBe(204);
-      console.log(postDeleteResult.text);
+      const postDeleteUser: User | undefined = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOne({ email });
+      expect(postDeleteResult.status).toBe(201);
       expect(postDeleteResult.text).toEqual(`Removed user ${user.email}`);
-      expect(await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email })).toBe(
-        undefined
-      );
+      expect(postDeleteUser).toBe(undefined);
       done();
     });
 

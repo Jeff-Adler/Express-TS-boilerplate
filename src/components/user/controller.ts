@@ -138,7 +138,7 @@ export class UserController {
 
     try {
       await this.repo.remove(user);
-      return res.status(204).send(`Removed user ${user.email}`);
+      return res.status(201).send(`Removed user ${user.email}`);
     } catch (error) {
       return res.status(404).send('User not found');
     }
