@@ -285,39 +285,26 @@ describe('Test User component', () => {
     });
 
     test('Patches permitted fields: password', async (done) => {
-      const email = 'testprePatchUser2@test.com';
-      const password = 'testprePatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
+      const seededUser: User = await factory.seedSingleUser();
+
+      const newPassword = 'patchedPassword';
+
+      const result = await factory.app
+        .patch(`/users/${seededUser.id}`)
+        .send({ password: newPassword })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(prePatchResult.status).toBe(201);
+      expect(result.status).toBe(201);
 
-      const patchedPassword = 'testpostPatchUser';
-
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-      const prePatchHashedPassword = user.password;
-      // Expect that original password is hashed
-      expect(prePatchHashedPassword).not.toBe(password);
-
-      const postPatchResult = await factory.app
-        .patch(`/users/${user.id}`)
-        .send({ password: patchedPassword })
-        .set({ Authorization: `Bearer ${token}` });
-
-      expect(postPatchResult.status).toBe(201);
-
-      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
-        .findOneOrFail({ email });
+        .findOneOrFail({ email: seededUser.email });
 
-      const postPatchHashedPassword = postPatchUser.password;
+      const hashedPatchedPassword = patchedUser.password;
       // Expect that updated password is hashed
-      expect(postPatchHashedPassword).not.toBe(patchedPassword);
+      expect(hashedPatchedPassword).not.toBe(newPassword);
       // Expect that updated password is not equal to original password
-      expect(prePatchHashedPassword).not.toEqual(postPatchHashedPassword);
+      expect(hashedPatchedPassword).not.toEqual(seededUser.password);
 
       done();
     });
