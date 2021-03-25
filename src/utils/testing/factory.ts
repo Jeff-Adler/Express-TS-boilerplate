@@ -53,9 +53,9 @@ export class TestFactory {
    */
   public async init(): Promise<void> {
     this._connection = await createConnection(this.options);
+
     this._userRepo = this._connection.getRepository(User);
     await this.seedAdminUser();
-    await this.seedUsers();
 
     this._app = new App().app;
   }
@@ -89,7 +89,7 @@ export class TestFactory {
   /**
    * Seed users into database for testing
    */
-  private async seedUsers(): Promise<void> {
+  public async seedUsers(): Promise<void> {
     for (let i = 0; i < 10; i++) {
       const userCreds = {
         email: faker.internet.email(),
@@ -103,6 +103,25 @@ export class TestFactory {
       user.password = password;
       user.role = <Role>role;
       await this._userRepo.save(user);
+    }
+  }
+
+  public async seedSingleUser(): Promise<User> {
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const role = 'USER';
+
+    let user: User = new User();
+
+    user.email = email;
+    user.password = password;
+    user.role = <Role>role;
+
+    try {
+      await this._userRepo.save(user);
+      return this._userRepo.findOneOrFail(email);
+    } catch {
+      throw new Error('Could not save user');
     }
   }
 

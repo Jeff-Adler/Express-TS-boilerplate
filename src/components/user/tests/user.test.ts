@@ -1,6 +1,21 @@
+import faker from 'faker';
+
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
 import { getConnection } from 'typeorm';
+
+// const seedAndReturnUser = async (): Promise<User> => {
+//   const email = faker.internet.email();
+//   const password = faker.internet.password();
+//   const role = 'USER';
+//   const preDeleteResult = await factory.app
+//     .post(`/users/`)
+//     .send({ email, password, role })
+//     .set({ Authorization: `Bearer ${token}` });
+
+//   expect(preDeleteResult.status).toBe(201);
+//   expect(preDeleteResult.body.email).toBe('testDeleteUser7@test.com');
+// };
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -9,6 +24,8 @@ describe('Test User component', () => {
 
   beforeAll(async (done) => {
     await factory.init();
+
+    await factory.seedUsers();
 
     const result = await factory.app.post('/auth/login').send({
       email: 'admin@admin.com',
