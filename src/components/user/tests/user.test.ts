@@ -4,19 +4,6 @@ import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
 import { getConnection } from 'typeorm';
 
-// const seedAndReturnUser = async (): Promise<User> => {
-//   const email = faker.internet.email();
-//   const password = faker.internet.password();
-//   const role = 'USER';
-//   const preDeleteResult = await factory.app
-//     .post(`/users/`)
-//     .send({ email, password, role })
-//     .set({ Authorization: `Bearer ${token}` });
-
-//   expect(preDeleteResult.status).toBe(201);
-//   expect(preDeleteResult.body.email).toBe('testDeleteUser7@test.com');
-// };
-
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
 
@@ -274,35 +261,26 @@ describe('Test User component', () => {
 
   describe('PATCH /users/:id', () => {
     test('Patches permitted fields: email', async (done) => {
-      const email = 'testprePatchUser@test.com';
-      const password = 'testPatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
+      const seededUser: User = await factory.seedSingleUser();
+
+      const newEmail = 'patchedEmail@test.com';
+
+      const result = await factory.app
+        .patch(`/users/${seededUser.id}`)
+        .send({ email: newEmail })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(prePatchResult.status).toBe(201);
-      expect(prePatchResult.body.email).toBe('testprePatchUser@test.com');
+      expect(result.status).toBe(201);
+      expect(result.body.email).toEqual(newEmail);
 
-      const patchedEmail = 'testpostPatchUser@test.com';
-
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-      const postPatchResult = await factory.app
-        .patch(`/users/${user.id}`)
-        .send({ email: patchedEmail })
-        .set({ Authorization: `Bearer ${token}` });
-
-      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
-        .getRepository(User)
-        .findOneOrFail({ email: patchedEmail });
-
-      expect(postPatchResult.status).toBe(201);
-      expect(postPatchResult.body.email).toBe('testpostPatchUser@test.com');
       // TODO: These conditions and their equivalent in other tests should really be indepedent unit tests:
-      expect(postPatchUser.id).toEqual(user.id);
-      expect(postPatchUser.email).not.toBe(email);
-      expect(postPatchUser.email).toBe(patchedEmail);
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: newEmail });
+      expect(patchedUser.id).toEqual(seededUser.id);
+      expect(patchedUser.email).not.toBe(seededUser.email);
+      expect(patchedUser.email).toBe(newEmail);
+
       done();
     });
 
