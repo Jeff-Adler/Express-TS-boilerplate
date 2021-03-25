@@ -119,7 +119,7 @@ export class TestFactory {
 
     try {
       await this._userRepo.save(user);
-      return this._userRepo.findOneOrFail(email);
+      return this._userRepo.findOneOrFail({ email });
     } catch {
       throw new Error('Could not save user');
     }

@@ -466,23 +466,24 @@ describe('Test User component', () => {
   });
   describe('DELETE /users/:id', () => {
     test('Deletes user if valid id is sent', async (done) => {
-      const email = 'testDeleteUser7@test.com';
-      const password = 'testDeleteUser';
-      const role = 'USER';
-      const preDeleteResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
-        .set({ Authorization: `Bearer ${token}` });
+      // const email = 'testDeleteUser7@test.com';
+      // const password = 'testDeleteUser';
+      // const role = 'USER';
+      // const preDeleteResult = await factory.app
+      //   .post(`/users/`)
+      //   .send({ email, password, role })
+      //   .set({ Authorization: `Bearer ${token}` });
 
-      expect(preDeleteResult.status).toBe(201);
-      expect(preDeleteResult.body.email).toBe('testDeleteUser7@test.com');
+      // expect(preDeleteResult.status).toBe(201);
+      // expect(preDeleteResult.body.email).toBe('testDeleteUser7@test.com');
 
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-
+      // const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const user: User = await factory.seedSingleUser();
+      console.log(user);
       const postDeleteResult = await factory.app.delete(`/users/${user.id}`).set({ Authorization: `Bearer ${token}` });
       const postDeleteUser: User | undefined = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
-        .findOne({ email });
+        .findOne({ email: user.email });
       expect(postDeleteResult.status).toBe(201);
       expect(postDeleteResult.text).toEqual(`Removed user ${user.email}`);
       expect(postDeleteUser).toBe(undefined);
