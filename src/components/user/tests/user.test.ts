@@ -482,10 +482,20 @@ describe('Test User component', () => {
     });
 
     test('Does not delete user if invalid id is sent', async (done) => {
-      const postDeleteResult = await factory.app.delete(`/users/5000`).set({ Authorization: `Bearer ${token}` });
+      const getOneMaximumId = async (): Promise<number> => {
+        const query = getConnection(process.env.CONNECTION_TYPE).getRepository(User).createQueryBuilder('user');
+        query.select('MAX(user.id)', 'max');
+        const result = await query.getRawOne();
+        return result.max;
+      };
 
-      expect(postDeleteResult.status).toBe(404);
-      expect(postDeleteResult.text).toEqual(`User not found`);
+      // Retrieve highest id in db and add one to generate an id that does not exist in the db
+      const invalidId = (await getOneMaximumId()) + 1;
+
+      const result = await factory.app.delete(`/users/${invalidId}`).set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(404);
+      expect(result.text).toEqual(`User not found`);
       done();
     });
   });
