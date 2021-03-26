@@ -310,33 +310,25 @@ describe('Test User component', () => {
     });
 
     test('Patches permitted fields: role', async (done) => {
-      const email = 'testprePatchUser3@test.com';
-      const password = 'testPatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
+      const seededUser: User = await factory.seedSingleUser();
+
+      const newRole = 'ADMIN';
+
+      const result = await factory.app
+        .patch(`/users/${seededUser.id}`)
+        .send({ role: newRole })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(prePatchResult.status).toBe(201);
-      expect(prePatchResult.body.email).toBe('testprePatchUser3@test.com');
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe('ADMIN');
 
-      const patchedRole = 'ADMIN';
-
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-      const postPatchResult = await factory.app
-        .patch(`/users/${user.id}`)
-        .send({ role: patchedRole })
-        .set({ Authorization: `Bearer ${token}` });
-
-      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
-        .findOneOrFail({ email });
+        .findOneOrFail({ email: seededUser.email });
 
-      expect(postPatchResult.status).toBe(201);
-      expect(postPatchResult.body.role).toBe('ADMIN');
-      expect(postPatchUser.role).toBe('ADMIN');
-      expect(postPatchUser.role).not.toBe('USER');
+      expect(patchedUser.role).toBe('ADMIN');
+      expect(patchedUser.role).not.toBe('USER');
+
       done();
     });
 
