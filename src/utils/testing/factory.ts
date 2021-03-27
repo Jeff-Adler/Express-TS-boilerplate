@@ -1,12 +1,11 @@
 import 'reflect-metadata';
-import { createConnection, Connection, Not, Repository } from 'typeorm';
+import express from 'express';
+import supertest from 'supertest';
+import { createConnection, Connection, Repository } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import faker from 'faker';
 
-import express from 'express';
 import { App } from '../../app';
-
-import supertest from 'supertest';
 import { User } from '../../components/user/model';
 import { Role } from '../../components/user/utils/Roles';
 
@@ -69,6 +68,16 @@ export class TestFactory {
   }
 
   /**
+   * Login admin user for authentication across endpoints
+   */
+  public async loginAdminUser() {
+    return await this.app.post('/auth/login').send({
+      email: 'admin@admin.com',
+      password: 'admin_password',
+    });
+  }
+
+  /**
    * Create admin user for authentication across endpoints
    */
   private async seedAdminUser(): Promise<void> {
@@ -106,6 +115,9 @@ export class TestFactory {
     }
   }
 
+  /**
+   * Seed and return single user. For use by individual tests
+   */
   public async seedSingleUser(): Promise<User> {
     const email = faker.internet.email();
     const password = faker.internet.password();

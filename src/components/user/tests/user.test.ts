@@ -1,4 +1,3 @@
-import faker from 'faker';
 import { getConnection } from 'typeorm';
 
 import { TestFactory } from '../../../utils/testing/factory';
@@ -15,11 +14,9 @@ describe('Test User component', () => {
 
     await factory.seedUsers();
 
-    const result = await factory.app.post('/auth/login').send({
-      email: 'admin@admin.com',
-      password: 'admin_password',
-    });
+    const result = await factory.loginAdminUser();
 
+    // Set JWT
     token = result.body.token;
 
     done();
@@ -274,7 +271,7 @@ describe('Test User component', () => {
       expect(result.status).toBe(201);
       expect(result.body.email).toEqual(newEmail);
 
-      // TODO: These conditions and their equivalent in other tests should really be indepedent unit tests:
+      // TODO: These conditions and their equivalent in other tests should be indepedent unit tests:
       const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
         .findOneOrFail({ email: newEmail });
