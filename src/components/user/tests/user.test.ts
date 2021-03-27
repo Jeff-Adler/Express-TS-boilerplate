@@ -1,8 +1,9 @@
 import faker from 'faker';
+import { getConnection } from 'typeorm';
 
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
-import { getConnection } from 'typeorm';
+import { getOneMaxId } from './userFactory';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -333,34 +334,26 @@ describe('Test User component', () => {
     });
 
     test('Does not patch prohibited fields: id', async (done) => {
-      const email = 'testprePatchUser4@test.com';
-      const password = 'testPatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
-        .set({ Authorization: `Bearer ${token}` });
+      const seededUser: User = await factory.seedSingleUser();
 
-      expect(prePatchResult.status).toBe(201);
-      expect(prePatchResult.body.email).toBe('testprePatchUser4@test.com');
-
-      const patchedId = 45232;
-
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      //generate Id that is currently used, to ensure is not due to Id already existing in db
+      const newId = (await getOneMaxId()) + 1;
 
       const postPatchResult = await factory.app
-        .patch(`/users/${user.id}`)
-        .send({ id: patchedId })
+        .patch(`/users/${seededUser.id}`)
+        .send({ id: newId })
         .set({ Authorization: `Bearer ${token}` });
-
-      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
-        .getRepository(User)
-        .findOneOrFail({ email });
 
       expect(postPatchResult.status).toBe(400);
       expect(postPatchResult.text).toEqual('Field cannot be updated');
-      expect(postPatchUser.id).not.toEqual(patchedId);
-      expect(user.id).toEqual(postPatchUser.id);
+
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: seededUser.email });
+
+      expect(patchedUser.id).not.toEqual(newId);
+      expect(patchedUser.id).toEqual(seededUser.id);
+
       done();
     });
 
@@ -439,15 +432,8 @@ describe('Test User component', () => {
     });
 
     test('Does not delete user if invalid id is sent', async (done) => {
-      const getOneMaximumId = async (): Promise<number> => {
-        const query = getConnection(process.env.CONNECTION_TYPE).getRepository(User).createQueryBuilder('user');
-        query.select('MAX(user.id)', 'max');
-        const result = await query.getRawOne();
-        return result.max;
-      };
-
       // Retrieve highest id in db and add one to generate an id that does not exist in the db
-      const invalidId = (await getOneMaximumId()) + 1;
+      const invalidId = (await getOneMaxId()) + 1;
 
       const result = await factory.app.delete(`/users/${invalidId}`).set({ Authorization: `Bearer ${token}` });
 
