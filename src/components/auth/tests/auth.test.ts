@@ -3,12 +3,16 @@ import { TestFactory } from '../../../utils/testing/factory';
 describe('Test Auth component', () => {
   let factory: TestFactory = new TestFactory();
 
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await factory.init();
+
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await factory.close();
+
+    done();
   });
 
   describe('POST /login', () => {
@@ -20,6 +24,7 @@ describe('Test Auth component', () => {
 
       expect(result.status).toBe(200);
       expect(Object.keys(result.body)).toContain('token');
+
       done();
     });
 
@@ -28,6 +33,7 @@ describe('Test Auth component', () => {
 
       expect(result.status).toBe(400);
       expect(result.text).toBe('Request body lacked fields: email and/or password');
+
       done();
     });
 
@@ -39,6 +45,7 @@ describe('Test Auth component', () => {
 
       expect(result.status).toBe(401);
       expect(result.text).toBe('Invalid password');
+
       done();
     });
 
@@ -50,6 +57,7 @@ describe('Test Auth component', () => {
 
       expect(result.status).toBe(401);
       expect(result.text).toBe('User with email address "invalidemailaddress@admin.com" not found');
+
       done();
     });
   });

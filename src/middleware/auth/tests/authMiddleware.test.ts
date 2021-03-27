@@ -3,12 +3,16 @@ import { TestFactory } from '../../../utils/testing/factory';
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
 
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await factory.init();
+
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await factory.close();
+
+    done();
   });
 
   //Ensure isAuthorized is broken up into separate functions for each utility it serves
