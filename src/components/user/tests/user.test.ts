@@ -287,10 +287,10 @@ describe('Test User component', () => {
       expect(result.status).toBe(201);
       expect(result.body.email).toEqual(newEmail);
 
-      // TODO: These conditions and their equivalent in other tests should be indepedent unit tests:
       const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
         .findOneOrFail({ email: newEmail });
+
       expect(patchedUser.id).toEqual(seededUser.id);
       expect(patchedUser.email).not.toBe(seededUser.email);
       expect(patchedUser.email).toBe(newEmail);
