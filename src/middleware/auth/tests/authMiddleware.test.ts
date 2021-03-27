@@ -16,6 +16,7 @@ describe('Testing Authentication middleware', () => {
   });
 
   //Ensure isAuthorized is broken up into separate functions for each utility it serves
+  //User jest.mock to mock middleware
   describe('Testing hasPermission', () => {
     test.todo('Proceeds to next middleware if user is permitted');
 

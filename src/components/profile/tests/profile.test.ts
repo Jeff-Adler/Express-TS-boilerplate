@@ -20,7 +20,16 @@ describe('Test Profile component', () => {
     done();
   });
 
-  describe('GET /profile/', () => {});
+  describe('GET /profile/', () => {
+    test('sends 200 response and id, email, and role fields of current user', async (done) => {
+      const result = await factory.app.get(`/profile/`).set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(200);
+      expect(Object.keys(result.body)).toEqual(['id', 'email', 'role']);
+
+      done();
+    });
+  });
   describe('PATCH /profile/profile/update', () => {});
   // Make sure this does not get blocked by email uniqueness validation
   describe('PATCH /profile/change-password', () => {});
