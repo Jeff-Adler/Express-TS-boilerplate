@@ -22,8 +22,10 @@ describe('Test User component', () => {
     done();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await factory.close();
+
+    done();
   });
 
   describe('GET /users/', () => {
@@ -375,7 +377,7 @@ describe('Test User component', () => {
 
       const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
       // get random user from db
-      const retrievedUser: User = users[Math.floor(Math.random() * users.length) + 1];
+      const retrievedUser: User = users[Math.floor(Math.random() * users.length)];
 
       const result = await factory.app
         .patch(`/users/${seededUser.id}`)
