@@ -2,7 +2,7 @@ import { getConnection } from 'typeorm';
 
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
-import { getOneMaxId } from './userFactory';
+import { getOneMaxId } from './user.test.utils';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
@@ -429,6 +429,7 @@ describe('Test User component', () => {
 
       expect(result.status).toBe(404);
       expect(result.text).toEqual(`User not found`);
+
       done();
     });
   });
