@@ -21,11 +21,19 @@ describe('Test Profile component', () => {
   });
 
   describe('GET /profile/', () => {
-    test('sends 200 response and id, email, and role fields of current user', async (done) => {
+    test('sends 200 response and id, email, and role fields of current user if valid credentials are sent', async (done) => {
       const result = await factory.app.get(`/profile/`).set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(200);
       expect(Object.keys(result.body)).toEqual(['id', 'email', 'role']);
+
+      done();
+    });
+
+    test('sends 401 response if invalid credentials are sent', async (done) => {
+      const result = await factory.app.get(`/profile/`).set({ Authorization: `Bearer ${token}InvalidChars` });
+
+      expect(result.status).toBe(401);
 
       done();
     });
