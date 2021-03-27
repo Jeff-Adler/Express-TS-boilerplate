@@ -336,7 +336,7 @@ describe('Test User component', () => {
     test('Does not patch prohibited fields: id', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
 
-      //generate Id that is currently used, to ensure is not due to Id already existing in db
+      //generate Id that is not currently used, to ensure is not due to Id already existing in db
       const newId = (await getOneMaxId()) + 1;
 
       const postPatchResult = await factory.app
@@ -358,59 +358,36 @@ describe('Test User component', () => {
     });
 
     test('Does not patch prohibited fields: nonExistentField', async (done) => {
-      const email = 'testprePatchUser5@test.com';
-      const password = 'testPatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
+      const seededUser: User = await factory.seedSingleUser();
+
+      const newInvalidField = 'invalid update';
+
+      const result = await factory.app
+        .patch(`/users/${seededUser.id}`)
+        .send({ newInvalidField })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(prePatchResult.status).toBe(201);
-      expect(prePatchResult.body.email).toBe('testprePatchUser5@test.com');
+      expect(result.status).toBe(400);
+      expect(result.text).toEqual('Field cannot be updated');
 
-      const nonExistentField = 'invalid update';
-
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
-
-      const postPatchResult = await factory.app
-        .patch(`/users/${user.id}`)
-        .send({ nonExistentField })
-        .set({ Authorization: `Bearer ${token}` });
-
-      const postPatchUser: User = await getConnection(process.env.CONNECTION_TYPE)
-        .getRepository(User)
-        .findOneOrFail({ email });
-
-      expect(postPatchResult.status).toBe(400);
-      expect(postPatchResult.text).toEqual('Field cannot be updated');
       done();
     });
 
     test('Return 409 if requested email already exists in the db', async (done) => {
-      const email = 'testprePatchUser6@test.com';
-      const password = 'testPatchUser';
-      const role = 'USER';
-      const prePatchResult = await factory.app
-        .post(`/users/`)
-        .send({ email, password, role })
-        .set({ Authorization: `Bearer ${token}` });
-
-      expect(prePatchResult.status).toBe(201);
-      expect(prePatchResult.body.email).toBe('testprePatchUser6@test.com');
-
-      const user1: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail({ email });
+      const seededUser: User = await factory.seedSingleUser();
 
       const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
-      const user2: User = users[Math.floor(Math.random() * users.length) + 1];
+      // get random user from db
+      const retrievedUser: User = users[Math.floor(Math.random() * users.length) + 1];
 
       const result = await factory.app
-        .patch(`/users/${user1.id}`)
-        .send({ email: user2.email })
+        .patch(`/users/${seededUser.id}`)
+        .send({ email: retrievedUser.email })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(409);
       expect(result.text).toBe('email already in use');
+
       done();
     });
   });
