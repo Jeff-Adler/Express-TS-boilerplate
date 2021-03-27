@@ -8,18 +8,16 @@ describe('Test Profile component', () => {
   beforeAll(async (done) => {
     await factory.init();
 
-    const result = await factory.app.post('/auth/login').send({
-      email: 'admin@admin.com',
-      password: 'admin_password',
-    });
-
+    const result = await factory.loginAdminUser();
     token = result.body.token;
 
     done();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await factory.close();
+
+    done();
   });
 
   describe('GET /profile/', () => {});
