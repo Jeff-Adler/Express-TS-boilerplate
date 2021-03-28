@@ -41,10 +41,11 @@ describe('Test Profile component', () => {
     });
   });
   describe('PATCH /profile/update', () => {
-    test('Patches permitted fields: email', async (done) => {
+    test('patches permitted fields: email', async (done) => {
       const newEmail = 'patchedEmail@test.com';
+      const originalEmail = 'admin@admin.com';
 
-      const result = await factory.app
+      let result = await factory.app
         .patch(`/profile/update`)
         .send({ email: newEmail })
         .set({ Authorization: `Bearer ${token}` });
@@ -56,11 +57,56 @@ describe('Test Profile component', () => {
 
       expect(currentUser.body.email).toBe(newEmail);
 
+      // Test that user cannot login with original email
+      result = await factory.app.post('/auth/login').send({
+        email: originalEmail,
+        password: 'admin_password',
+      });
+
+      expect(result.status).toBe(401);
+
+      // Test that user can sign in with new email
+      result = await factory.app.post('/auth/login').send({
+        email: newEmail,
+        password: 'admin_password',
+      });
+
+      expect(result.status).toBe(200);
+
+      // Revert back to original email to be able to sign in with seeded user credentials for other tests
+      result = await factory.app
+        .patch(`/profile/update`)
+        .send({ email: originalEmail })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+
+      // Test that user can login with original email
+      result = await factory.app.post('/auth/login').send({
+        email: originalEmail,
+        password: 'admin_password',
+      });
+
+      expect(result.status).toBe(200);
+
+      // Test that user cannot login with new email
+      result = await factory.app.post('/auth/login').send({
+        email: newEmail,
+        password: 'admin_password',
+      });
+
+      expect(result.status).toBe(401);
+
       done();
     });
 
-    test('Patches permitted fields: password', async (done) => {
+    test.todo('user can login with patched email');
+
+    test.todo('user cannot login with original email');
+
+    test('patches permitted fields: password', async (done) => {
       const newPassword = 'patchedPassword';
+      const originalPassword = 'admin_password';
 
       let result = await factory.app
         .patch(`/profile/update`)
@@ -69,10 +115,10 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(201);
 
-      // Test that user cannot login with old password
+      // Test that user cannot login with original password
       result = await factory.app.post('/auth/login').send({
         email: 'admin@admin.com',
-        password: 'admin_password',
+        password: originalPassword,
       });
 
       expect(result.status).toBe(401);
@@ -80,14 +126,12 @@ describe('Test Profile component', () => {
       // Test that user can sign in with new password
       result = await factory.app.post('/auth/login').send({
         email: 'admin@admin.com',
-        password: 'patchedPassword',
+        password: newPassword,
       });
 
       expect(result.status).toBe(200);
 
       // Revert back to original password to be able to sign in with seeded user credentials for other tests
-      const originalPassword = 'admin_password';
-
       result = await factory.app
         .patch(`/profile/update`)
         .send({ password: originalPassword })
@@ -95,18 +139,26 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(201);
 
-      // Test that user can login with old password, post patch
+      // Test that user can login with original password
       result = await factory.app.post('/auth/login').send({
         email: 'admin@admin.com',
-        password: 'admin_password',
+        password: originalPassword,
       });
 
       expect(result.status).toBe(200);
 
+      // Test that user cannot login with new password
+      result = await factory.app.post('/auth/login').send({
+        email: 'admin@admin.com',
+        password: newPassword,
+      });
+
+      expect(result.status).toBe(401);
+
       done();
     });
 
-    // test('Patches permitted fields: role', async (done) => {
+    // test('patches permitted fields: role', async (done) => {
     //   const seededUser: User = await factory.seedSingleUser();
 
     //   const newRole = 'ADMIN';
