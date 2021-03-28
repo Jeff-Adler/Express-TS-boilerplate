@@ -57,6 +57,31 @@ describe('Test Profile component', () => {
 
       expect(currentUser.body.email).toBe(newEmail);
 
+      expect(result.status).toBe(200);
+
+      // Revert back to original email to be able to sign in with seeded user credentials for other tests
+      result = await factory.app
+        .patch(`/profile/update`)
+        .send({ email: originalEmail })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+
+      done();
+    });
+
+    test('user can login with patched email, cannot login with original email', async (done) => {
+      const newEmail = 'patchedEmail@test.com';
+      const originalEmail = 'admin@admin.com';
+
+      let result = await factory.app
+        .patch(`/profile/update`)
+        .send({ email: newEmail })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.body.email).toEqual(newEmail);
+
       // Test that user cannot login with original email
       result = await factory.app.post('/auth/login').send({
         email: originalEmail,
@@ -99,10 +124,6 @@ describe('Test Profile component', () => {
 
       done();
     });
-
-    test.todo('user can login with patched email');
-
-    test.todo('user cannot login with original email');
 
     test('patches permitted fields: password', async (done) => {
       const newPassword = 'patchedPassword';
