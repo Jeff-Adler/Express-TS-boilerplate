@@ -57,8 +57,6 @@ describe('Test Profile component', () => {
 
       expect(currentUser.body.email).toBe(newEmail);
 
-      expect(result.status).toBe(200);
-
       // Revert back to original email to be able to sign in with seeded user credentials for other tests
       result = await factory.app
         .patch(`/profile/update`)
@@ -179,28 +177,32 @@ describe('Test Profile component', () => {
       done();
     });
 
-    // test('patches permitted fields: role', async (done) => {
-    //   const seededUser: User = await factory.seedSingleUser();
+    test.todo('user can login with patched password, cannot login with original password');
 
-    //   const newRole = 'ADMIN';
+    test('patches permitted fields: role', async (done) => {
+      const seededUser: User = await factory.seedSingleUser();
 
-    //   const result = await factory.app
-    //     .patch(`/users/${seededUser.id}`)
-    //     .send({ role: newRole })
-    //     .set({ Authorization: `Bearer ${token}` });
+      const newRole = 'ADMIN';
 
-    //   expect(result.status).toBe(201);
-    //   expect(result.body.role).toBe('ADMIN');
+      const result = await factory.app
+        .patch(`/users/${seededUser.id}`)
+        .send({ role: newRole })
+        .set({ Authorization: `Bearer ${token}` });
 
-    //   const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
-    //     .getRepository(User)
-    //     .findOneOrFail({ email: seededUser.email });
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe('ADMIN');
 
-    //   expect(patchedUser.role).toBe('ADMIN');
-    //   expect(patchedUser.role).not.toBe('USER');
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: seededUser.email });
 
-    //   done();
-    // });
+      expect(patchedUser.role).toBe('ADMIN');
+      expect(patchedUser.role).not.toBe('USER');
+
+      done();
+    });
+
+    test.todo('user can login with patched role, cannot login with original role');
 
     // test('Does not patch prohibited fields: id', async (done) => {
     //   const seededUser: User = await factory.seedSingleUser();
