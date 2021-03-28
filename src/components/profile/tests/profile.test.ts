@@ -134,6 +134,28 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(201);
 
+      // Revert back to original password to be able to sign in with seeded user credentials for other tests
+      result = await factory.app
+        .patch(`/profile/update`)
+        .send({ password: originalPassword })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+
+      done();
+    });
+
+    test('user can login with patched password, cannot login with original password', async (done) => {
+      const newPassword = 'patchedPassword';
+      const originalPassword = 'admin_password';
+
+      let result = await factory.app
+        .patch(`/profile/update`)
+        .send({ password: newPassword })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+
       // Test that user cannot login with original password
       result = await factory.app.post('/auth/login').send({
         email: 'admin@admin.com',
@@ -176,8 +198,6 @@ describe('Test Profile component', () => {
 
       done();
     });
-
-    test.todo('user can login with patched password, cannot login with original password');
 
     test('patches permitted fields: role', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
