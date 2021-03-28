@@ -1,4 +1,4 @@
-export const profileTestConsts = {
+export const profileTestsConstants = {
   ORIGINAL_EMAIL: 'admin@admin.com',
   NEW_EMAIL: 'patchedEmail@test.com',
   ORIGINAL_PASSWORD: 'admin_password',

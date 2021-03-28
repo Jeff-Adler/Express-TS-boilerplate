@@ -1,6 +1,7 @@
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../../user/model';
 import { getConnection } from 'typeorm';
+import { profileTestsConstants } from './profile.test.constants';
 
 describe('Test Profile component', () => {
   let factory: TestFactory = new TestFactory();
@@ -42,25 +43,22 @@ describe('Test Profile component', () => {
   });
   describe('PATCH /profile/update', () => {
     test('patches permitted fields: email', async (done) => {
-      const newEmail = 'patchedEmail@test.com';
-      const originalEmail = 'admin@admin.com';
-
       let result = await factory.app
         .patch(`/profile/update`)
-        .send({ email: newEmail })
+        .send({ email: profileTestsConstants.NEW_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
-      expect(result.body.email).toEqual(newEmail);
+      expect(result.body.email).toEqual(profileTestsConstants.NEW_EMAIL);
 
       const currentUser = await factory.app.get(`/profile/`).set({ Authorization: `Bearer ${token}` });
 
-      expect(currentUser.body.email).toBe(newEmail);
+      expect(currentUser.body.email).toBe(profileTestsConstants.NEW_EMAIL);
 
       // Revert back to original email to be able to sign in with seeded user credentials for other tests
       result = await factory.app
         .patch(`/profile/update`)
-        .send({ email: originalEmail })
+        .send({ email: profileTestsConstants.ORIGINAL_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
@@ -69,20 +67,17 @@ describe('Test Profile component', () => {
     });
 
     test('user can login with patched email, cannot login with original email', async (done) => {
-      const newEmail = 'patchedEmail@test.com';
-      const originalEmail = 'admin@admin.com';
-
       let result = await factory.app
         .patch(`/profile/update`)
-        .send({ email: newEmail })
+        .send({ email: profileTestsConstants.NEW_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
-      expect(result.body.email).toEqual(newEmail);
+      expect(result.body.email).toEqual(profileTestsConstants.NEW_EMAIL);
 
       // Test that user cannot login with original email
       result = await factory.app.post('/auth/login').send({
-        email: originalEmail,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
         password: 'admin_password',
       });
 
@@ -90,7 +85,7 @@ describe('Test Profile component', () => {
 
       // Test that user can sign in with new email
       result = await factory.app.post('/auth/login').send({
-        email: newEmail,
+        email: profileTestsConstants.NEW_EMAIL,
         password: 'admin_password',
       });
 
@@ -99,14 +94,14 @@ describe('Test Profile component', () => {
       // Revert back to original email to be able to sign in with seeded user credentials for other tests
       result = await factory.app
         .patch(`/profile/update`)
-        .send({ email: originalEmail })
+        .send({ email: profileTestsConstants.ORIGINAL_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
 
       // Test that user can login with original email
       result = await factory.app.post('/auth/login').send({
-        email: originalEmail,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
         password: 'admin_password',
       });
 
@@ -114,7 +109,7 @@ describe('Test Profile component', () => {
 
       // Test that user cannot login with new email
       result = await factory.app.post('/auth/login').send({
-        email: newEmail,
+        email: profileTestsConstants.NEW_EMAIL,
         password: 'admin_password',
       });
 
