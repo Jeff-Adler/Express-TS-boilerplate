@@ -193,62 +193,20 @@ describe('Test Profile component', () => {
       done();
     });
 
-    test('patches permitted fields: role', async (done) => {
+    test('does not patch prohibited fields: role', async (done) => {
       let result = await factory.app
         .patch('/profile/update')
         .send({ role: profileTestsConstants.NEW_ROLE })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(201);
-      expect(result.body.role).toBe(profileTestsConstants.NEW_ROLE);
+      expect(result.status).toBe(400);
+      expect(result.text).toEqual('Field cannot be updated');
 
       let patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
         .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
 
-      expect(patchedUser.role).toBe(profileTestsConstants.NEW_ROLE);
-
-      // Revert back to original password to be able to sign in with seeded user credentials for other tests
-      result = await factory.app
-        .patch(`/profile/update`)
-        .send({ role: profileTestsConstants.ORIGINAL_ROLE })
-        .set({ Authorization: `Bearer ${token}` });
-
-      expect(result.status).toBe(201);
-      expect(result.body.role).toBe(profileTestsConstants.ORIGINAL_ROLE);
-
-      patchedUser = await getConnection(process.env.CONNECTION_TYPE)
-        .getRepository(User)
-        .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
-
-      expect(patchedUser.role).toBe('ADMIN');
-
-      done();
-    });
-
-    test('user cannot access ADMIN-only endpoints when role is patched to USER', async (done) => {
-      let result = await factory.app
-        .patch('/profile/update')
-        .send({ role: profileTestsConstants.NEW_ROLE })
-        .set({ Authorization: `Bearer ${token}` });
-
-      expect(result.status).toBe(201);
-      expect(result.body.role).toBe(profileTestsConstants.NEW_ROLE);
-
-      // Arbitrarily chosen ADMIN-only endpoint
-      result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
-
-      expect(result.status).toBe(401);
-      expect(result.text).toBe('User does not have permission to access this endpoint');
-
-      // Revert back to original password to be able to sign in with seeded user credentials for other tests
-      result = await factory.app
-        .patch(`/profile/update`)
-        .send({ role: profileTestsConstants.ORIGINAL_ROLE })
-        .set({ Authorization: `Bearer ${token}` });
-
-      expect(result.status).toBe(201);
-      expect(result.body.role).toBe(profileTestsConstants.ORIGINAL_ROLE);
+      expect(patchedUser.role).toBe(profileTestsConstants.ORIGINAL_ROLE);
 
       done();
     });
@@ -279,21 +237,19 @@ describe('Test Profile component', () => {
       done();
     });
 
-    // test('Does not patch prohibited fields: nonExistentField', async (done) => {
-    //   const seededUser: User = await factory.seedSingleUser();
+    test('Does not patch prohibited fields: nonExistentField', async (done) => {
+      const newInvalidField = 'invalid update';
 
-    //   const newInvalidField = 'invalid update';
+      const result = await factory.app
+        .patch('/profile/update')
+        .send({ newInvalidField })
+        .set({ Authorization: `Bearer ${token}` });
 
-    //   const result = await factory.app
-    //     .patch(`/users/${seededUser.id}`)
-    //     .send({ newInvalidField })
-    //     .set({ Authorization: `Bearer ${token}` });
+      expect(result.status).toBe(400);
+      expect(result.text).toEqual('Field cannot be updated');
 
-    //   expect(result.status).toBe(400);
-    //   expect(result.text).toEqual('Field cannot be updated');
-
-    //   done();
-    // });
+      done();
+    });
 
     // test('Return 409 if requested email already exists in the db', async (done) => {
     //   const seededUser: User = await factory.seedSingleUser();
@@ -313,6 +269,7 @@ describe('Test Profile component', () => {
     //   done();
     // });
   });
+
   // Make sure this does not get blocked by email uniqueness validation
   describe('PATCH /profile/change-password', () => {});
   describe('DELETE /profile/delete', () => {});

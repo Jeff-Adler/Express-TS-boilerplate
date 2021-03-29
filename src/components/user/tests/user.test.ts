@@ -346,6 +346,42 @@ describe('Test User component', () => {
       done();
     });
 
+    test('user cannot access ADMIN-only endpoints when role is patched to USER', async (done) => {
+      // get current user to test ability to access ADMIN-only endpoints if role is USER
+      const currentUser = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: 'admin@admin.com' });
+
+      const newRole = 'USER';
+      const originalRole = 'ADMIN';
+
+      let result = await factory.app
+        .patch(`/users/${currentUser.id}`)
+        .send({ role: newRole })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe(newRole);
+
+      // arbitrarily chosen ADMIN-only endpoint
+      result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(401);
+      expect(result.text).toBe('User does not have permission to access this endpoint');
+
+      // revert back to original password to be able to sign in with seeded user credentials for other tests
+      // cannot use endpoint for reversion, since its an ADMIN-only route
+      currentUser.role = originalRole;
+      await getConnection(process.env.CONNECTION_TYPE).getRepository(User).save(currentUser);
+
+      result = await factory.app.get(`/users/${currentUser.id}`).set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(200);
+      expect(result.body.role).toBe(originalRole);
+
+      done();
+    });
+
     test('Does not patch prohibited fields: id', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
 
@@ -404,6 +440,7 @@ describe('Test User component', () => {
       done();
     });
   });
+
   describe('DELETE /users/:id', () => {
     test('Deletes user if valid id is sent', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
