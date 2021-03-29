@@ -254,24 +254,9 @@ describe('Test Profile component', () => {
     });
 
     test('Does not patch prohibited fields: id', async (done) => {
-      // const seededUser: User = await factory.seedSingleUser();
-
-      // const newId = (await getOneMaxId()) + 1;
-
-      // const postPatchResult = await factory.app
-      //   .patch(`/users/${seededUser.id}`)
-      //   .send({ id: newId })
-      //   .set({ Authorization: `Bearer ${token}` });
-
-      // expect(postPatchResult.status).toBe(400);
-      // expect(postPatchResult.text).toEqual('Field cannot be updated');
-
-      // const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
-      //   .getRepository(User)
-      //   .findOneOrFail({ email: seededUser.email });
-
-      // expect(patchedUser.id).not.toEqual(newId);
-      // expect(patchedUser.id).toEqual(seededUser.id);
+      const prePatchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
 
       //generate Id that is not currently used, to ensure is not due to Id already existing in db
       const newId = (await getOneMaxId()) + 1;
@@ -280,6 +265,16 @@ describe('Test Profile component', () => {
         .patch('/profile/update')
         .send({ id: newId })
         .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(400);
+      expect(result.text).toEqual('Field cannot be updated');
+
+      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
+
+      expect(patchedUser.id).not.toEqual(newId);
+      expect(patchedUser.id).toEqual(prePatchedUser.id);
 
       done();
     });

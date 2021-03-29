@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository, Repository, getConnection } from 'typeorm';
-import { User, IUser } from '../user/model';
+import { User, IUser, UpdateableUserFields, UpdateableUserField } from '../user/model';
 import { bind } from 'decko';
 import { validate, ValidationError } from 'class-validator';
 
@@ -31,16 +31,16 @@ export class ProfileController {
     };
 
     if (!updates.every((update) => isUserField(update))) {
-      return res.status(400).send({ error: 'Invalid updates' });
+      return res.status(400).send('Invalid updates');
     }
 
     // Validation 2: fields on req.body are updateable User fields: for this route, only 'email' can be updated
-    const isUpdateableUserField = (update: string): update is 'email' => {
-      return <'email'>update !== undefined;
+    const isUpdateableUserField = (update: string): update is UpdateableUserField => {
+      return UpdateableUserFields.includes(<UpdateableUserField>update);
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
-      return res.status(400).send({ error: 'Field cannot be updated' });
+      return res.status(400).send('Field cannot be updated');
     }
 
     // Validation 3: requested updates pass model validations
