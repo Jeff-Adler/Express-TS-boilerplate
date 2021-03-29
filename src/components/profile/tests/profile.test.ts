@@ -216,7 +216,7 @@ describe('Test Profile component', () => {
         })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(201);
+      expect(result.status).toBe(200);
 
       // Revert back to original password to be able to sign in with seeded user credentials for other tests
       result = await factory.app
@@ -227,7 +227,7 @@ describe('Test Profile component', () => {
         })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(201);
+      expect(result.status).toBe(200);
 
       done();
     });
@@ -269,7 +269,7 @@ describe('Test Profile component', () => {
         })
         .set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(201);
+      expect(result.status).toBe(200);
 
       // Test that user can login with original password
       result = await factory.app.post('/auth/login').send({
