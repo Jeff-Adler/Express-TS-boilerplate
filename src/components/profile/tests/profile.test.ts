@@ -251,23 +251,19 @@ describe('Test Profile component', () => {
       done();
     });
 
-    // test('Return 409 if requested email already exists in the db', async (done) => {
-    //   const seededUser: User = await factory.seedSingleUser();
+    test('Return 409 if requested email already exists in the db', async (done) => {
+      const seededUser: User = await factory.seedSingleUser();
 
-    //   const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
-    //   // get random user from db
-    //   const retrievedUser: User = users[Math.floor(Math.random() * users.length)];
+      const result = await factory.app
+        .patch('/profile/update')
+        .send({ email: seededUser.email })
+        .set({ Authorization: `Bearer ${token}` });
 
-    //   const result = await factory.app
-    //     .patch(`/users/${seededUser.id}`)
-    //     .send({ email: retrievedUser.email })
-    //     .set({ Authorization: `Bearer ${token}` });
+      expect(result.status).toBe(409);
+      expect(result.text).toBe('email already in use');
 
-    //   expect(result.status).toBe(409);
-    //   expect(result.text).toBe('email already in use');
-
-    //   done();
-    // });
+      done();
+    });
   });
 
   // Make sure this does not get blocked by email uniqueness validation
