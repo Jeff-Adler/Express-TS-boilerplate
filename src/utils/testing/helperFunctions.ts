@@ -1,5 +1,5 @@
 import { getConnection } from 'typeorm';
-import { User } from '../model';
+import { User } from '../../components/user/model';
 
 export const getOneMaxId = async (): Promise<number> => {
   const query = getConnection(process.env.CONNECTION_TYPE).getRepository(User).createQueryBuilder('user');

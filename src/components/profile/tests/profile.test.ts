@@ -1,6 +1,8 @@
-import { TestFactory } from '../../../utils/testing/factory';
-import { User } from '../../user/model';
 import { getConnection } from 'typeorm';
+
+import { User } from '../../user/model';
+import { TestFactory } from '../../../utils/testing/factory';
+import { getOneMaxId } from '../../../utils/testing/helperFunctions';
 import { profileTestsConstants } from './profile.test.constants';
 
 describe('Test Profile component', () => {
@@ -251,29 +253,36 @@ describe('Test Profile component', () => {
       done();
     });
 
-    // test('Does not patch prohibited fields: id', async (done) => {
-    //   const seededUser: User = await factory.seedSingleUser();
+    test('Does not patch prohibited fields: id', async (done) => {
+      // const seededUser: User = await factory.seedSingleUser();
 
-    //   //generate Id that is not currently used, to ensure is not due to Id already existing in db
-    //   const newId = (await getOneMaxId()) + 1;
+      // const newId = (await getOneMaxId()) + 1;
 
-    //   const postPatchResult = await factory.app
-    //     .patch(`/users/${seededUser.id}`)
-    //     .send({ id: newId })
-    //     .set({ Authorization: `Bearer ${token}` });
+      // const postPatchResult = await factory.app
+      //   .patch(`/users/${seededUser.id}`)
+      //   .send({ id: newId })
+      //   .set({ Authorization: `Bearer ${token}` });
 
-    //   expect(postPatchResult.status).toBe(400);
-    //   expect(postPatchResult.text).toEqual('Field cannot be updated');
+      // expect(postPatchResult.status).toBe(400);
+      // expect(postPatchResult.text).toEqual('Field cannot be updated');
 
-    //   const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
-    //     .getRepository(User)
-    //     .findOneOrFail({ email: seededUser.email });
+      // const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+      //   .getRepository(User)
+      //   .findOneOrFail({ email: seededUser.email });
 
-    //   expect(patchedUser.id).not.toEqual(newId);
-    //   expect(patchedUser.id).toEqual(seededUser.id);
+      // expect(patchedUser.id).not.toEqual(newId);
+      // expect(patchedUser.id).toEqual(seededUser.id);
 
-    //   done();
-    // });
+      //generate Id that is not currently used, to ensure is not due to Id already existing in db
+      const newId = (await getOneMaxId()) + 1;
+
+      let result = await factory.app
+        .patch('/profile/update')
+        .send({ id: newId })
+        .set({ Authorization: `Bearer ${token}` });
+
+      done();
+    });
 
     // test('Does not patch prohibited fields: nonExistentField', async (done) => {
     //   const seededUser: User = await factory.seedSingleUser();

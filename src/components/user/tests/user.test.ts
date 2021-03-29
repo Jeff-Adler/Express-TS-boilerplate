@@ -2,7 +2,7 @@ import { getConnection } from 'typeorm';
 
 import { TestFactory } from '../../../utils/testing/factory';
 import { User } from '../model';
-import { getOneMaxId } from './user.test.utils';
+import { getOneMaxId } from '../../../utils/testing/helperFunctions';
 
 describe('Test User component', () => {
   let factory: TestFactory = new TestFactory();
