@@ -36,7 +36,8 @@ export class ProfileController {
 
     // Validation 2: fields on req.body are updateable User fields: for this route, only 'email' can be updated
     const isUpdateableUserField = (update: string): update is UpdateableUserField => {
-      return UpdateableUserFields.includes(<UpdateableUserField>update) && update !== 'role';
+      // user cannot change their own role. And, user can only change password through profile/change-password route
+      return UpdateableUserFields.includes(<UpdateableUserField>update) && update !== 'role' && update !== 'password';
     };
 
     if (!updates.every((update) => isUpdateableUserField(update))) {
