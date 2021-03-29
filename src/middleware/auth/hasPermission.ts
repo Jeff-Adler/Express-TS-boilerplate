@@ -9,9 +9,9 @@ export const hasPermission = (roles: Array<Role>) => {
 
     try {
       if (roles.includes(user.role)) next();
-      else res.status(401).send();
+      else res.status(401).send('User does not have permission to access this endpoint');
     } catch (id) {
-      res.status(401).send();
+      res.status(401).send('User does not have permission to access this endpoint');
     }
   };
 };

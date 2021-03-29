@@ -78,7 +78,7 @@ describe('Test Profile component', () => {
       // Test that user cannot login with original email
       result = await factory.app.post('/auth/login').send({
         email: profileTestsConstants.ORIGINAL_EMAIL,
-        password: 'admin_password',
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(401);
@@ -86,7 +86,7 @@ describe('Test Profile component', () => {
       // Test that user can sign in with new email
       result = await factory.app.post('/auth/login').send({
         email: profileTestsConstants.NEW_EMAIL,
-        password: 'admin_password',
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(200);
@@ -102,7 +102,7 @@ describe('Test Profile component', () => {
       // Test that user can login with original email
       result = await factory.app.post('/auth/login').send({
         email: profileTestsConstants.ORIGINAL_EMAIL,
-        password: 'admin_password',
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(200);
@@ -110,7 +110,7 @@ describe('Test Profile component', () => {
       // Test that user cannot login with new email
       result = await factory.app.post('/auth/login').send({
         email: profileTestsConstants.NEW_EMAIL,
-        password: 'admin_password',
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(401);
@@ -141,28 +141,25 @@ describe('Test Profile component', () => {
     });
 
     test('user can login with patched password, cannot login with original password', async (done) => {
-      const newPassword = 'patchedPassword';
-      const originalPassword = 'admin_password';
-
       let result = await factory.app
         .patch(`/profile/update`)
-        .send({ password: newPassword })
+        .send({ password: profileTestsConstants.NEW_PASSWORD })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
 
       // Test that user cannot login with original password
       result = await factory.app.post('/auth/login').send({
-        email: 'admin@admin.com',
-        password: originalPassword,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(401);
 
       // Test that user can sign in with new password
       result = await factory.app.post('/auth/login').send({
-        email: 'admin@admin.com',
-        password: newPassword,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.NEW_PASSWORD,
       });
 
       expect(result.status).toBe(200);
@@ -170,23 +167,23 @@ describe('Test Profile component', () => {
       // Revert back to original password to be able to sign in with seeded user credentials for other tests
       result = await factory.app
         .patch(`/profile/update`)
-        .send({ password: originalPassword })
+        .send({ password: profileTestsConstants.ORIGINAL_PASSWORD })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
 
       // Test that user can login with original password
       result = await factory.app.post('/auth/login').send({
-        email: 'admin@admin.com',
-        password: originalPassword,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
       expect(result.status).toBe(200);
 
       // Test that user cannot login with new password
       result = await factory.app.post('/auth/login').send({
-        email: 'admin@admin.com',
-        password: newPassword,
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.NEW_PASSWORD,
       });
 
       expect(result.status).toBe(401);
@@ -195,29 +192,64 @@ describe('Test Profile component', () => {
     });
 
     test('patches permitted fields: role', async (done) => {
-      const seededUser: User = await factory.seedSingleUser();
-
-      const newRole = 'ADMIN';
-
-      const result = await factory.app
-        .patch(`/users/${seededUser.id}`)
-        .send({ role: newRole })
+      let result = await factory.app
+        .patch('/profile/update')
+        .send({ role: profileTestsConstants.NEW_ROLE })
         .set({ Authorization: `Bearer ${token}` });
 
       expect(result.status).toBe(201);
-      expect(result.body.role).toBe('ADMIN');
+      expect(result.body.role).toBe(profileTestsConstants.NEW_ROLE);
 
-      const patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
+      let patchedUser: User = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
-        .findOneOrFail({ email: seededUser.email });
+        .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
+
+      expect(patchedUser.role).toBe(profileTestsConstants.NEW_ROLE);
+
+      // Revert back to original password to be able to sign in with seeded user credentials for other tests
+      result = await factory.app
+        .patch(`/profile/update`)
+        .send({ role: profileTestsConstants.ORIGINAL_ROLE })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe(profileTestsConstants.ORIGINAL_ROLE);
+
+      patchedUser = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail({ email: profileTestsConstants.ORIGINAL_EMAIL });
 
       expect(patchedUser.role).toBe('ADMIN');
-      expect(patchedUser.role).not.toBe('USER');
 
       done();
     });
 
-    test.todo('user can login with patched role, cannot login with original role');
+    test('user cannot access ADMIN-only endpoints when role is patched to USER', async (done) => {
+      let result = await factory.app
+        .patch('/profile/update')
+        .send({ role: profileTestsConstants.NEW_ROLE })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe(profileTestsConstants.NEW_ROLE);
+
+      // Arbitrarily chosen ADMIN-only endpoint
+      result = await factory.app.get('/users/').set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(401);
+      expect(result.text).toBe('User does not have permission to access this endpoint');
+
+      // Revert back to original password to be able to sign in with seeded user credentials for other tests
+      result = await factory.app
+        .patch(`/profile/update`)
+        .send({ role: profileTestsConstants.ORIGINAL_ROLE })
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.body.role).toBe(profileTestsConstants.ORIGINAL_ROLE);
+
+      done();
+    });
 
     // test('Does not patch prohibited fields: id', async (done) => {
     //   const seededUser: User = await factory.seedSingleUser();
