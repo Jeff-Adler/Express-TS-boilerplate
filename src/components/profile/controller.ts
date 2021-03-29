@@ -86,7 +86,7 @@ export class ProfileController {
 
     try {
       await this.repo.save(user);
-      return res.status(204).send('Password changed');
+      return res.status(200).send('Password changed');
     } catch (e) {
       return res.status(401).send(e);
     }

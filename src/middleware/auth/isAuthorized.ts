@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository, getConnection } from 'typeorm';
 import { User } from '../../components/user/model';
 
-export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
     if (!req.header) throw new Error();
 
@@ -24,6 +24,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
     next();
   } catch (error) {
-    res.status(401).send('Authentication Failed');
+    return res.status(401).send('Authentication Failed');
   }
 };
