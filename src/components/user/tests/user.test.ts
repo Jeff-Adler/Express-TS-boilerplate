@@ -469,5 +469,7 @@ describe('Test User component', () => {
 
       done();
     });
+
+    test.todo('user cannot sign in if deleted');
   });
 });

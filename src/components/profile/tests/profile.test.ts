@@ -290,5 +290,21 @@ describe('Test Profile component', () => {
       done();
     });
   });
-  describe('DELETE /profile/delete', () => {});
+  describe('DELETE /profile/delete', () => {
+    test('deletes profile', async (done) => {
+      const seededUser: User = await factory.seedSingleUser();
+
+      // Log in as seededUser
+      let result = await factory.app.post('/auth/login').send({
+        email: seededUser.email,
+        password: seededUser.password,
+      });
+
+      // Delete seededUser
+
+      // Verify seededUser is absent from db
+    });
+
+    test.todo('user can no longer sign if deleted');
+  });
 });
