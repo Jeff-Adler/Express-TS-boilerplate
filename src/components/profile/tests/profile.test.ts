@@ -307,7 +307,7 @@ describe('Test Profile component', () => {
       // Delete seededUser
       result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
 
-      expect(result.status).toBe(401);
+      expect(result.status).toBe(200);
       expect(result.text).toBe('Account deleted');
 
       // Verify seededUser is absent from db
