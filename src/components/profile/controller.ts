@@ -75,7 +75,7 @@ export class ProfileController {
       return res.status(400).send();
     }
 
-    if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) res.status(401).send();
+    if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) return res.status(401).send();
 
     user.password = newPassword;
 

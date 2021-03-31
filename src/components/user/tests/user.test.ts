@@ -427,6 +427,7 @@ describe('Test User component', () => {
 
       const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
       // get random user from db
+      // subtract one to ensure retrievedUser != seededUser
       const retrievedUser: User = users[Math.floor(Math.random() * (users.length - 1))];
 
       const result = await factory.app
