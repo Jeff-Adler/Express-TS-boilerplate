@@ -293,7 +293,7 @@ describe('Test Profile component', () => {
   describe('DELETE /profile/delete', () => {
     test('deletes profile', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
-      console.log(seededUser);
+
       // Log in as seededUser
       let result = await factory.app.post('/auth/login').send({
         email: seededUser.email,
@@ -302,10 +302,17 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(200);
 
-      done();
+      token = result.body.token;
+
       // Delete seededUser
+      result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(401);
+      expect(result.text).toBe('Account deleted');
 
       // Verify seededUser is absent from db
+
+      done();
     });
 
     test.todo('user can no longer sign if deleted');
