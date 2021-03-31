@@ -293,13 +293,16 @@ describe('Test Profile component', () => {
   describe('DELETE /profile/delete', () => {
     test('deletes profile', async (done) => {
       const seededUser: User = await factory.seedSingleUser();
-
+      console.log(seededUser);
       // Log in as seededUser
       let result = await factory.app.post('/auth/login').send({
         email: seededUser.email,
-        password: seededUser.password,
+        password: 'testUserPassword',
       });
 
+      expect(result.status).toBe(200);
+
+      done();
       // Delete seededUser
 
       // Verify seededUser is absent from db

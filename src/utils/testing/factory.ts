@@ -120,7 +120,7 @@ export class TestFactory {
    */
   public async seedSingleUser(): Promise<User> {
     const email = faker.internet.email();
-    const password = faker.internet.password();
+    const password = 'testUserPassword';
     const role = 'USER';
 
     let user: User = new User();
