@@ -427,7 +427,7 @@ describe('Test User component', () => {
 
       const users: User[] = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).find({ role: 'USER' });
       // get random user from db
-      const retrievedUser: User = users[Math.floor(Math.random() * users.length)];
+      const retrievedUser: User = users[Math.floor(Math.random() * (users.length - 1))];
 
       const result = await factory.app
         .patch(`/users/${seededUser.id}`)
