@@ -91,6 +91,8 @@ describe('Test Profile component', () => {
         password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
+      console.log(result.text);
+
       expect(result.status).toBe(200);
 
       // Revert back to original email to be able to sign in with seeded user credentials for other tests
