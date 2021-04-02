@@ -65,6 +65,14 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(201);
 
+      //take out after tests:
+      result = await factory.app.post('/auth/login').send({
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
+      });
+
+      expect(result.status).toBe(200);
+
       done();
     });
 
