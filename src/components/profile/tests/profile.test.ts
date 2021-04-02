@@ -69,7 +69,18 @@ describe('Test Profile component', () => {
     });
 
     test('user can login with patched email, cannot login with original email', async (done) => {
-      let result = await factory.app
+      // starting now
+      let result = await factory.app.post('/auth/login').send({
+        email: profileTestsConstants.ORIGINAL_EMAIL,
+        password: profileTestsConstants.ORIGINAL_PASSWORD,
+      });
+
+      console.log(result.text);
+
+      expect(result.status).toBe(200);
+
+      //start test here after bug fixed:
+      result = await factory.app
         .patch(`/profile/update`)
         .send({ email: profileTestsConstants.NEW_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
@@ -294,17 +305,17 @@ describe('Test Profile component', () => {
   });
   describe('DELETE /profile/delete', () => {
     test('deletes profile', async (done) => {
-      const seededUser: User = await factory.seedSingleUser();
+      // const seededUser: User = await factory.seedSingleUser();
 
-      // Log in as seededUser
-      let result = await factory.app.post('/auth/login').send({
-        email: seededUser.email,
-        password: 'testUserPassword',
-      });
+      // // Log in as seededUser
+      // let result = await factory.app.post('/auth/login').send({
+      //   email: seededUser.email,
+      //   password: 'testUserPassword',
+      // });
 
-      expect(result.status).toBe(200);
+      // expect(result.status).toBe(200);
 
-      token = result.body.token;
+      // token = result.body.token;
 
       // Delete seededUser
       // result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
