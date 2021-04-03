@@ -292,30 +292,30 @@ describe('Test Profile component', () => {
   });
   describe('DELETE /profile/delete', () => {
     test('deletes profile', async (done) => {
-      // const seededUser: User = await factory.seedSingleUser();
+      const seededUser: User = await factory.seedSingleUser();
 
-      // // Log in as seededUser
-      // let result = await factory.app.post('/auth/login').send({
-      //   email: seededUser.email,
-      //   password: 'testUserPassword',
-      // });
+      // Log in as seededUser
+      let result = await factory.app.post('/auth/login').send({
+        email: seededUser.email,
+        password: 'testUserPassword',
+      });
 
-      // expect(result.status).toBe(200);
+      expect(result.status).toBe(200);
 
-      // token = result.body.token;
+      token = result.body.token;
 
       // Delete seededUser
-      // result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
+      result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
 
-      // expect(result.status).toBe(200);
-      // expect(result.text).toBe('Account deleted');
+      expect(result.status).toBe(200);
+      expect(result.text).toBe('Account deleted');
 
       // Verify seededUser is absent from db
-      // const user: User = await getConnection(process.env.CONNECTION_TYPE)
-      //   .getRepository(User)
-      //   .findOneOrFail(seededUser.id);
+      const user: User = await getConnection(process.env.CONNECTION_TYPE)
+        .getRepository(User)
+        .findOneOrFail(seededUser.id);
 
-      // expect(user).toBe(undefined);
+      expect(user).toBe(undefined);
 
       done();
     });
