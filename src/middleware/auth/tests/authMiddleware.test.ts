@@ -1,5 +1,10 @@
 import { TestFactory } from '../../../utils/testing/factory';
 
+import { NextFunction, Request, Response } from 'express';
+
+import { isAuthorized } from '../isAuthorized';
+import { hasPermission } from '../hasPermission';
+
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
 
