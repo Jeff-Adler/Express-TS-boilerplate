@@ -70,6 +70,7 @@ describe('Test Profile component', () => {
         email: profileTestsConstants.ORIGINAL_EMAIL,
         password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
+      console.log(result);
 
       expect(result.status).toBe(200);
 
@@ -83,7 +84,7 @@ describe('Test Profile component', () => {
         password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
 
-      console.log(result.text);
+      // console.log(result.text);
 
       expect(result.status).toBe(200);
 
