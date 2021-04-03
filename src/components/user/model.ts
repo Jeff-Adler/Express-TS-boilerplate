@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   BeforeUpdate,
   AfterLoad,
+  BeforeRemove,
 } from 'typeorm';
 import { IsEmail, MinLength } from 'class-validator';
 import bcrypt from 'bcrypt';

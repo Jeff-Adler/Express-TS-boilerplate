@@ -97,7 +97,7 @@ export class ProfileController {
     const user: User = res.locals.currentUser;
 
     try {
-      await this.repo.delete(user);
+      await this.repo.remove(user);
       return res.status(200).send('Account deleted');
     } catch (e) {
       return res.status(401).send(e);
