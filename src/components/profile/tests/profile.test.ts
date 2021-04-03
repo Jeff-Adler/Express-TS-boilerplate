@@ -65,31 +65,11 @@ describe('Test Profile component', () => {
 
       expect(result.status).toBe(201);
 
-      //take out after tests:
-      result = await factory.app.post('/auth/login').send({
-        email: profileTestsConstants.ORIGINAL_EMAIL,
-        password: profileTestsConstants.ORIGINAL_PASSWORD,
-      });
-      console.log(result);
-
-      expect(result.status).toBe(200);
-
       done();
     });
 
     test('user can login with patched email, cannot login with original email', async (done) => {
-      // starting now
-      let result = await factory.app.post('/auth/login').send({
-        email: profileTestsConstants.ORIGINAL_EMAIL,
-        password: profileTestsConstants.ORIGINAL_PASSWORD,
-      });
-
-      // console.log(result.text);
-
-      expect(result.status).toBe(200);
-
-      //start test here after bug fixed:
-      result = await factory.app
+      let result = await factory.app
         .patch(`/profile/update`)
         .send({ email: profileTestsConstants.NEW_EMAIL })
         .set({ Authorization: `Bearer ${token}` });
@@ -110,8 +90,6 @@ describe('Test Profile component', () => {
         email: profileTestsConstants.NEW_EMAIL,
         password: profileTestsConstants.ORIGINAL_PASSWORD,
       });
-
-      console.log(result.text);
 
       expect(result.status).toBe(200);
 
