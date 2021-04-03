@@ -471,6 +471,23 @@ describe('Test User component', () => {
       done();
     });
 
-    test.todo('user cannot sign in if deleted');
+    test('user cannot sign in if deleted', async (done) => {
+      const seededUser: User = await factory.seedSingleUser();
+
+      let result = await factory.app.delete(`/users/${seededUser.id}`).set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(201);
+      expect(result.text).toEqual(`Removed user ${seededUser.email}`);
+
+      // Verify seededUser cannot sign in
+      result = await factory.app.post('/auth/login').send({
+        email: seededUser.email,
+        password: 'testUserPassword',
+      });
+
+      expect(result.status).toBe(401);
+
+      done();
+    });
   });
 });
