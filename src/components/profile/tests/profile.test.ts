@@ -320,6 +320,34 @@ describe('Test Profile component', () => {
       done();
     });
 
-    test.todo('user can no longer sign if deleted');
+    test('user can no longer sign if deleted', async (done) => {
+      const seededUser: User = await factory.seedSingleUser();
+
+      // Log in as seededUser
+      let result = await factory.app.post('/auth/login').send({
+        email: seededUser.email,
+        password: 'testUserPassword',
+      });
+
+      expect(result.status).toBe(200);
+
+      token = result.body.token;
+
+      // Delete seededUser
+      result = await factory.app.delete('/profile/delete').set({ Authorization: `Bearer ${token}` });
+
+      expect(result.status).toBe(200);
+      expect(result.text).toBe('Account deleted');
+
+      // Verify seededUser cannot sign in
+      result = await factory.app.post('/auth/login').send({
+        email: seededUser.email,
+        password: 'testUserPassword',
+      });
+
+      expect(result.status).toBe(401);
+
+      done();
+    });
   });
 });
