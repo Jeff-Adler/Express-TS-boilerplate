@@ -311,11 +311,11 @@ describe('Test Profile component', () => {
       expect(result.text).toBe('Account deleted');
 
       // Verify seededUser is absent from db
-      const users: User[] = await getConnection(process.env.CONNECTION_TYPE)
+      const user = await getConnection(process.env.CONNECTION_TYPE)
         .getRepository(User)
-        .find({ id: seededUser.id });
+        .findOne({ email: seededUser.email });
 
-      expect(users.length).toBeFalsy;
+      expect(user).toBe(undefined);
 
       done();
     });
