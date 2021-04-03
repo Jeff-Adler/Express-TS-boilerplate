@@ -75,7 +75,7 @@ export class User implements IUser {
     }
   }
 
-  checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+  public checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
     console.log(unencryptedPassword);
     console.log(this.password);
     console.log(bcrypt.compareSync(unencryptedPassword, this.password));
