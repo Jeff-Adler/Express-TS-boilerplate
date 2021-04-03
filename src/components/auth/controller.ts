@@ -19,6 +19,7 @@ export class AuthController {
       if (!user.checkIfUnencryptedPasswordIsValid(password)) {
         return res.status(401).send('Invalid password');
       }
+
       const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET as jwt.Secret, {
         expiresIn: process.env.JWT_EXPIRES_IN,
       });
