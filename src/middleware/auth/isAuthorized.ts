@@ -14,7 +14,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     // Save currentUser to response object
     const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
     res.locals.currentUser = user;
-    // delete res.locals.currentUser.tempPassword;
 
     // Send new token on response
     const { id, email } = user;
@@ -25,7 +24,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
     next();
   } catch (error) {
-    console.log(res);
     return res.status(401).send('Authentication Failed');
   }
 };
