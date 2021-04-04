@@ -45,38 +45,46 @@ describe('Testing Authentication middleware', () => {
 
     test.todo('Sets user to res.locals in response header if valid credentials are sent');
 
-    test('Proceeds to next middleware if valid credentials are sent', async (done) => {
-      // const mockRequest: any = {
-      //   body: {
-      //     firstName: 'J',
-      //     lastName: 'Doe',
-      //     email: 'jdoe@abc123.com',
-      //     password: 'Abcd1234',
-      //     passwordConfirm: 'Abcd1234',
-      //     company: 'ABC Inc.',
-      //   },
-      // };
+    // test('Proceeds to next middleware if valid credentials are sent', async (done) => {
+    //   // const mockRequest: any = {
+    //   //   body: {
+    //   //     firstName: 'J',
+    //   //     lastName: 'Doe',
+    //   //     email: 'jdoe@abc123.com',
+    //   //     password: 'Abcd1234',
+    //   //     passwordConfirm: 'Abcd1234',
+    //   //     company: 'ABC Inc.',
+    //   //   },
+    //   // };
 
-      // const mockResponse: any = {
-      //   json: jest.fn(),
-      //   status: jest.fn(),
-      // };
+    //   // const mockResponse: any = {
+    //   //   json: jest.fn(),
+    //   //   status: jest.fn(),
+    //   // };
 
-      // const mockNext: NextFunction = jest.fn();
+    //   // const mockNext: NextFunction = jest.fn();
 
-      // await userRegister(mockRequest, mockResponse, mockNext);
+    //   // await userRegister(mockRequest, mockResponse, mockNext);
 
-      // this should be the expected return value:
-      expect(mockNext).toHaveBeenCalledTimes(1);
+    //   // this should be the expected return value:
+    //   expect(mockNext).toHaveBeenCalledTimes(1);
 
-      done();
-    });
+    //   done();
+    // });
 
     test('Returns 401 status is invalid credentials are sent', async (done) => {
       const expectedResponse = 'Authentication Failed';
 
+      mockRequest = {
+        headers: {
+          Authorization: 'Bearer invalidToken',
+        },
+      };
+
       isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
-      console.log(mockResponse.json);
+      // console.log(mockResponse.json);
+      expect(mockNext).toHaveBeenCalledTimes(0);
+
       expect(mockResponse.json).toBeCalledWith(expectedResponse);
 
       done();
