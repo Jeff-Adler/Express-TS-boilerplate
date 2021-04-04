@@ -25,6 +25,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
     next();
   } catch (error) {
+    console.log(res);
     return res.status(401).send('Authentication Failed');
   }
 };
