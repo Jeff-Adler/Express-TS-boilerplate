@@ -21,11 +21,11 @@ describe('Testing Authentication middleware', () => {
     const result = await factory.loginAdminUser();
     token = result.body.token;
 
-    // I think I need to actually mock the header function
     mockRequest = {
       header: jest.fn(),
     };
 
+    // need to figure out why send function is failing
     mockResponse = {
       json: jest.fn(),
       status: jest.fn(),
