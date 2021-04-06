@@ -5,6 +5,8 @@ import { User } from '../../components/user/model';
 
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
+    console.log(req);
+    console.log(req.header);
     if (!req.header) throw new Error();
 
     // Verify JWT
