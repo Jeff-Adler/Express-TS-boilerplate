@@ -5,6 +5,8 @@ import { NextFunction, Request, Response } from 'express';
 import { isAuthorized } from '../isAuthorized';
 import { hasPermission } from '../hasPermission';
 
+// jest.mock('express');
+
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
 
@@ -21,6 +23,16 @@ describe('Testing Authentication middleware', () => {
     const result = await factory.loginAdminUser();
     token = result.body.token;
 
+    done();
+  });
+
+  afterAll(async (done) => {
+    await factory.close();
+
+    done();
+  });
+
+  beforeEach(async (done) => {
     mockRequest = {
       header: jest.fn(),
     };
@@ -31,12 +43,6 @@ describe('Testing Authentication middleware', () => {
       status: jest.fn(),
       send: jest.fn(),
     };
-
-    done();
-  });
-
-  afterAll(async (done) => {
-    await factory.close();
 
     done();
   });
