@@ -20,9 +20,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     const newToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    console.log('fifth validation');
     res.setHeader('token', newToken);
-    console.log('sixth validation');
 
     next();
   } catch (error) {

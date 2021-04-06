@@ -42,6 +42,7 @@ describe('Testing Authentication middleware', () => {
       json: jest.fn(),
       status: jest.fn(),
       send: jest.fn(),
+      setHeader: jest.fn(),
       locals: {},
     };
 
@@ -77,7 +78,6 @@ describe('Testing Authentication middleware', () => {
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
-      // expect(mockResponse.status).toHaveBeenCalledWith(200);
 
       done();
     });
@@ -97,6 +97,7 @@ describe('Testing Authentication middleware', () => {
 
     //   // console.log(mockResponse);
     //   expect(mockResponse.json).toHaveBeenCalledWith(expectedResponse);
+    //    expect(mockResponse.status).toHaveBeenCalledWith(401);
 
     //   done();
     // });
