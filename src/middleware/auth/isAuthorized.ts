@@ -5,7 +5,7 @@ import { User } from '../../components/user/model';
 
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
-    if (!req.headers) throw new Error();
+    if (!req.header('Authorization')) throw new Error();
     // Verify JWT
     const token: string = req.header('Authorization')!.replace('Bearer ', '');
     console.log('passed 1.5 validation');
