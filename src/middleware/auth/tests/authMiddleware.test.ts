@@ -64,7 +64,7 @@ describe('Testing Authentication middleware', () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      console.log('In test: ' + mockRequest.header);
+
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
