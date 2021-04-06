@@ -14,7 +14,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     // Save currentUser to response object
     const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
     res.locals.currentUser = user;
-    console.log('Fourth validation');
 
     // Send new token on response
     const { id, email } = user;

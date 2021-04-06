@@ -42,6 +42,7 @@ describe('Testing Authentication middleware', () => {
       json: jest.fn(),
       status: jest.fn(),
       send: jest.fn(),
+      locals: {},
     };
 
     done();
