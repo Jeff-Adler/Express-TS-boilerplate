@@ -82,24 +82,26 @@ describe('Testing Authentication middleware', () => {
       done();
     });
 
-    // test('Returns 401 status is invalid credentials are sent', async (done) => {
-    //   const expectedResponse = 'Authentication Failed';
+    test('Returns 401 status is invalid credentials are sent', async (done) => {
+      mockRequest = {
+        headers: {
+          Authorization: 'Bearer invalidToken',
+        },
+      };
 
-    //   mockRequest = {
-    //     headers: {
-    //       Authorization: 'Bearer invalidToken',
-    //     },
-    //   };
+      mockRequest = {
+        ...mockRequest,
+        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
+      };
 
-    //   await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
-    //   expect(mockNext).toHaveBeenCalledTimes(0);
+      expect(mockResponse.json).toHaveBeenCalledWith('Authentication Failed');
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
 
-    //   // console.log(mockResponse);
-    //   expect(mockResponse.json).toHaveBeenCalledWith(expectedResponse);
-    //    expect(mockResponse.status).toHaveBeenCalledWith(401);
+      expect(mockNext).toHaveBeenCalledTimes(0);
 
-    //   done();
-    // });
+      done();
+    });
   });
 });
