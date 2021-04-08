@@ -94,6 +94,11 @@ describe('Testing Authentication middleware', () => {
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
 
+      // Need to figure out what to mock so that send can fire
+      mockResponse = {
+        status: jest.fn().mockReturnValue(401),
+      };
+
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.json).toHaveBeenCalledWith('Authentication Failed');
