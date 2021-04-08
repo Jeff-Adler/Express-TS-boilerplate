@@ -94,17 +94,16 @@ describe('Testing Authentication middleware', () => {
       };
 
       mockResponse = {
-        json: jest.fn().mockReturnValue(mockResponse),
         send: jest.fn().mockReturnValue(mockResponse),
         status: jest.fn().mockReturnValue(mockResponse),
       };
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
+      expect(mockNext).toHaveBeenCalledTimes(0);
+
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
-
-      expect(mockNext).toHaveBeenCalledTimes(0);
 
       done();
     });
