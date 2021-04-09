@@ -34,6 +34,9 @@ describe('Testing Authentication middleware', () => {
 
   beforeEach(async (done) => {
     mockRequest = {
+      headers: {
+        Authorization: ``,
+      },
       header: jest.fn(),
     };
 
@@ -100,9 +103,9 @@ describe('Testing Authentication middleware', () => {
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledTimes(0);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
+      expect(mockNext).toHaveBeenCalledTimes(0);
       // Need to figure out why this method is returned  as nevering being called.
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
 
