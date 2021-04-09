@@ -13,4 +13,6 @@ export class AuthRoutes {
   private initRoutes(): void {
     this.router.post('/login', this.controller.login);
   }
+
+  //TODO: Add logout!
 }

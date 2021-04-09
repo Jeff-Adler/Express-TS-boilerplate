@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository, getConnection } from 'typeorm';
 import { User } from '../../components/user/model';
 
+//TODO: Think about renaming the function and breaking the up into separate functions
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
     if (!req.header('Authorization')) throw new Error();
@@ -20,6 +21,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     const newToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
+
     res.setHeader('token', newToken);
 
     next();
