@@ -12,7 +12,6 @@ import { App } from './app';
     // const connection = await createConnection('development');
 
     const connection = await createConnection({
-      name: 'development',
       type: 'postgres',
       host: '127.0.0.1',
       port: 5432,
@@ -20,11 +19,11 @@ import { App } from './app';
       password: '',
       database: 'test_db',
       synchronize: true,
-      logging: false,
-      entities: ['src/components/**/model.ts', 'build/components/**/model.js'],
-      migrations: ['src/migration/**/*.ts', 'build/migration/**/*.js'],
+      logging: true,
+      entities: ['build/components/**/model.js'],
+      migrations: ['build/migration/**/*.js'],
       cli: {
-        migrationsDir: 'src/migration',
+        migrationsDir: 'build/migration',
       },
     });
 
