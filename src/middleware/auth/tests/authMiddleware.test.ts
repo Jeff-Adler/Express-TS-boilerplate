@@ -111,9 +111,9 @@ describe('Testing Authentication middleware', () => {
 
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockNext).toHaveBeenCalledTimes(0);
-      // Need to figure out why this method is returned  as nevering being called.
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
+
+      expect(mockNext).toHaveBeenCalledTimes(0);
 
       done();
     });
