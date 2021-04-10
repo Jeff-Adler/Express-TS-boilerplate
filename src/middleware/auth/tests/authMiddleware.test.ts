@@ -51,6 +51,12 @@ describe('Testing Authentication middleware', () => {
     done();
   });
 
+  afterEach(async (done) => {
+    jest.clearAllMocks();
+
+    done()
+  })
+
   describe('Testing hasPermission', () => {
     test.todo('Proceeds to next middleware if user is permitted');
 
@@ -61,6 +67,28 @@ describe('Testing Authentication middleware', () => {
     test.todo('Sets token in response header if valid credentials are sent');
 
     test.todo('Sets user to res.locals in response header if valid credentials are sent');
+
+    test('Proceeds to next middleware if valid credentials are sent', async (done) => {
+      // Set Authentication header on mock Request
+      mockRequest = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Set the headers as the return value for whenever header function is called.
+      // Must be written separately from above code, because otherwise mockRequest.headers is not guarenteed to exist
+      mockRequest = {
+        ...mockRequest,
+        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
+      };
+
+      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+
+      done();
+    });
 
     test('Returns 401 status is invalid credentials are sent', async (done) => {
       mockRequest = {
@@ -86,28 +114,6 @@ describe('Testing Authentication middleware', () => {
       expect(mockNext).toHaveBeenCalledTimes(0);
       // Need to figure out why this method is returned  as nevering being called.
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
-
-      done();
-    });
-
-    test('Proceeds to next middleware if valid credentials are sent', async (done) => {
-      // Set Authentication header on mock Request
-      mockRequest = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      // Set the headers as the return value for whenever header function is called.
-      // Must be written separately from above code, because otherwise mockRequest.headers is not guarenteed to exist
-      mockRequest = {
-        ...mockRequest,
-        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
-      };
-
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
-
-      expect(mockNext).toHaveBeenCalledTimes(1);
 
       done();
     });
