@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ENVIRONMENT=dev ts-node-dev --respawn --transpile-only src/index.ts",
+    "start:debug": "ENVIRONMENT=dev ts-node-dev --inspect=4321 --respawn --transpile-only src/index.ts",
     "debug": "tsc --sourcemap",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
     "test": "ENVIRONMENT=test jest --detectOpenHandles --runInBand --colors --verbose --watch --onlyChanged"

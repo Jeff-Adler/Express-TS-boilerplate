@@ -25,6 +25,7 @@ import { App } from './app';
     //   cli: {
     //     migrationsDir: 'build/migration',
     //   },
+    //   migrationsRun: true,
     // });
 
     // Initialize Express app
