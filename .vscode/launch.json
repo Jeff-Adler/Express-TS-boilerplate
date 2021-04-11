@@ -1,15 +1,24 @@
 {
   "version": "0.2.0",
   "configurations": [
+    /**
+     * To debug with ts-node-dev:
+     * In console, run `npm run start:debug`
+     * In VSCode, start debug task `Attach to start:debug
+     */
     {
       "type": "node",
       "request": "attach",
-      "name": "Attach to dev:debug",
+      "name": "Attach to start:debug",
       "protocol": "inspector",
       "port": 4321,
       "restart": true,
       "cwd": "${workspaceRoot}"
     },
+    /**
+     * To debug with VSCode defaults:
+     * Configure TypeORM connection to look for entities and migrations in `build/...js`
+     */
     {
       "type": "node",
       "request": "launch",
