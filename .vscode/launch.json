@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     /**
-     * To debug with ts-node-dev:
+     * To debug with ts-node-dev and development TypeORM connection:
      * In console, run `npm run start:debug`
      * In VSCode, start debug task `Attach to start:debug
      */
@@ -29,7 +29,8 @@
       "trace": "all",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/build/**/*.js"],
-      "runtimeExecutable": "/usr/local/bin/node"
+      "runtimeExecutable": "/usr/local/bin/node",
+      "env": { "CONNECTION_TYPE": "debugging" }
     }
   ]
 }
