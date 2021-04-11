@@ -12,22 +12,8 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 - TypeORM
 - Jest+Supertest
 
-### To debug, change your runtimeExecutable path to path for shell command 'which node':
+### Using VSCode debugger:
 
-{
-"version": "0.2.0",
-"configurations": [
-{
-"type": "node",
-"request": "launch",
-"name": "Debugger",
-"skipFiles": ["<node_internals>/**"],
-"program": "${workspaceFolder}/src/index.ts",
-      "sourceMaps": true,
-      "trace": "all",
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/build/\*_/_.js"],
-"runtimeExecutable": "/usr/local/bin/node"
-}
-]
-}
+- To debug with ts-node-dev (preferred method), use `npm run start:debug`, and debug with 'attach start:debug' task.
+
+- To debug with VSCode/tsc defaults, get global node path with console command 'which node', and change your runtimeExecutable path to that path in launch.json configuration 'Debugger'. Also, configure TypeORM connection to look for entities and migrations in `build/...js`, rather than in `src/...ts`
