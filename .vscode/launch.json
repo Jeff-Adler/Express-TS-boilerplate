@@ -29,7 +29,7 @@
       "trace": "all",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/build/**/*.js"],
-      "runtimeExecutable": "/usr/local/bin/node",
+      // "runtimeExecutable": "/usr/local/bin/node",
       "envFile": "${workspaceFolder}/config/debug.env"
     }
   ]

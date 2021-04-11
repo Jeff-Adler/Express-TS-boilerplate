@@ -14,23 +14,6 @@ import { App } from './app';
     console.log('Initializing ORM connection...');
     const connection = await createConnection(`${process.env.CONNECTION_TYPE}`);
 
-    // const connection = await createConnection({
-    //   type: 'postgres',
-    //   host: '127.0.0.1',
-    //   port: 5432,
-    //   username: 'jeff',
-    //   password: '',
-    //   database: 'test_db',
-    //   synchronize: true,
-    //   logging: true,
-    //   entities: ['build/components/**/model.js'],
-    //   migrations: ['build/migration/**/*.js'],
-    //   cli: {
-    //     migrationsDir: 'build/migration',
-    //   },
-    //   migrationsRun: true,
-    // });
-
     // Initialize Express app
     const app: express.Application = new App().app;
 
