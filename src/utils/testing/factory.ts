@@ -32,7 +32,6 @@ export class TestFactory {
     dropSchema: true,
     synchronize: true,
     logging: false,
-    migrationsRun: true,
     entities: ['src/components/**/model.ts'],
   };
 

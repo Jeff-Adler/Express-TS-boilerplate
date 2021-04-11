@@ -30,7 +30,7 @@
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/build/**/*.js"],
       "runtimeExecutable": "/usr/local/bin/node",
-      "env": { "CONNECTION_TYPE": "debugging" }
+      "envFile": "${workspaceFolder}/config/debug.env"
     }
   ]
 }

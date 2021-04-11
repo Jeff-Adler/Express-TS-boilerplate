@@ -15,6 +15,7 @@
       "migrations": [
          "src/migration/**/*.ts"
       ],
+      "migrationsRun": true,
       "cli": {
          "migrationsDir": "src/migration"
       }
@@ -35,6 +36,7 @@
       "migrations": [
          "build/migration/**/*.js"
       ],
+      "migrationsRun": true,
       "cli": {
          "migrationsDir": "build/migration"
       }

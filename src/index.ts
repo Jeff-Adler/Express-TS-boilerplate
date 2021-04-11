@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, `../config/${process.env.ENVIRONMENT}.env`) });
+
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
@@ -7,9 +11,8 @@ import { App } from './app';
 (async function main() {
   try {
     // Initialize database connection
-
     console.log('Initializing ORM connection...');
-    const connection = await createConnection('development');
+    const connection = await createConnection(`${process.env.CONNECTION_TYPE}`);
 
     // const connection = await createConnection({
     //   type: 'postgres',
