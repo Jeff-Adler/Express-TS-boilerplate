@@ -9,23 +9,23 @@ import { App } from './app';
     // Initialize database connection
 
     console.log('Initializing ORM connection...');
-    // const connection = await createConnection('development');
+    const connection = await createConnection('development');
 
-    const connection = await createConnection({
-      type: 'postgres',
-      host: '127.0.0.1',
-      port: 5432,
-      username: 'jeff',
-      password: '',
-      database: 'test_db',
-      synchronize: true,
-      logging: true,
-      entities: ['build/components/**/model.js'],
-      migrations: ['build/migration/**/*.js'],
-      cli: {
-        migrationsDir: 'build/migration',
-      },
-    });
+    // const connection = await createConnection({
+    //   type: 'postgres',
+    //   host: '127.0.0.1',
+    //   port: 5432,
+    //   username: 'jeff',
+    //   password: '',
+    //   database: 'test_db',
+    //   synchronize: true,
+    //   logging: true,
+    //   entities: ['build/components/**/model.js'],
+    //   migrations: ['build/migration/**/*.js'],
+    //   cli: {
+    //     migrationsDir: 'build/migration',
+    //   },
+    // });
 
     // Initialize Express app
     const app: express.Application = new App().app;

@@ -1,0 +1,29 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debugger",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/index.ts",
+      "sourceMaps": true,
+      "trace": "all",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"],
+      "runtimeExecutable": "/usr/local/bin/node"
+    },
+    {
+      "name": "Debug index.ts",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+      "args": ["${workspaceRoot}/src/index.ts"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
