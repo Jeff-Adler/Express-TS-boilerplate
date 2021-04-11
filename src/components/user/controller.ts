@@ -23,8 +23,6 @@ export class UserController {
   public async listAll(req: Request, res: Response): Promise<Response> {
     try {
       const options: FindManyOptions<User> = this.userService.handleQueryParams(req);
-      console.log('testing auto-compile');
-      console.log('testing auto-compile again');
 
       const users: User[] = await this.userService.readAll(options);
 
