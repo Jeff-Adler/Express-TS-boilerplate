@@ -8,7 +8,8 @@
     "start:debug": "ENVIRONMENT=dev ts-node-dev --inspect=4321 --respawn --transpile-only src/index.ts",
     "debug": "tsc --sourcemap",
     "migration:run": "ENVIRONMENT=debug ts-node ./node_modules/typeorm/cli.js migration:run",
-    "test": "ENVIRONMENT=test jest --detectOpenHandles --runInBand --colors --verbose --watch --onlyChanged"
+    "test": "ENVIRONMENT=test jest --detectOpenHandles --runInBand --colors --verbose --watch --onlyChanged",
+    "test:debug": "ENVIRONMENT=test node --inspect-brk node_modules/.bin/jest --runInBand --colors --verbose --watch --onlyChanged"
   },
   "keywords": [],
   "author": "",

@@ -54,8 +54,8 @@ describe('Testing Authentication middleware', () => {
   afterEach(async (done) => {
     jest.clearAllMocks();
 
-    done()
-  })
+    done();
+  });
 
   describe('Testing hasPermission', () => {
     test.todo('Proceeds to next middleware if user is permitted');
@@ -109,7 +109,6 @@ describe('Testing Authentication middleware', () => {
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
-
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
 
@@ -117,6 +116,5 @@ describe('Testing Authentication middleware', () => {
 
       done();
     });
-
   });
 });

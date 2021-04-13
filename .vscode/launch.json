@@ -16,6 +16,23 @@
       "cwd": "${workspaceRoot}"
     },
     /**
+     * To debug in testing environment:
+     * In console, run `npm run test:debug`
+     * In VSCode, start debug task `Attach to test:debug`.
+     * If you hit breakpoint in jest.js, just continue the debugger
+     */
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to test:debug",
+      "protocol": "inspector",
+      "port": 9229,
+      // See https://github.com/microsoft/vscode/issues/102042#issuecomment-656402933 for why resolveSourceMapLocations is included
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "restart": true,
+      "cwd": "${workspaceRoot}"
+    },
+    /**
      * To debug with VSCode defaults:
      * Configure TypeORM connection to look for entities and migrations in `build/...js`
      */
@@ -29,7 +46,6 @@
       "trace": "all",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/build/**/*.js"],
-      // "runtimeExecutable": "/usr/local/bin/node",
       "envFile": "${workspaceFolder}/config/debug.env"
     }
   ]

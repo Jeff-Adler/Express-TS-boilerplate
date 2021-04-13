@@ -17,4 +17,9 @@ User model plus authentication strategy inspired by [https://medium.com/javascri
 - To debug with ts-node-dev and development TypeORM connection and database (preferred method), use `npm run start:debug`, and debug with 'attach start:debug' task.
   -- Credit to 'https://www.otricks.com/what-is-the-ideal-setup-for-working-with-nodejs-typescript-in-vs-code/' for this setup!!
 
+- To debug in test environment,  
+   -- In console, run `npm run test:debug`
+  -- In VSCode, start debug task `Attach to test:debug`.
+  -- If you hit breakpoint in jest.js, just continue the debugger
+
 - To debug with VSCode/tsc defaults and debugger TypeORM connection and database, get global node path with console command 'which node', and change your runtimeExecutable path to that path in launch.json configuration 'Debugger'.
