@@ -5,8 +5,6 @@ import { NextFunction, Request, Response } from 'express';
 import { isAuthorized } from '../isAuthorized';
 import { hasPermission } from '../hasPermission';
 
-// jest.mock('express');
-
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
 
@@ -110,8 +108,8 @@ describe('Testing Authentication middleware', () => {
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
-      // console.log(mockResponse.send?.arguments)
-      // console.log(mockResponse.mock)
+      console.log(mockResponse.send?.arguments)
+      console.log((mockResponse.send as jest.Mock).mock.calls)
       expect(mockResponse.send).toHaveBeenCalled();
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
 
