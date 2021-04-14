@@ -110,6 +110,9 @@ describe('Testing Authentication middleware', () => {
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
+      // console.log(mockResponse.send?.arguments)
+      // console.log(mockResponse.mock)
+      expect(mockResponse.send).toHaveBeenCalled();
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');
 
       expect(mockNext).toHaveBeenCalledTimes(0);
