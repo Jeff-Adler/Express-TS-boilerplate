@@ -46,7 +46,9 @@ describe('Testing Authentication middleware', () => {
       status: jest.fn(),
       send: jest.fn(),
       setHeader: jest.fn(),
-      locals: {},
+      locals: {
+        currentUser: '',
+      },
     };
 
     done();
@@ -107,6 +109,23 @@ describe('Testing Authentication middleware', () => {
         ...mockRequest,
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
+
+      const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
+
+      // {
+      //   id: 1,
+      //   email: "admin@admin.com",
+      //   password: "$2b$08$gQ8b/8DfFX1x92ZgPzT8IujzK4g9691/zfgK9Y4l.WXmP6BAFxci2",
+      //   role: "ADMIN",
+      //   createdAt: {...
+      //   },
+      //   updatedAt: {...
+      //   },
+      //   tempPassword: "$2b$08$gQ8b/8DfFX1x92ZgPzT8IujzK4g9691/zfgK9Y4l.WXmP6BAFxci2",
+      // }
+      console.log(mockResponse.locals!.currentUser);
+      expect(mockResponse.locals!.currentUser).toEqual(user);
 
       done();
     });
