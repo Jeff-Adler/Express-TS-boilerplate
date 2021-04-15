@@ -63,15 +63,12 @@ describe('Testing Authentication middleware', () => {
 
   describe('Testing isAuthorized', () => {
     test('Sets token in response header if valid credentials are sent', async (done) => {
-      // Set Authentication header on mock Request
       mockRequest = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
 
-      // Set the headers as the return value for whenever header function is called.
-      // Must be written separately from above code, because otherwise mockRequest.headers is not guarenteed to exist
       mockRequest = {
         ...mockRequest,
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
@@ -80,9 +77,8 @@ describe('Testing Authentication middleware', () => {
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       type tokenType = string;
-      // Need to figure out how to insert second argument
+      // TODO: Figure out way to get exact expected value for token, rather than just being of type string
       expect(mockResponse.setHeader).toHaveBeenCalledWith('token', expect.stringContaining(''));
-      // expect(mockResponse.setHeader.mock.≈alls[0][0]).toBe(string)
       done();
     });
 
