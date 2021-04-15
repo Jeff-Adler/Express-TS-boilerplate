@@ -62,7 +62,28 @@ describe('Testing Authentication middleware', () => {
   });
 
   describe('Testing isAuthorized', () => {
-    test.todo('Sets token in response header if valid credentials are sent');
+    test('Sets token in response header if valid credentials are sent', async (done) => {
+      // Set Authentication header on mock Request
+      mockRequest = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Set the headers as the return value for whenever header function is called.
+      // Must be written separately from above code, because otherwise mockRequest.headers is not guarenteed to exist
+      mockRequest = {
+        ...mockRequest,
+        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
+      };
+
+      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+
+      // Need to figure out how to insert second argument
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('token');
+
+      done();
+    });
 
     test.todo('Sets user to res.locals in response header if valid credentials are sent');
 
