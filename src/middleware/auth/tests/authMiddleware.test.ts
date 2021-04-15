@@ -1,9 +1,12 @@
 import { TestFactory } from '../../../utils/testing/factory';
 
 import { NextFunction, Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
 
 import { isAuthorized } from '../isAuthorized';
 import { hasPermission } from '../hasPermission';
+import { User } from '../../../components/user/model';
+import { getConnection } from 'typeorm';
 
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
@@ -74,11 +77,21 @@ describe('Testing Authentication middleware', () => {
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
 
+      const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
+      const { id, email } = user;
+      const testToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
+
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       type tokenType = string;
-      // TODO: Figure out way to get exact expected value for token, rather than just being of type string
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('token', expect.stringContaining(''));
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        expect.stringMatching('token'),
+        expect.stringMatching(testToken)
+      );
       done();
     });
 
