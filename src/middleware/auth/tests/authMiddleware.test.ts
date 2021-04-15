@@ -92,10 +92,24 @@ describe('Testing Authentication middleware', () => {
         expect.stringMatching('token'),
         expect.stringMatching(testToken)
       );
+
       done();
     });
 
-    test.todo('Sets user to res.locals in response header if valid credentials are sent');
+    test('Sets user to res.locals in response header if valid credentials are sent', async (done) => {
+      mockRequest = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      mockRequest = {
+        ...mockRequest,
+        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
+      };
+
+      done();
+    });
 
     test('Proceeds to next middleware if valid credentials are sent', async (done) => {
       // Set Authentication header on mock Request
@@ -119,7 +133,11 @@ describe('Testing Authentication middleware', () => {
       done();
     });
 
-    test('Returns 401 status is invalid credentials are sent', async (done) => {
+    test.todo('Does not set user if invalid credentials are sent');
+
+    test.todo('Does not set token if invalid credentials are sent');
+
+    test('Returns 401 status and does not call next middleware if invalid credentials are sent', async (done) => {
       mockRequest = {
         headers: {
           Authorization: 'Bearer invalidToken',
