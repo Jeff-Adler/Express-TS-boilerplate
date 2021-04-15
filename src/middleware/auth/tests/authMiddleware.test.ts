@@ -79,9 +79,10 @@ describe('Testing Authentication middleware', () => {
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
+      type tokenType = string;
       // Need to figure out how to insert second argument
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('token');
-
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('token', expect.stringContaining(''));
+      // expect(mockResponse.setHeader.mock.≈alls[0][0]).toBe(string)
       done();
     });
 
@@ -123,7 +124,7 @@ describe('Testing Authentication middleware', () => {
 
       mockResponse = {
         send: jest.fn().mockReturnValue(mockResponse),
-        status: jest.fn().mockReturnThis()
+        status: jest.fn().mockReturnThis(),
       };
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
