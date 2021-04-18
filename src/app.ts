@@ -8,6 +8,8 @@ import cors from 'cors';
 
 import { initApiRoutes } from './components/index';
 
+import { morganMiddleware } from './middleware/config/logMiddleware';
+
 export class App {
   private readonly _app: express.Application = express();
 
@@ -17,6 +19,9 @@ export class App {
     this._app.use(helmet());
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
+
+    // Initialize logger
+    this._app.use(morganMiddleware);
 
     // Initialize API routes
     initApiRoutes(this._app);
