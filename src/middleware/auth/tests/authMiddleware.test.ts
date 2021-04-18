@@ -63,7 +63,19 @@ describe('Testing Authentication middleware', () => {
 
   describe('Testing hasPermission', () => {
     test('Proceeds to next middleware if user with ADMIN role is permitted', async (done) => {
-      const roles = ['ADMIN', 'USER'];
+      const roles = ['ADMIN'];
+
+      const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
+
+      mockResponse = {
+        send: jest.fn().mockReturnValue(mockResponse),
+        status: jest.fn().mockReturnThis(),
+        locals: {
+          currentUser: user,
+        },
+      };
+
       done();
     });
 
