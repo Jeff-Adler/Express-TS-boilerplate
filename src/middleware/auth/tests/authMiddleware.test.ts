@@ -62,9 +62,17 @@ describe('Testing Authentication middleware', () => {
   });
 
   describe('Testing hasPermission', () => {
-    test.todo('Proceeds to next middleware if user is permitted');
+    test('Proceeds to next middleware if user with ADMIN role is permitted', async (done) => {
+      const roles = ['ADMIN', 'USER'];
+      done();
+    });
 
-    test.todo('Returns 401 status if user is not permitted');
+    test('Proceeds to next middleware if user with USER role is permitted', async (done) => {
+      const roles = ['ADMIN', 'USER'];
+      done();
+    });
+
+    test.todo('Returns 401 status if user does not have permission');
   });
 
   describe('Testing isAuthorized', () => {
