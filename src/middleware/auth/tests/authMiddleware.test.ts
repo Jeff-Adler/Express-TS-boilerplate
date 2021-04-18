@@ -7,6 +7,7 @@ import { isAuthorized } from '../isAuthorized';
 import { hasPermission } from '../hasPermission';
 import { User } from '../../../components/user/model';
 import { getConnection } from 'typeorm';
+import { Role } from '../../../components/user/utils/Roles';
 
 describe('Testing Authentication middleware', () => {
   let factory: TestFactory = new TestFactory();
@@ -63,7 +64,7 @@ describe('Testing Authentication middleware', () => {
 
   describe('Testing hasPermission', () => {
     test('Proceeds to next middleware if user with ADMIN role is permitted', async (done) => {
-      const roles = ['ADMIN'];
+      const roles: Array<Role> = ['ADMIN'];
 
       const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
@@ -75,6 +76,10 @@ describe('Testing Authentication middleware', () => {
           currentUser: user,
         },
       };
+
+      hasPermission(roles);
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
 
       done();
     });
