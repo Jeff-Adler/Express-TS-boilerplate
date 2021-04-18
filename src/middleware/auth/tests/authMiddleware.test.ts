@@ -168,13 +168,6 @@ describe('Testing Authentication middleware', () => {
         setHeader: jest.fn(),
       };
 
-      // const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
-      // const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
-      // const { id, email } = user;
-      // const testToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
-      //   expiresIn: process.env.JWT_EXPIRES_IN,
-      // });
-
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.setHeader).toHaveBeenCalledTimes(0);
@@ -182,7 +175,36 @@ describe('Testing Authentication middleware', () => {
       done();
     });
 
-    test.todo('Does not set user if invalid credentials are sent');
+    test('Does not set user if invalid credentials are sent', async (done) => {
+      mockRequest = {
+        headers: {
+          Authorization: `Bearer invalid token`,
+        },
+      };
+
+      mockRequest = {
+        ...mockRequest,
+        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
+      };
+
+      const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
+      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
+
+      mockResponse = {
+        send: jest.fn().mockReturnValue(mockResponse),
+        status: jest.fn().mockReturnThis(),
+        locals: {
+          currentUser: '',
+        },
+      };
+
+      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(Object.keys(mockResponse)).toContain('locals');
+      expect(Object.values(mockResponse)).not.toContainEqual({ currentUser: user });
+
+      done();
+    });
 
     test('Returns 401 status and does not call next middleware if invalid credentials are sent', async (done) => {
       mockRequest = {
