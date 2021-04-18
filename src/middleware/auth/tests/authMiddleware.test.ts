@@ -46,9 +46,10 @@ describe('Testing Authentication middleware', () => {
       status: jest.fn(),
       send: jest.fn(),
       setHeader: jest.fn(),
-      locals: {
-        currentUser: '',
-      },
+      locals: jest.fn(),
+      // locals: {
+      //   currentUser: '',
+      // },
     };
 
     done();
@@ -108,6 +109,10 @@ describe('Testing Authentication middleware', () => {
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
 
+      mockResponse = {
+        locals: jest.fn().mockReturnValue(mockResponse),
+      };
+
       const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
 
@@ -122,8 +127,8 @@ describe('Testing Authentication middleware', () => {
       //   },
       //   tempPassword: "$2b$08$gQ8b/8DfFX1x92ZgPzT8IujzK4g9691/zfgK9Y4l.WXmP6BAFxci2",
       // }
-      console.log(mockResponse.locals!.currentUser);
-      expect(mockResponse.locals!.currentUser).toEqual(user);
+      // user is not valid expected type. Can i cast it?
+      expect(mockResponse.locals!.currentUser).toHaveBeenCalledWith('test');
 
       done();
     });
@@ -165,21 +170,19 @@ describe('Testing Authentication middleware', () => {
       mockResponse = {
         send: jest.fn().mockReturnValue(mockResponse),
         status: jest.fn().mockReturnThis(),
+        setHeader: jest.fn(),
       };
 
-      const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
-      const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
-      const { id, email } = user;
-      const testToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      });
+      // const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
+      // const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
+      // const { id, email } = user;
+      // const testToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
+      //   expiresIn: process.env.JWT_EXPIRES_IN,
+      // });
 
       await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.setHeader).not.toHaveBeenCalledWith(
-        expect.stringMatching('token'),
-        expect.stringMatching(testToken)
-      );
+      expect(mockResponse.setHeader).toHaveBeenCalledTimes(0);
 
       done();
     });
