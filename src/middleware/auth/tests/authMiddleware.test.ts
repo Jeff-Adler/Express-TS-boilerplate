@@ -109,26 +109,21 @@ describe('Testing Authentication middleware', () => {
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
 
-      mockResponse = {
-        locals: jest.fn().mockReturnValue(mockResponse),
-      };
-
       const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
 
-      // {
-      //   id: 1,
-      //   email: "admin@admin.com",
-      //   password: "$2b$08$gQ8b/8DfFX1x92ZgPzT8IujzK4g9691/zfgK9Y4l.WXmP6BAFxci2",
-      //   role: "ADMIN",
-      //   createdAt: {...
-      //   },
-      //   updatedAt: {...
-      //   },
-      //   tempPassword: "$2b$08$gQ8b/8DfFX1x92ZgPzT8IujzK4g9691/zfgK9Y4l.WXmP6BAFxci2",
-      // }
-      // user is not valid expected type. Can i cast it?
-      expect(mockResponse.locals!.currentUser).toHaveBeenCalledWith('test');
+      mockResponse = {
+        send: jest.fn().mockReturnValue(mockResponse),
+        status: jest.fn().mockReturnThis(),
+        locals: {
+          currentUser: '',
+        },
+      };
+
+      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(Object.keys(mockResponse)).toContain('locals');
+      expect(Object.values(mockResponse)).toContainEqual({ currentUser: user });
 
       done();
     });
