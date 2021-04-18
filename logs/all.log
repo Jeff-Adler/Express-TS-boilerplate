@@ -1,0 +1,26 @@
+2021-04-18 19:47:52:4752 [31merror[39m: [31mThis is an error log[39m
+2021-04-18 19:47:52:4752 [33mwarn[39m: [33mThis is a warn log[39m
+2021-04-18 19:47:52:4752 [32minfo[39m: [32mThis is a info log[39m
+2021-04-18 19:47:52:4752 [35mhttp[39m: [35mThis is a http log[39m
+2021-04-18 19:47:52:4752 [37mdebug[39m: [37mThis is a debug log[39m
+2021-04-18 19:48:24:4824 [37mdebug[39m: [37mInitializing ORM connection...[39m
+2021-04-18 19:48:24:4824 [31merror[39m: [31mThis is an error log[39m
+2021-04-18 19:48:24:4824 [33mwarn[39m: [33mThis is a warn log[39m
+2021-04-18 19:48:24:4824 [32minfo[39m: [32mThis is a info log[39m
+2021-04-18 19:48:24:4824 [35mhttp[39m: [35mThis is a http log[39m
+2021-04-18 19:48:24:4824 [37mdebug[39m: [37mThis is a debug log[39m
+2021-04-18 19:48:24:4824 [37mdebug[39m: [37mServer is running on port 8080[39m
+2021-04-18 19:49:32:4932 [37mdebug[39m: [37mInitializing ORM connection...[39m
+2021-04-18 19:49:32:4932 [31merror[39m: [31mThis is an error log[39m
+2021-04-18 19:49:32:4932 [33mwarn[39m: [33mThis is a warn log[39m
+2021-04-18 19:49:32:4932 [32minfo[39m: [32mThis is a info log[39m
+2021-04-18 19:49:32:4932 [35mhttp[39m: [35mThis is a http log[39m
+2021-04-18 19:49:32:4932 [37mdebug[39m: [37mThis is a debug log[39m
+2021-04-18 19:49:32:4932 [37mdebug[39m: [37mServer is running on port 8080[39m
+2021-04-18 19:49:49:4949 [37mdebug[39m: [37mInitializing ORM connection...[39m
+2021-04-18 19:49:49:4949 [31merror[39m: [31mThis is an error log[39m
+2021-04-18 19:49:49:4949 [33mwarn[39m: [33mThis is a warn log[39m
+2021-04-18 19:49:49:4949 [32minfo[39m: [32mThis is a info log[39m
+2021-04-18 19:49:49:4949 [35mhttp[39m: [35mThis is a http log[39m
+2021-04-18 19:49:49:4949 [37mdebug[39m: [37mThis is a debug log[39m
+2021-04-18 19:49:49:4949 [37mdebug[39m: [37mServer is running on port 8080[39m
