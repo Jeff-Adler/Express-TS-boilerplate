@@ -31,6 +31,6 @@ import { Logger } from './lib/logger';
       Logger.debug(`Server is running on port ${PORT}`);
     });
   } catch (err) {
-    console.log(err);
+    Logger.error(err);
   }
 })();
