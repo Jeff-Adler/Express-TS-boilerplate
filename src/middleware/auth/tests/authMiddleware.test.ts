@@ -64,25 +64,11 @@ describe('Testing Authentication middleware', () => {
 
   describe('Testing hasPermission', () => {
     test('Proceeds to next middleware if user with ADMIN role is permitted', async (done) => {
-      mockRequest = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      mockRequest = {
-        ...mockRequest,
-        header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
-      };
-
       const roles: Array<Role> = ['ADMIN'];
 
+      // Necessary to populate res.locals.currentUser
       const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
-      const { id, email } = user;
-      const testToken = jwt.sign({ id, email }, process.env.JWT_SECRET as jwt.Secret, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      });
 
       mockResponse = {
         send: jest.fn().mockReturnValue(mockResponse),
@@ -93,17 +79,9 @@ describe('Testing Authentication middleware', () => {
         },
       };
 
-      // await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
-
-      // expect(mockResponse.setHeader).toHaveBeenCalledWith(
-      //   expect.stringMatching('token'),
-      //   expect.stringMatching(testToken)
-      // );
-
+      // Save outer function as variable so inner function can be called with appropriate mocks
       const hasPermissionOuterFunc = hasPermission(roles);
       hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
-      // This is where hasPermission test really starts
-      hasPermission(roles);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
 
