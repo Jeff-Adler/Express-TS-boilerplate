@@ -66,7 +66,7 @@ describe('Testing Authentication middleware', () => {
     test('Proceeds to next middleware if user with ADMIN role is permitted', async (done) => {
       const roles: Array<Role> = ['ADMIN'];
 
-      // Necessary to populate res.locals.currentUser
+      // Retrieve user to populate res.locals.currentUser
       const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
       const user: User = await getConnection(process.env.CONNECTION_TYPE).getRepository(User).findOneOrFail(decoded.id);
 
@@ -89,11 +89,48 @@ describe('Testing Authentication middleware', () => {
     });
 
     test('Proceeds to next middleware if user with USER role is permitted', async (done) => {
-      const roles = ['ADMIN', 'USER'];
+      const roles: Array<Role> = ['ADMIN', 'USER'];
+
+      const seededUser: User = await factory.seedSingleUser();
+
+      mockResponse = {
+        send: jest.fn().mockReturnValue(mockResponse),
+        status: jest.fn().mockReturnThis(),
+        setHeader: jest.fn(),
+        locals: {
+          currentUser: seededUser,
+        },
+      };
+
+      const hasPermissionOuterFunc = hasPermission(roles);
+      hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+
       done();
     });
 
-    test.todo('Returns 401 status if user does not have permission');
+    test('Returns 401 status if user does not have permission', async (done) => {
+      const roles: Array<Role> = ['ADMIN'];
+
+      const seededUser: User = await factory.seedSingleUser();
+
+      mockResponse = {
+        send: jest.fn().mockReturnValue(mockResponse),
+        status: jest.fn().mockReturnThis(),
+        setHeader: jest.fn(),
+        locals: {
+          currentUser: seededUser,
+        },
+      };
+
+      const hasPermissionOuterFunc = hasPermission(roles);
+      hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledTimes(0);
+
+      done();
+    });
   });
 
   describe('Testing isAuthorized', () => {
