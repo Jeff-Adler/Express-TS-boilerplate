@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { User } from '../../components/user/model';
 import { Role } from '../../components/user/utils/Roles';
 
-export const hasPermission = (roles: Array<Role>) => {
+export const verifyUserRole = (roles: Array<Role>) => {
   return (req: Request, res: Response, next: NextFunction): Response | void => {
     const user: User = res.locals.currentUser;
 

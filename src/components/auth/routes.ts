@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from './controller';
-import { isAuthorized } from '../../middleware/auth/isAuthorized';
+import { authorizeAndRetrieveUser } from '../../middleware/auth/authorizeAndRetrieveUser';
 
 export class AuthRoutes {
   readonly router: Router = Router();

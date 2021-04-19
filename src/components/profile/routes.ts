@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { isAuthorized } from '../../middleware/auth/isAuthorized';
-import { hasPermission } from '../../middleware/auth/hasPermission';
+import { authorizeAndRetrieveUser } from '../../middleware/auth/authorizeAndRetrieveUser';
+import { verifyUserRole } from '../../middleware/auth/verifyUserRole';
 import { ProfileController } from './controller';
 
 export class ProfileRoutes {
@@ -12,16 +12,24 @@ export class ProfileRoutes {
   }
 
   private initRoutes(): void {
-    this.router.get('/', [isAuthorized, hasPermission(['ADMIN', 'USER'])], this.controller.getProfile);
+    this.router.get('/', [authorizeAndRetrieveUser, verifyUserRole(['ADMIN', 'USER'])], this.controller.getProfile);
 
-    this.router.patch('/update', [isAuthorized, hasPermission(['ADMIN', 'USER'])], this.controller.updateProfile);
+    this.router.patch(
+      '/update',
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN', 'USER'])],
+      this.controller.updateProfile
+    );
 
     this.router.patch(
       '/change-password',
-      [isAuthorized, hasPermission(['ADMIN', 'USER'])],
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN', 'USER'])],
       this.controller.changePassword
     );
 
-    this.router.delete('/delete', [isAuthorized, hasPermission(['ADMIN', 'USER'])], this.controller.deleteProfile);
+    this.router.delete(
+      '/delete',
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN', 'USER'])],
+      this.controller.deleteProfile
+    );
   }
 }

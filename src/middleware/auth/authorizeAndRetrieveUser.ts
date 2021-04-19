@@ -4,7 +4,11 @@ import { getRepository, getConnection } from 'typeorm';
 import { User } from '../../components/user/model';
 
 //TODO: Think about renaming the function and breaking the up into separate functions
-export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+export const authorizeAndRetrieveUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   try {
     if (!req.header('Authorization')) throw new Error();
     // Verify JWT

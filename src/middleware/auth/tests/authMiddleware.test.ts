@@ -3,8 +3,8 @@ import { TestFactory } from '../../../utils/testing/factory';
 import { NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 
-import { isAuthorized } from '../isAuthorized';
-import { hasPermission } from '../hasPermission';
+import { authorizeAndRetrieveUser } from '../authorizeAndRetrieveUser';
+import { verifyUserRole } from '../verifyUserRole';
 import { User } from '../../../components/user/model';
 import { getConnection } from 'typeorm';
 import { Role } from '../../../components/user/utils/Roles';
@@ -80,7 +80,7 @@ describe('Testing Authentication middleware', () => {
       };
 
       // Save outer function as variable so inner function can be called with appropriate mocks
-      const hasPermissionOuterFunc = hasPermission(roles);
+      const hasPermissionOuterFunc = verifyUserRole(roles);
       hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
@@ -102,7 +102,7 @@ describe('Testing Authentication middleware', () => {
         },
       };
 
-      const hasPermissionOuterFunc = hasPermission(roles);
+      const hasPermissionOuterFunc = verifyUserRole(roles);
       hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
@@ -124,7 +124,7 @@ describe('Testing Authentication middleware', () => {
         },
       };
 
-      const hasPermissionOuterFunc = hasPermission(roles);
+      const hasPermissionOuterFunc = verifyUserRole(roles);
       hasPermissionOuterFunc(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(0);
@@ -153,7 +153,7 @@ describe('Testing Authentication middleware', () => {
         expiresIn: process.env.JWT_EXPIRES_IN,
       });
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         expect.stringMatching('token'),
@@ -186,7 +186,7 @@ describe('Testing Authentication middleware', () => {
         },
       };
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(Object.keys(mockResponse)).toContain('locals');
       expect(Object.values(mockResponse)).toContainEqual({ currentUser: user });
@@ -209,7 +209,7 @@ describe('Testing Authentication middleware', () => {
         header: jest.fn().mockReturnValue(mockRequest.headers!['Authorization']),
       };
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
 
@@ -234,7 +234,7 @@ describe('Testing Authentication middleware', () => {
         setHeader: jest.fn(),
       };
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.setHeader).toHaveBeenCalledTimes(0);
 
@@ -264,7 +264,7 @@ describe('Testing Authentication middleware', () => {
         },
       };
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(Object.keys(mockResponse)).toContain('locals');
       expect(Object.values(mockResponse)).not.toContainEqual({ currentUser: user });
@@ -289,7 +289,7 @@ describe('Testing Authentication middleware', () => {
         status: jest.fn().mockReturnThis(),
       };
 
-      await isAuthorized(mockRequest as Request, mockResponse as Response, mockNext);
+      await authorizeAndRetrieveUser(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.send).toHaveBeenCalledWith('Authentication Failed');

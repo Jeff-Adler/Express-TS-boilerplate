@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { isAuthorized } from '../../middleware/auth/isAuthorized';
-import { hasPermission } from '../../middleware/auth/hasPermission';
+import { authorizeAndRetrieveUser } from '../../middleware/auth/authorizeAndRetrieveUser';
+import { verifyUserRole } from '../../middleware/auth/verifyUserRole';
 import { UserController } from './controller';
 import { retrieveUser } from '../../middleware/utils/retrieveUser';
 import { validateQueryParams } from '../../middleware/validations/validateQueryParams';
@@ -15,32 +15,44 @@ export class UserRoutes {
 
   private initRoutes(): void {
     //Get all users
-    this.router.get('/', [isAuthorized, hasPermission(['ADMIN']), validateQueryParams], this.controller.listAll);
+    this.router.get(
+      '/',
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN']), validateQueryParams],
+      this.controller.listAll
+    );
 
     // Get one user by id
-    this.router.get('/:id([0-9]+)', [isAuthorized, hasPermission(['ADMIN']), retrieveUser], this.controller.getOneById);
+    this.router.get(
+      '/:id([0-9]+)',
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN']), retrieveUser],
+      this.controller.getOneById
+    );
 
     // Get one user by email
     this.router.get(
       '/search',
-      [isAuthorized, hasPermission(['ADMIN']), validateQueryParams],
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN']), validateQueryParams],
       this.controller.readUserByEmail
     );
 
     //Create a new user
-    this.router.post('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.newUser);
+    this.router.post('/', [authorizeAndRetrieveUser, verifyUserRole(['ADMIN'])], this.controller.newUser);
 
     //Edit one user (email or role)
-    this.router.patch('/:id([0-9]+)', [isAuthorized, hasPermission(['ADMIN']), retrieveUser], this.controller.editUser);
+    this.router.patch(
+      '/:id([0-9]+)',
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN']), retrieveUser],
+      this.controller.editUser
+    );
 
     //Delete one user
     this.router.delete(
       '/:id([0-9]+)',
-      [isAuthorized, hasPermission(['ADMIN']), retrieveUser],
+      [authorizeAndRetrieveUser, verifyUserRole(['ADMIN']), retrieveUser],
       this.controller.deleteUserById
     );
 
     //Delete all non-admin users
-    this.router.delete('/', [isAuthorized, hasPermission(['ADMIN'])], this.controller.deleteUsers);
+    this.router.delete('/', [authorizeAndRetrieveUser, verifyUserRole(['ADMIN'])], this.controller.deleteUsers);
   }
 }
