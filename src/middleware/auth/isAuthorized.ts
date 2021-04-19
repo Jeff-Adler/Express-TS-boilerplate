@@ -7,7 +7,6 @@ import { User } from '../../components/user/model';
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
     if (!req.header('Authorization')) throw new Error();
-
     // Verify JWT
     const token: string = req.header('Authorization')!.replace('Bearer ', '');
     const decoded = <any>jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
