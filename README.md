@@ -1,8 +1,24 @@
 # Boilerplate code for Express app with TypeScript
 
+This repo is meant to help get your express app off the ground quick!
+
+## Database
+
+PostgreSQL Relational Database
+
+## File Structure
+
 File structure inspired by [https://github.com/aionic-org/aionic-core](https://github.com/aionic-org/aionic-core)
 
+## Authentication
+
 User model plus authentication strategy inspired by [https://medium.com/javascript-in-plain-english/creating-a-rest-api-with-jwt-authentication-and-role-based-authorization-using-typescript-fbfa3cab22a4](https://medium.com/javascript-in-plain-english/creating-a-rest-api-with-jwt-authentication-and-role-based-authorization-using-typescript-fbfa3cab22a4)
+
+## Tests
+
+All endpoints and middlewares tested
+
+## Logging
 
 ## Technologies
 
